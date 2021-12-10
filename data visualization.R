@@ -88,3 +88,82 @@ ggplot(data = diamonds,mapping = aes(x=cut))+
 
 ggplot(data = diamonds,mapping = aes(x=cut,y=depth))+
   stat_summary(fun.max = max,fun.min = min,fun = median)
+#Position Adjustments
+ggplot(data = mpg)+
+  geom_bar(mapping = aes(x=hwy),color='blue')
+
+ggplot(data = mpg)+
+  geom_bar(mapping = aes(x=hwy,fill='yellow'))
+
+ggplot(data = mpg)+
+  geom_bar(mapping = aes(x=hwy,fill=drv))
+
+ggplot(data = diamonds)+
+  geom_bar(mapping = aes(x=cut,fill=cut))
+
+ggplot(data = diamonds,mapping = aes(x=cut,color=cut))+
+  geom_bar(fill=NA,position='identity')
+
+ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+  geom_bar(position='dodge')
+
+ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+  geom_bar(alpha=1/5,position='identity')
+
+ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+  geom_bar(position='fill')
+
+ggplot(data = mpg,mapping = aes(x=displ,y=hwy))+
+  geom_point(position='jitter')
+
+?geom_count
+?geom_jitter
+?geom_boxplot
+
+ggplot(data = mpg)+
+  geom_boxplot(mapping = aes(x=hwy,y=drv))
+
+#Coordinate Systems
+
+ggplot(data = mpg)+
+  geom_boxplot(mapping = aes(y=hwy,x=class))+
+  coord_flip()
+
+rw<-map_data("nz")
+ggplot(data=rw,mapping = aes(long,lat,group=group))+
+  geom_polygon(fill='white',color='magenta')
+
+ggplot(data=rw,mapping = aes(long,lat,group=group))+
+  geom_polygon(fill='white',color='magenta')+
+  coord_quickmap()
+
+?labs
+
+bar<-ggplot(data = diamonds)+
+  geom_bar(mapping = aes(x=cut,fill=cut))
+
+bar + coord_flip()
+bar+coord_polar()
+
+install.packages("mapproj")
+require("mapproj")
+require("maps")
+mapy<-ggplot(data=rw,mapping = aes(long,lat,group=group))+
+  geom_polygon(fill='white',color='magenta')
+  
+mapy+coord_map()
+?coord_fixed
+?geom_abline
+
+
+ggplot(data = mpg,aes(x=cty,y=hwy))+
+  geom_point()+
+  geom_abline()+
+  coord_fixed()
+
+#The Layered Grammar of Graphics
+#########################################
+
+#####################
+#2.Workflow:Basics#####
+#####################

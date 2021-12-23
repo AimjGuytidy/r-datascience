@@ -407,3 +407,25 @@ delays <- not_cancelled%>%
 
 ggplot(data = delays,mapping = aes(y=delay,x=count))+
   geom_point(alpha=1/10)
+
+delays%>%
+  filter(count>25)%>%
+  ggplot(mapping = aes(x=count,y=delay))+
+    geom_point(alpha=1/10)
+
+# install.packages("Lahman")
+
+require(Lahman)
+batting <- as_tibble(Batting)
+View(batting)
+
+batters <- batting%>%
+            group_by(playerID)%>%
+            summarise(ba=sum(H,na.rm = TRUE)/sum(AB,na.rm = TRUE),
+                      ab=sum(AB,na.rm = TRUE))
+
+batters %>% 
+  filter(ab > 100) %>%
+  ggplot(mapping = aes(x=ab,y=ba))+
+    geom_point()+
+    geom_smooth(se=FALSE)

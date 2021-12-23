@@ -1,5 +1,5 @@
 #we will use ggplot2
-install.packages("tidyverse")
+# install.packages("tidyverse")
 require(tidyverse)
 print(mpg)
 head(mpg,5)
@@ -145,7 +145,7 @@ bar<-ggplot(data = diamonds)+
 bar + coord_flip()
 bar+coord_polar()
 
-install.packages("mapproj")
+# install.packages("mapproj")
 require("mapproj")
 require("maps")
 mapy<-ggplot(data=rw,mapping = aes(long,lat,group=group))+
@@ -165,5 +165,245 @@ ggplot(data = mpg,aes(x=cty,y=hwy))+
 #########################################
 
 #####################
-#2.Workflow:Basics#####
+#2.Workflow:Basics###
 #####################
+# this_is_a_really_long_name <- 2.5
+# this_is_a_really_long_name
+# This_is_a_really_long_name
+r_rocks <- 2^3
+seq(1,10)
+x <- "hello world"
+(y <- seq(1,10,length.out=5))
+
+
+##################################
+#3.Data Transformation with dplyr#
+##################################
+
+require(tidyverse)
+# install.packages("nycflights13")
+require(nycflights13)
+
+head(flights,5)
+
+# view(flights)
+View(flights)
+
+# Filter()
+
+jan1 <- filter(flights,month==1,day==1)
+View(jan1)
+(dec25 <- filter(flights,month==12,day==25))
+# page 48
+View(jan1)
+filter(flights,month ==10|month==5)
+octmay <- filter(flights,month %in% c(5,10))
+View(octmay)
+sum(is.na(flights))
+df <- tibble(x=c(1,NA,3))
+filter(df,x>1)
+filter(df,is.na(x))
+filter(df,is.na(x)|x>1)
+#filter exercise
+arr_delay0 <- filter(flights,arr_delay >=120)
+View(arr_delay0)
+
+dest_hous <- filter(flights,dest %in% c('IAH','HOU'))
+View(dest_hous)
+
+# unique(flights[c('carrier')])
+carrier_air <- filter(flights,carrier %in% c('UA','AA','DL'))
+View(carrier_air)
+
+dep_time <- filter(flights,month %in% c(7,8,9))
+View(dep_time)
+
+arr_left <- filter(flights,arr_delay > 120 & dep_delay <= 0)
+View(arr_left)
+
+delayed_made <- filter(flights,dep_delay >= 60 & air_time >= 30)
+View(delayed_made)
+
+midnight_dep <- filter(flights,dep_time <= 600)
+View(midnight_dep)
+
+# ?between
+
+missing_deptime <- filter(flights,is.na(dep_time))
+View(missing_deptime)
+
+# NA^0
+# NA*0
+
+#Arrange()
+arrange(flights,year,month,desc(day))
+
+View(arrange(flights,desc(is.na(dep_time))))
+
+View(arrange(flights,desc(dep_delay)))
+
+View(arrange(flights,dep_time))
+
+View(arrange(flights,air_time))
+
+View(arrange(flights,distance))
+
+View(arrange(flights,desc(distance)))
+
+# Select()
+
+select(flights,year,air_time,distance)
+
+select(flights,year:dep_delay)
+
+select(flights,-(year:dep_delay))
+
+View(rename(flights,tail_num=tailnum))
+
+View(select(flights,air_time,everything()))
+
+View(select(flights,air_time,dep_time,air_time))
+
+# ?select
+
+vars <- c(
+  "year", "month", "day", "dep_delay", "arr_delay"
+)
+
+View(select(flights,one_of(vars)))
+
+View(select(flights,contains('TIME')))
+
+
+#Add a new variable with mutate()
+
+flights_sml <- select(flights,year:day,ends_with('delay'),air_time,distance)
+View(flights_sml)
+
+View(mutate(flights_sml,
+       gain=arr_delay - dep_delay,
+       speed=distance/air_time*60,
+       hours=air_time/60,
+       gain_per_hour = gain/hours))
+
+View(transmute(flights_sml,
+            gain=arr_delay - dep_delay,
+            speed=distance/air_time*60,
+            hours=air_time/60,
+            gain_per_hour = gain/hours))
+
+#Useful creation Functions
+
+View(transmute(flights,
+               air_time,
+               hours=air_time%/%60,
+               mins=air_time%%60))
+
+(x <- 1:10)
+lag(x)
+lead(x)
+(x-lag(x))
+(x-lead(x))
+
+cumsum(x)
+cummin(x)
+cumprod(x)
+cummean(x)
+
+y <- c(1,2,2,NA,3,4)
+min_rank(y)
+row_number(y)
+
+View(transmute(flights,
+          dep_time,
+          sched_dep_time,
+          depy = (dep_time%/%100)*60 + (dep_time%%100),
+          sch_depy = (sched_dep_time%/%100)*60 + (sched_dep_time%%100)))
+
+View(transmute(flights,
+               air_time,
+               dep_time,
+               arr_time,
+               diff = (arr_time-dep_time),
+               compare_two = (diff != air_time)))
+
+View(transmute(flights,
+               air_time,
+               dep_time,
+               arr_time,
+               depy = (dep_time%/%100)*60 + (dep_time%%100),
+               arry = (arr_time%/%100)*60 + (arr_time%%100),
+               diff = (arry-depy),
+               compare_two = (diff != air_time)))
+
+View(transmute(flights,dep_delay,ranky=min_rank(dep_delay)))
+View(arrange(transmute(flights,dep_delay,ranky=row_number(dep_delay)),ranky))
+
+#Grouped Summaries with summarize()
+
+summarize(flights,delay=mean(dep_delay,na.rm=TRUE))
+(by_day <- group_by(flights,year,month,day))
+view(summarize(by_day,delay=mean(dep_delay,na.rm=TRUE)))
+
+
+View(group_by(flights,year,month,day)%>%
+  summarize(delay=mean(dep_delay,na.rm=TRUE)))
+
+#Combining Multiple Operations with the Pipe
+
+by_dest <- group_by(flights,dest)
+delay <- summarise(by_dest,
+                   count=n(),
+                   dist=mean(distance,na.rm=TRUE),
+                   delay=mean(arr_delay,na.rm=TRUE))
+delay <- filter(delay,count>=20,dest != 'HNL')
+View(delay)
+
+ggplot(delay,mapping = aes(x=dist,y=delay))+
+  geom_point(mapping = aes(size=count),alpha=1/3)+
+  geom_smooth(se=FALSE)
+
+#using pipe %>%
+
+delay <- flights%>%
+  group_by(dest)%>%
+  summarise(count=n(),
+            dist=mean(distance,na.rm=TRUE),
+            delay=mean(arr_delay,na.rm=TRUE))%>%
+  filter(count>=20,dest != 'HNL')
+View(delay)
+
+View(flights%>%
+       group_by(year,month,day)%>%
+       summarise(mean=mean(dep_delay)))
+
+View(flights%>%
+       group_by(year,month,day)%>%
+       summarise(mean=mean(dep_delay,na.rm=TRUE)))
+not_cancelled <- flights%>%
+  filter(!is.na(dep_delay),!is.na(arr_delay))
+
+not_cancelled%>%
+  group_by(year,month,day)%>%
+  summarise(mean=mean(dep_delay))
+
+View(select(flights,tailnum,everything())%>%
+       group_by(tailnum)%>%
+       summarise(count=n()))
+
+delays <- not_cancelled%>%
+            group_by(tailnum)%>%
+            summarise(delay=mean(arr_delay))
+
+View(delays)
+
+ggplot(data = delays)+
+  geom_freqpoly(mapping = aes(x=delay),binwidth=10)
+
+delays <- not_cancelled%>%
+  group_by(tailnum)%>%
+  summarise(delay=mean(arr_delay,na.rm=TRUE),
+            count=n())
+
+ggplot(data = delays,mapping = aes(y=delay,x=count))+
+  geom_point(alpha=1/10)

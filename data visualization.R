@@ -429,3 +429,81 @@ batters %>%
   ggplot(mapping = aes(x=ab,y=ba))+
     geom_point()+
     geom_smooth(se=FALSE)
+
+batters %>%
+  arrange(desc(ba))%>%
+  filter(ab>100)%>%
+  ggplot(mapping = aes(x=ab,y=ba))+
+    geom_point()+
+    geom_smooth(se=FALSE)
+
+#Summary Functions
+
+#measures of location
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       summarise(avg_delay1=mean(arr_delay),
+                 avg_delay2=mean(arr_delay[arr_delay>0])))
+
+#measures of spread
+
+View(not_cancelled %>%
+       group_by(dest)%>%
+       summarise(distance_sd = sd(distance)) %>%
+       arrange(desc(distance_sd)))
+
+#measures of rank
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       summarise(first=min(dep_time),
+                 last=max(dep_time)))
+
+# measure of position
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       summarise(first_dep=first(dep_time),
+                 last_dep=last(dep_time)))
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       mutate(r=min_rank(desc(dep_time)))%>%
+       filter(r %in% range(r)))
+
+#counts
+
+View(not_cancelled %>%
+       group_by(dest)%>%
+       summarise(carriers = n_distinct(carrier)) %>%
+       arrange(desc(carriers)))
+
+View(not_cancelled %>%
+       count(dest))
+
+View(not_cancelled %>%
+       count(tailnum,wt=distance))
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       summarise(n_early = sum(dep_time<500)))
+
+View(not_cancelled %>%
+       group_by(year,month,day)%>%
+       summarise(hour_perc = mean(arr_delay>60)))
+
+# Grouping by multiple values
+
+daily <- group_by(flights,year,month,day)
+(per_day <- summarise(daily,flights_count=n()))
+
+(per_month <- summarise(per_day,flights_count=sum(flights_count)))
+
+(per_year <- summarise(per_month,flights_count=sum(flights_count)))
+
+#Ungrouping
+
+View(daily %>%
+  ungroup() %>%
+  summarise(flights=n()))

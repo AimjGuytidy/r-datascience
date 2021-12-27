@@ -507,3 +507,59 @@ daily <- group_by(flights,year,month,day)
 View(daily %>%
   ungroup() %>%
   summarise(flights=n()))
+view(flights)
+
+view(filter(flights,arr_delay == -15, dep_delay == -15))
+
+View(flights %>%
+       group_by(tailnum)%>%
+       summarise(mean_arr = mean(!is.na(arr_delay[arr_delay == -15])))%>%
+       filter(mean_arr==0.5))
+
+View(not_cancelled%>%
+       count(dest))
+View(not_cancelled%>%
+       group_by(dest)%>%
+       summarise(count=n()))
+
+View(not_cancelled%>%
+       count(tailnum, wt=distance))
+View(not_cancelled%>%
+       group_by(tailnum)%>%
+       summarise(distancy=sum(distance)))
+
+View(flights %>%
+       group_by(year,month,day)%>%
+       summarise(canc = mean((is.na(arr_delay)|is.na(dep_delay))),
+                 counta = n()))
+
+flights %>%
+  group_by(year,month,day)%>%
+  summarise(canc = mean((is.na(arr_delay)|is.na(dep_delay))),
+            counta = n())%>%
+  ggplot(mapping = aes(x=counta,y=canc))+
+    geom_point()
+
+
+View(
+  cancel_grouped <-
+  flights%>%
+       mutate(cancelled = (is.na(arr_delay)|is.na(dep_delay)))%>%
+       group_by(year,month,day)%>%
+       summarise(canc_prop = mean(cancelled),
+                 avg_dep_del = mean(dep_delay,na.rm=TRUE),
+                 avg_arr_del = mean(arr_delay,na.rm=TRUE)))
+
+View(
+  cancel_ungrouped <- 
+  flights%>%
+       mutate(cancelled = (is.na(arr_delay)|is.na(dep_delay)))%>%
+       group_by(year,month,day)%>%
+       summarise(canc_prop = mean(cancelled),
+                 avg_dep_del = mean(dep_delay,na.rm=TRUE),
+                 avg_arr_del = mean(arr_delay,na.rm=TRUE))%>%
+       ungroup())
+
+cancel_ungrouped %>%
+  ggplot(mapping = aes(x=avg_dep_del,y=canc_prop))+
+    geom_point()

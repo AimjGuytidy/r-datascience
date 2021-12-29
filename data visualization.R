@@ -563,3 +563,30 @@ View(
 cancel_ungrouped %>%
   ggplot(mapping = aes(x=avg_dep_del,y=canc_prop))+
     geom_point()
+
+
+View(flights %>%
+  filter(between(dep_delay,left = 0,right = 60))%>%
+    group_by(tailnum)%>%
+    count())
+
+View(flights%>%
+       group_by(carrier,dest)%>%
+       summarise(n(),
+                 max_delay = max(dep_delay,na.rm = TRUE),
+                 delay_count = mean(dep_delay,na.rm=TRUE))%>%
+       arrange(desc(delay_count)))
+?count
+
+# Grouped Mutates (and Filters)
+
+View(flights_sml%>%
+       group_by(year,month,day)%>%
+       filter(rank(desc(arr_delay))<10))
+
+View(flights%>%
+       group_by(dest)%>%
+       filter(n()>365))
+length(flights)
+nrow(flights)
+#page 74

@@ -584,9 +584,107 @@ View(flights_sml%>%
        group_by(year,month,day)%>%
        filter(rank(desc(arr_delay))<10))
 
-View(flights%>%
+View(popular_dest <- flights%>%
        group_by(dest)%>%
        filter(n()>365))
 length(flights)
 nrow(flights)
 #page 74
+View(flights%>%
+       group_by(year,month,day)%>%
+       filter(rank(desc(dep_delay))<=5))
+
+View(popular_dest%>%
+  filter(arr_delay > 0)%>%
+  mutate(pop_del = arr_delay / sum(arr_delay))%>%
+  select(year:day,dest,arr_delay,pop_del))
+
+vignette('window-functions')
+
+View(flights%>%
+       group_by(year,month,day,tailnum)%>%
+       filter(rank(arr_delay)<=5)%>%
+       select(year:day,tailnum,arr_delay))
+#dont skip the exercises!!
+
+
+
+# Exploratory Data Analysis
+
+ggplot(data = diamonds)+
+  geom_bar(mapping = aes(x=cut))
+
+View(diamonds %>%
+  group_by(cut)%>%
+  summarise(count=n()))
+
+ggplot(data=diamonds)+
+  geom_histogram(mapping = aes(x=carat),binwidth = 0.5)
+
+View(diamonds %>%
+  count(cut_width(carat,0.5)))
+
+View(diamonds %>%
+       count(cut_width(carat,0.2)))
+
+diamonds %>%
+  filter(carat<3)%>%
+  ggplot(mapping = aes(x=carat))+
+    geom_histogram(binwidth = 0.1)
+
+
+diamonds %>%
+  filter(carat<3)%>%
+  ggplot(mapping = aes(x=carat,color=cut))+
+    geom_freqpoly(binwidth = 0.1)
+
+diamonds %>%
+  filter(carat<3)%>%
+  ggplot(mapping = aes(x=carat))+
+    geom_freqpoly(binwidth = 0.1)
+
+diamonds %>%
+  filter(carat<3)%>%
+  ggplot(mapping = aes(x=carat))+
+    geom_histogram(binwidth = 0.01)
+
+diamonds %>%
+  filter(carat<3)%>%
+  ggplot(mapping = aes(x=carat,color=cut))+
+    geom_histogram(binwidth = 0.01)
+
+View(faithful)
+
+ggplot(data = diamonds,mapping = aes(x=y))+
+  geom_histogram(binwidth = 0.25)+
+  coord_cartesian(ylim = c(0,50))
+
+View(unusual <- diamonds%>%
+                  filter(y<3|y>20)%>%
+                  arrange(y))
+
+#Exercises
+
+ggplot(data = diamonds)+
+  geom_freqpoly(mapping = aes(x=x,color='blue'),binwidth=0.25)+
+  geom_freqpoly(mapping = aes(x=y,color='green',binwidth=0.25))+
+  geom_freqpoly(mapping = aes(x=z,color='magenta',binwidth=0.25))
+
+ggplot(data = diamonds)+
+  geom_histogram(mapping = aes(x=x),binwidth=0.25)
+  
+ggplot(data = diamonds)+
+  geom_histogram(mapping = aes(x=y),binwidth=0.25)
+
+ggplot(data = diamonds)+
+  geom_histogram(mapping = aes(x=z),binwidth=0.25)
+
+View(diamonds)
+
+ggplot(data = diamonds)+
+  geom_histogram(mapping = aes(x=price),binwidth=500)
+
+View(diamonds%>%
+  filter(carat==0.99|carat==1)%>%
+  count(carat))
+#page 91

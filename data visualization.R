@@ -950,9 +950,104 @@ ggplot(diamonds3)+
   geom_boxplot(aes(cut,resid))
 ggplot(diamonds3)+
   geom_boxplot(aes(cut,resid,color=cut_number(carat,3)))
-
+# ggsave("diamonds.pdf")
+# write_csv(diamonds,"diamonds.csv")
 #Chap 6 Workflow:Projects#
 ##########################
 ?geom_pointrange
 ggplot(diamonds,mapping = aes(cut,depth))+
-  geom_pointrange(aes(ymin=x,ymax=y))
+  geom_pointrange(aes(ymin=min(depth),ymax=max(depth)))
+
+#Part II Wrangle#
+#################
+
+#Chapter 7 Tibbles with tibble#
+###############################
+
+data.frame(iris)
+as_tibble(iris)
+tribble(~a,~b,
+        1, 3,
+        3, 4)
+?tribble
+tibble(x=1:5,
+       y=1,
+       z=x^2 + y)
+tb <- tibble(
+  ':)'="smile",
+  ' '="space",
+  '2000'="number"
+)
+tb
+#tribble--->transposed tibble
+?runif
+tibble(
+  a = lubridate::now() + runif(1e3)*86400,
+  b = lubridate::today() + runif(1e3)*30,
+  c = 1:1e3,
+  d = runif(1e3),
+  e = sample(letters,1e3,replace = TRUE)
+)
+?lubridate
+
+view(data.frame(
+  a = lubridate::now() + runif(1e3)*86400,
+  b = lubridate::today() + runif(1e3)*30,
+  c = 1:1e3,
+  d = runif(1e3),
+  e = sample(letters,1e3,replace = TRUE)
+))
+flights%>%
+  print(n=4,width=Inf)
+df <- tibble(
+  x=runif(5),
+  y=rnorm(5)
+)
+df[["x"]]
+df$x
+df%>%.$x
+dff <- as.data.frame(df)
+class(dff)
+dff$x
+dff[["x"]]
+dff["x"]
+df["x"]
+mtcars
+as_tibble(mtcars)
+
+#Exercises
+
+df <- data.frame(abc=1,xyz="a")
+df$x
+df[,"xyz"]
+df[,c("abc","xyz")]
+dft <- as_tibble(df)
+dft$x
+dft[,"xyz"]
+dft[,c("abc","xyz")]
+vari <- "mpg"
+class(mtcars)
+cara <- as_tibble(mtcars)
+cara$vari$mpg
+mtcars[[vari]]
+cara[[vari]]
+cara[vari]
+mtcars[vari]
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+# ?tibble::enframe()
+annoying$`1`
+ggplot(annoying)+
+  geom_point(aes(`1`,`2`))
+annoying$`3` <- annoying$`2`/annoying$`1`
+annoying<-annoying %>% select(-`\`3\``)
+annoying
+?tibble
+annoying<-annoying %>% rename(one="1",two="2",three="3")
+annoying
+
+#Chapter 8 Data Import with readr#
+##################################page 151
+

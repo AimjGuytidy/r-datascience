@@ -1051,3 +1051,27 @@ annoying
 #Chapter 8 Data Import with readr#
 ##################################page 151
 
+heights0 <- read_csv("data/heights.csv")
+view(heights)
+read_csv("a,b,c
+         1,2,3
+         4,5,6")
+read_csv("The first line of metadata
+         The second line of metadata
+         x,y,z
+         1,2,3",skip=2)
+read_csv("# A comment I want to skip
+         x,y,z
+         1,2,3",comment="#")
+view(df)
+read_csv("1,2,3\n4,5,6",col_names =FALSE)
+read_csv("a,b,c\n1,2,.",na=",")
+?read_csv
+read_delim("x,y\n1,'a,b'",delim = ",",quote = "")
+read_csv("a,b,c\n1,2\n1,2,3,4")
+read_csv("a,b\n1,2\na,b")
+str(parse_logical(c("TRUE","FALSE","NA")))
+parse_double("1.32")
+parse_double("1,32")
+parse_double("1,32",locale = locale(decimal_mark = ","))
+#page 137

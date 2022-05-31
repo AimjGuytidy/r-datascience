@@ -1065,7 +1065,7 @@ read_csv("# A comment I want to skip
          1,2,3",comment="#")
 view(df)
 read_csv("1,2,3\n4,5,6",col_names =FALSE)
-read_csv("a,b,c\n1,2,.",na=",")
+read_csv("a,b,c\n1,2,.",na=".")
 ?read_csv
 read_delim("x,y\n1,'a,b'",delim = ",",quote = "")
 read_csv("a,b,c\n1,2\n1,2,3,4")
@@ -1075,3 +1075,70 @@ parse_double("1.32")
 parse_double("1,32")
 parse_double("1,32",locale = locale(decimal_mark = ","))
 #page 137
+guess_parser("2010-10-01")
+guess_parser("15:01")
+guess_parser(c("TRUE","FALSE"))
+str(parse_guess("2010-10-01"))
+challlenge <-read_csv(readr_example("challenge.csv"))
+challlenge
+tail(challlenge,1000)
+guess_parser(challlenge)
+challlenge[999:1010,]
+problems(challlenge)
+
+#exercises#
+##########
+?locale
+
+k <- parse_number("133,311.4",locale=locale(decimal_mark=".",grouping_mark = ","))
+k
+parse_time("172309",locale=locale(time_format = "%H%M%S"))
+parse_date("00/12/23",locale=locale(date_format = "%y/%m/%d"))
+date_names_langs()
+parse_date("1 nyakanga 2015", "%d %B %Y", locale = locale("rw"))
+?read_csv2
+read_csv2(I("a;b\n1,0;2,0"))
+#read_csv(I("a;b\n1,0;2,0"))
+?I
+parse_date("January 1, 2010","%B %d, %Y",locale=locale())
+parse_date(c("August 19 (2015)", "July 1 (2015)"),"%B %d (%Y)")
+parse_date("(2010)","%AD",locale=locale())
+
+
+#Parsing a file#
+###############
+read_csv(readr_example("challenge.csv"))
+problems(read_csv(readr_example("challenge.csv")))
+chall <- read_csv(readr_example("challenge.csv"),
+                  col_types = cols(
+                    x=col_double(),
+                    y=col_date()
+                  ))
+problems(chall)
+tail(chall)
+
+chall2 <- read_csv(readr_example("challenge.csv"),guess_max = 1001)
+chall2
+chall3 <- read_csv(readr_example("challenge.csv"),
+                   col_types = cols(.default=col_character()))
+chall3
+type_convert(chall3)
+
+#writing to a file#
+##################
+
+write_csv(chall3,"chally.csv")
+chall3
+read_csv("chally.csv")
+write_rds(chall3,"chally1.rds")
+read_rds("chally1.rds")
+#install.packages("feather")
+library(feather)
+write_feather(chall3,"chally2.feather")
+read_feather("chally2.feather")
+
+
+#chap 9 Tidy data with tidyr#page 147
+############################
+
+

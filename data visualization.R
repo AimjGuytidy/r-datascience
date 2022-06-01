@@ -1138,7 +1138,27 @@ write_feather(chall3,"chally2.feather")
 read_feather("chally2.feather")
 
 
-#chap 9 Tidy data with tidyr#page 147
+#chap 9 Tidy data with tidyr#
 ############################
 
+table1
+view(table2)
+view(table4a)
+table3
+table1%>% mutate(rate=cases/population*10000)
+table1%>%count(year,wt=cases)
 
+ggplot(data=table1,aes(year,cases))+
+  geom_line(aes(group=country),color="grey50")+
+  geom_point(aes(color=country))
+
+#exercises#
+##########
+
+
+table2$casesy <- ifelse(table2$type=="cases",table2$count,0)
+table2$pop <- ifelse(table2$type=="population",table2$count,0)
+df_tab<-table2%>%select(country,year,casesy,pop)%>%group_by(country,year)%>%summarise(casesy=sum(casesy),
+                                                                              pop=sum(pop))
+view(df_tab)
+#page 151

@@ -1162,3 +1162,27 @@ df_tab<-table2%>%select(country,year,casesy,pop)%>%group_by(country,year)%>%summ
                                                                               pop=sum(pop))
 view(df_tab)
 #page 151
+table2
+tab_cas<-table2%>%filter(table2$type=="cases")%>%rename(cases=count)%>%
+  arrange(country,year)
+tab_cas
+tab_pop <- table2%>%filter(table2$type=="population")%>%
+  rename(population=count)%>%
+  arrange(country,year)
+tab_pop
+?bind_rows
+tab_cas_pop <- tibble("country" = tab_cas$country,
+                         "year" = tab_cas$year,
+                         "cases" = tab_cas$cases,
+                         "population" = tab_pop$population)
+view(tab_cas_pop)
+#bind_rows(table2,tab_cas_pop)
+view(table2)
+view(table1)
+ggplot(table2[table2$type=="cases",],aes(year,count))+
+  geom_line(aes(group=country))+
+  geom_point(aes(color=country))
+
+#spreading and gathering#
+########################
+#page 151 

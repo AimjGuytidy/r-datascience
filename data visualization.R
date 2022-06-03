@@ -1186,3 +1186,66 @@ ggplot(table2[table2$type=="cases",],aes(year,count))+
 #spreading and gathering#
 ########################
 #page 151 
+
+#gather#
+#######
+
+# use this when you have values as columns
+
+view(table4a)
+gather(table4a,c('1999','2000'),key="year",value = "cases")
+table4a%>%gather('1999','2000',key = "year",value = "cases")
+view(table4b)
+table4b%>%gather('1999','2000',key = "year",value = "population")
+tidy4a <- table4a%>%gather('1999','2000',key = "year",value = "cases")
+tidy4b <- table4b%>%gather('1999','2000',key = "year",value = "population")
+
+#spreading#
+##########
+
+# use this when you have column names as values
+
+table2%>%spread(key = "type",value = "count")
+table2a <- table2%>%select(country,year,type,count)
+
+tidy2b <- table2a%>%spread(key="type",value="count")
+view(tidy2b)
+
+#exercises#
+##########
+stocks <- tibble(
+  year = c(2015, 2015, 2016, 2016),
+  half = c( 1, 2, 1, 2),
+  return = c(1.88, 0.59, 0.92, 0.17)
+)
+stocks
+stock_ex <- stocks%>%spread(key = "year",value = "return")%>%
+  gather('2015','2016',key = "year",value = "return",convert = TRUE)
+#stock_ex$year<-as.integer(stock_ex$year)
+stock_ex
+people <- tribble(
+  ~name, ~key, ~value,
+  #-----------------|--------|------
+  "Phillip Woods", "age", 45,
+  "Phillip Woods", "height", 186,
+  "Phillip Woods", "age", 50,
+  "Jessica Cordero", "age", 37,
+  "Jessica Cordero", "height", 156
+)
+?spread
+people
+people$id_num <- c(1:5)
+people%>%spread(key = "key",value = "value",fill = 0)
+
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes", NA, 10,
+  "no", 20, 12
+)
+preg
+preg%>%gather(male,female,key = "sex",value = "count")
+
+# separating and pull#
+#####################
+#page 156
+

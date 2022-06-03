@@ -1249,3 +1249,27 @@ preg%>%gather(male,female,key = "sex",value = "count")
 #####################
 #page 156
 
+#separate: pulls apart one column into multiple columns.
+
+view(table3)
+
+separate(table3,col = rate,into = c("cases","population"),sep = "/",convert = TRUE)
+
+#unite: 
+
+table5
+?unite
+
+table5%>%unite(col = "year",century,year,sep = "")
+
+#EXERCISES#
+###########
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j"))%>%
+  separate(x, c("one", "two", "three"),extra = "drop")
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+  separate(x, c("one", "two", "three"),fill = "right")
+
+#Missing values#
+###############
+

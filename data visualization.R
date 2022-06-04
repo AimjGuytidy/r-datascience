@@ -744,7 +744,6 @@ diamonds2 <- diamonds%>%
   mutate(y=ifelse(y<3|y>20,NA,y))
 sum(is.na(diamonds2$y))
 sum(is.na(diamonds$y))
-sum(is.na(diamonds2[y]))
 ggplot(data = diamonds2)+
   geom_point(mapping = aes(x=x,y=y))
 
@@ -1273,3 +1272,65 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 #Missing values#
 ###############
 
+stocks <- tibble(
+  year = c(2015,2015,2015,2015,2016,2016,2016),
+  qtr = c(1,2,3,4,2,3,4),
+  return = c(1.88,0.59,0.35, NA,0.92,0.17,2.66)
+)
+stocks
+stocks %>% spread(key="year",value = "return")%>%
+  gather("2015","2016",key = "year",value = "return",na.rm = TRUE)
+?complete
+stocks%>%complete(year,qtr)
+treatment <- tribble(
+  ~person,   ~treatment, ~response,
+  "Derrick Whitmore", 1,7,
+  NA,   2,10,
+  NA,   3,9,
+  "Katherine Burke", 1,4
+)
+treatment
+?fill
+treatment %>% fill(person)
+
+#Exercises#
+##########
+
+treatment %>% fill(person,.direction="up")
+
+#case study#
+###########
+
+view(who)
+#start with gather by making columns values
+?gather
+who1 <- who %>% gather(new_sp_m014:newrel_f65,key = "key",value = "cases",na.rm = TRUE)
+view(who1)
+
+#we count the values of the column key to check the structure of the values
+require(stringr)
+who1 %>% count(key)
+who2<-who1 %>% mutate(key = str_replace(key,"newrel","new_rel"))
+view(who2 %>% separate(key,c("status","type","demographic"),sep = "_")%>%separate(demographic,into = c("gender","age group"),sep = 1))
+who3<-who2 %>% separate(key,c("status","type","demographic"),sep = "_")%>%separate(demographic,into = c("gender","age group"),sep = 1)
+who3%>%count(status)
+who4 <- who3%>%select(-status,-iso2,-iso3)
+who4
+
+#putting everything in a pipeline
+
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
+  mutate(
+    code = str_replace(code, "newrel", "new_rel")
+  ) %>%
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
+  separate(sexage, c("sex", "age"), sep = 1)
+#summarize by country
+
+
+#summarize by year
+
+
+#summarize by sex

@@ -1328,8 +1328,16 @@ who %>%
   select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
 #summarize by country
-
-
+who_count <- who4%>%group_by(country)%>%
+  summarise(value_sum = sum(cases))%>%
+  select(country,value_sum)
+who_count
+?geom_bar
+ggplot(who_count)+
+  geom_bar(aes(country,value_sum,fill=country),stat = "identity")+
+  coord_flip()+
+  theme(legend.position = "none")
+#page 168
 #summarize by year
 
 

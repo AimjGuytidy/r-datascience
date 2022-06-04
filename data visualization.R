@@ -1333,7 +1333,7 @@ who_count <- who4%>%group_by(country)%>%
   select(country,value_sum)
 who_count
 ?geom_bar
-ggplot(who_count)+
+ggplot(who_count%>%filter(country%in%c("Rwanda","France","Kenya","United States of America","Canada")))+
   geom_bar(aes(country,value_sum,fill=country),stat = "identity")+
   coord_flip()+
   theme(legend.position = "none")

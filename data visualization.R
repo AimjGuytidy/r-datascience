@@ -1041,15 +1041,16 @@ annoying$`1`
 ggplot(annoying)+
   geom_point(aes(`1`,`2`))
 annoying$`3` <- annoying$`2`/annoying$`1`
-annoying<-annoying %>% select(-`\`3\``)
+#annoying<-annoying %>% select(-`\`3\``)
 annoying
-?tibble
+#?tibble
 annoying<-annoying %>% rename(one="1",two="2",three="3")
 annoying
 
 #Chapter 8 Data Import with readr#
 ##################################page 151
-
+# gh <- heights
+# write_csv(gh,"data/heights.csv")
 heights0 <- read_csv("data/heights.csv")
 view(heights)
 read_csv("a,b,c
@@ -1339,6 +1340,76 @@ ggplot(who_count%>%filter(country%in%c("Rwanda","France","Kenya","United States 
   theme(legend.position = "none")
 #page 168
 #summarize by year
+show_year <- who4%>%group_by(year,country,gender)%>%summarise(value_sum=sum(cases))%>%
+  select(country,year,gender,value_sum)
+who4
+show_year
+ggplot(show_year,aes(year,value_sum))+
+  geom_line(aes(group=country,color=gender))
 
 
 #summarize by sex
+show_gender <- who4%>%group_by(gender)%>%
+  summarise(value_sum=sum(cases))%>%
+  select(gender,value_sum)
+ggplot(show_gender,aes(gender,value_sum))+
+  geom_bar(stat="identity",aes(fill=gender))+
+  geom_text(aes(label=signif(value_sum)),vjust=-0.6)
+
+#Nontidy Data#
+#############
+
+#you might not use tidy data because some 
+#computations are more efficient if the data 
+#is in a different format. 
+
+
+#Chapter 10 Relational data with dplyr#
+######################################
+
+#mutating joins, filtering joins, set operations
+
+colnames(airlines)
+colnames(airports)
+colnames(planes)
+colnames(weather)
+colnames(flights)
+
+#keys: a variable or set of variables that uniquely identifies an observation.
+
+#primary keys and foreign keys
+
+planes%>%
+  count(tailnum)%>%
+  filter(n>1)
+
+airlines%>%
+  count(carrier)%>%
+  filter(n>1)
+#view(flights)
+flights%>%
+  count(flight)%>%
+  filter(n>1)
+
+airports%>%
+  count(faa)%>%
+  filter(n>1)
+
+weather%>%
+  count(year,month,day,hour,origin)%>%
+  filter(n>1)
+weather %>% 
+  filter(year==2013 & month == 11 & day == 3 & hour ==1)
+
+#surrogate key: an engineered key
+flights_test <- flights 
+flights_test$prim_key <- as.numeric(rownames(flights_test))
+flights_test <- flights_test%>%
+  select(prim_key,year:time_hour)
+flights_test %>%
+  count(prim_key)%>%
+  filter(n>1)
+
+
+# Mutating Joins
+

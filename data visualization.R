@@ -1412,4 +1412,30 @@ flights_test %>%
 
 
 # Mutating Joins
+airlines
 
+flights2<-flights%>%
+  select(year:day,hour,origin,dest,tailnum,carrier)
+flights2
+flights2 %>%
+  inner_join(airlines,by="carrier")
+
+flights2 %>%
+  left_join(airlines,by="carrier")
+
+flights2 %>%
+  select(-origin,-dest)%>%
+  inner_join(airlines,by="carrier")
+
+flights2 %>%
+  select(-origin,-dest)%>%
+  mutate(name=airlines$name[match(carrier,airlines$carrier)])
+
+#understanding joins
+x<-tibble(key=c(1,2,3),val_x=c("x1","x2","x3"))
+y <- tribble(~key,  ~val_y,
+             1,    "y1",
+             2,    "y2",
+             3,    "y3")
+x
+y

@@ -1436,6 +1436,85 @@ x<-tibble(key=c(1,2,3),val_x=c("x1","x2","x3"))
 y <- tribble(~key,  ~val_y,
              1,    "y1",
              2,    "y2",
-             3,    "y3")
+             4,    "y3")
 x
 y
+#table(x$key)
+#?table
+x%>%mutate(matchy=y$val_y[match(key,x$key)])
+x%>%
+  left_join(y,by="key")#unmatched rows are included in the results and keeps all observations in x.
+
+x %>% 
+  inner_join(y,by="key")#unmatched rows are not included in the results
+
+x %>% 
+  right_join(y,by="key")#unmatched rows are included in the results and keep all the observations in y!!
+
+x %>% 
+  full_join(y,by="key")#unmatched rows are included in the results and keep all observations in x and y
+
+#Duplicate keys#
+###############
+
+x<-tibble(key=c(1,2,2,1),val_x=c("x1","x2","x3","x4"))
+y <- tribble(~key,  ~val_y,
+             1,    "y1",
+             2,    "y2"
+             )
+x
+y
+x %>%
+  inner_join(y,by="key")
+x%>%
+  left_join(y,by="key")
+
+
+x <- tribble(
+  ~key, ~val_x,
+  1, "x1",
+  2, "x2",
+  2, "x3",
+  3, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+  1, "y1",
+  2, "y2",
+  2, "y3",
+  3, "y4"
+)
+
+x %>%
+  left_join(y,by="key")
+
+
+#Defining the Key columns
+
+view(flights2 %>%
+  left_join(weather))
+
+view(flights2 %>%
+       left_join(planes,by="tailnum"))
+
+flights2 %>%
+  left_join(airports,c("dest"="faa")) # the keys to match are  specified and the x key will be the one to be shown
+
+flights2 %>%
+  left_join(airports,c("origin"="faa")) # the keys to match are  specified and the x key will be the one to be shown
+colnames(flights2)
+colnames(flights)
+fli1 <- flights%>%
+  group_by(dest)%>%
+  summarise(avg_delay=mean(dep_delay,na.rm=TRUE),
+            avg_arr_delay=mean(arr_delay,na.rm=TRUE))
+fli1
+(delays <- airports %>%
+            inner_join(fli1,by=c("faa"="dest")))%>%
+   # drop_na(avg_arr_delay)%>%
+                  ggplot(aes(lon,lat))+
+                  borders("state")+
+                  geom_point(aes(color=avg_arr_delay))+
+                  coord_quickmap()
+view(delays)
+#page 213 

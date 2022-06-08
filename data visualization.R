@@ -1518,3 +1518,18 @@ fli1
                   coord_quickmap()
 view(delays)
 #page 213 
+colnames(flights2)
+colnames(airports)
+view(flights %>%
+  inner_join(airports,by=c("dest"="faa"))%>%
+  inner_join(airports,by=c("origin"="faa")))
+
+flights %>%
+  select(flight_year=year,tailnum,arr_delay)%>%
+  inner_join(planes,by="tailnum")%>%
+  mutate(age=flight_year-year)%>%
+  group_by(age)%>%
+  summarise(avg_delay=mean(arr_delay,na.rm=TRUE))%>%
+  ggplot(aes(age,avg_delay))+
+  geom_point()+
+  geom_line()

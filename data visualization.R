@@ -1533,3 +1533,56 @@ flights %>%
   ggplot(aes(age,avg_delay))+
   geom_point()+
   geom_line()
+colnames(weather)
+
+flights %>%
+  left_join(weather,by=c("year","month","day","hour","origin"))%>%
+    select(hour,temp,dewp,humid,wind_dir,wind_speed,wind_gust,precip,pressure,visib)%>%
+  group_by(hour)%>%
+    summarise(mean(temp,na.rm=TRUE),mean(dewp,na.rm=TRUE),mean(humid,na.rm=TRUE),mean(wind_dir,na.rm=TRUE))
+
+flights %>%
+  filter(year==2013,month==6,day==13)%>%
+  group_by(dest)%>%
+  summarise(delaysa=mean(arr_delay,na.rm=TRUE))%>%
+  left_join(airports,by=c("dest"="faa"))%>%
+  ggplot(aes(lon,lat))+
+  borders("state")+
+  geom_point(aes(size=delaysa,color=delaysa))+
+  coord_quickmap()+
+  scale_color_viridis_b()
+
+
+#Filter joins: these affect the observations not variables
+
+#semi_join: keeps all observations in x that have a match in y
+#anti_join: drops all observations in x that have a match in y
+
+top_destinations <- flights%>%
+  count(dest,sort = TRUE)%>%
+  head(10)
+top_destinations
+
+flights %>%
+  filter(dest %in% top_destinations$dest)
+
+flights %>%
+  semi_join(top_destinations,by="dest")
+
+unmatched_planes<-flights %>%
+  anti_join(planes,by="tailnum")%>%
+  count(tailnum,sort = TRUE)
+
+#exercises#
+##########
+
+view(flights %>%
+  filter(tailnum %in% unmatched_planes$tailnum))
+
+sum(unmatched_planes$n)
+view(flights %>%
+  filter(tailnum %in% unmatched_planes$tailnum) %>%
+  select(carrier,tailnum)%>%
+  count(tailnum)%>%
+  mutate(propo=n*100/sum(n)))
+

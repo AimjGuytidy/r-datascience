@@ -1586,3 +1586,19 @@ view(flights %>%
   count(tailnum)%>%
   mutate(propo=n*100/sum(n)))
 
+view(flights %>%
+  left_join(planes)%>%
+  select(dep_time,tailnum)%>%
+  count(tailnum)%>%
+  filter(n>=100)%>%
+  inner_join(planes,by="tailnum"))
+
+#install.packages("fueleconomy")
+
+require(fueleconomy)
+
+colnames(vehicles)
+colnames(common)
+view(vehicles %>%
+  semi_join(common,by=c("make","model")))
+view(vehicles)

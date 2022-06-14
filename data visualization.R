@@ -1602,3 +1602,37 @@ colnames(common)
 view(vehicles %>%
   semi_join(common,by=c("make","model")))
 view(vehicles)
+worse_hour<-flights %>%
+  group_by(year,month,day,hour)%>%
+  summarise(delay_sum=sum(arr_delay))%>%
+  drop_na(delay_sum)%>%
+  arrange(delay_sum)%>%
+  tail(48)%>%
+  left_join(weather)# this is not correct
+
+anti_join(flights,airports,by=c("dest"="faa"))
+anti_join(airports,flights,by=c("faa"="dest"))
+planes %>%
+  anti_join(airlines)
+colnames(airlines)
+colnames(planes)
+flights %>%
+  inner_join(planes,by="tailnum")%>%
+  inner_join(airlines)
+
+#reject the hypothesis
+
+worst_hour <- flights %>%
+  mutate(hour_delay=dep_delay%/%100)%>%
+  group_by(origin,month,day,hour)%>%
+  summarise(avg_delay=mean(dep_delay,na.rm=TRUE))%>%
+  ungroup()%>%
+  arrange(desc(avg_delay))%>%
+  slice(1:48)#very interesting
+
+# Join Problems
+
+#Set Operations#
+###############
+
+

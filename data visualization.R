@@ -1635,4 +1635,115 @@ worst_hour <- flights %>%
 #Set Operations#
 ###############
 
+#intersect(x,y)
+#union(x,y)
+#setdiff(x,y)
 
+
+#Chapter 11: Strings with stringr#
+#################################
+
+library(stringr)
+
+x <- c("\"","\\")
+x
+writeLines(x)
+"\u00b5"
+#String Length
+str_length(c("a","R for data science",NA))
+str_c("x","y")
+str_c("x","y",sep = ",")
+x<-c("abc",NA)
+str_c("|-",x,"-|")
+str_c("|-",str_replace_na(x),"-|")
+str_c("prefix",c("a","b","c"),"suffix")
+name<- "Parfait"
+time_of_day <- "afternoon"
+birthday<-FALSE
+str_c(
+  "Good ", time_of_day," ",name,
+  if (birthday) " and HAPPY BIRTHDAY",
+  "."
+)
+
+str_c(c("x","y","z"),collapse = ",")
+
+#Subsetting strings
+
+x <- c("Apple","Banana","Pear")
+str_sub(x,1,3)
+str_sub(x,1,1) <- str_to_lower(str_sub(x,1,1))
+x
+
+#Locales
+
+str_to_upper(c("i","l"))
+str_to_upper(c("i","l"),locale = "tr")
+sort(x)
+str_sort(x)
+str_sort(x,locale="haw")
+
+#Exercises#
+##########
+
+?paste
+paste(c("abantu ","batatu ", "beza"))
+paste0(c("abantu ","batatu ", "beza"))
+?paste0
+acc <- 564
+paste("the number that I wrote is ",acc)
+paste0("the number that he wrote is ",acc)
+str_c("the number that he wrote is ",acc)
+stringle <- function(l){
+  if ((str_length(l) %/% 2) == 0 ){
+    print(str_sub(l,str_length(l)/2,str_length(l)/2))
+  }else{
+    print(str_sub(l,(str_length(l) + 1)/2,(str_length(l) + 1)/2))
+  }
+}
+
+funky <- function(c){
+  return(c^2)
+}
+trial0 <- function(a,b,c) {
+  result <- a * b + c
+  print(result)
+}
+
+?str_wrap
+?str_trim
+str_wrap(c("in this world there is no free lunch","the field is looking somehow messy"))
+str_trim(" in the car\t")
+str_squish(" in the car ")
+str_pad(" in this car ",6)
+str_pad(c("a","b","c"))
+
+#return after covering the function sections#
+############################################
+
+#Matching patterns with regular expressions#
+###########################################
+
+library("htmlwidgets")
+
+x <- c("apple","banana","pear")
+
+str_view(x,"an")
+
+str_view(x,".a.")
+dot <- "\\."
+writeLines(dot)
+str_view(c("abc","a.c","bef"),"a\\.c")
+x <- "a\\b"
+writeLines(x)
+str_view("a\\b","\\\\")
+x<-"\"\'\\"
+writeLines(x)
+str_view(x,"\\\"\\'\\\\")
+x <- "\\..\\..\\.."
+library(foreign)
+writeLines(x)
+str_view(x,"\\\\..\\\\..\\\\..")
+
+#Anchors#
+########

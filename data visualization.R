@@ -1747,3 +1747,71 @@ str_view(x,"\\\\..\\\\..\\\\..")
 
 #Anchors#
 ########
+
+x <- c("apple","banana","pear")
+
+str_view(x,"^a") #view the start
+str_view(x,"a$")#view the end
+
+x <- c("apple pie", "apple", "apple cake")
+str_view(x,"apple")
+str_view(x,"^apple$")
+
+#use \b for boundary
+
+#exercises#
+##########
+
+x <- "$^$"
+writeLines(x)
+str_view(x,"\\$\\^\\$")
+
+
+words
+str_view_all(words,"^y",match = TRUE)
+str_view(words,"x$",match = TRUE)
+str_view(words,"^...$",match=TRUE)
+str_view(words,".......",match=TRUE)
+
+# Character classes and Alternatives#
+####################################
+
+str_view(c("grey", "gray"), "gr(e|a)y")
+
+str_view(c("grey", "gray"), "[^a]",match = TRUE)
+
+str_view(words,"^(a|e|u|i|o)",match = TRUE)
+
+str_view(words,"^(a|e|u|i|o)",match = FALSE)
+str_view(words,"[^e]ed$",match = TRUE)
+
+str_view(words,"(ing|ize)$",match = TRUE)
+trialy <- c("1.5ha","0,002","3.5","9","1000hector")
+trialy
+str_view(trialy,"([0-9][.,])?[0-9]+",match = TRUE)
+kk <- str_remove(trialy,"[^([0-9][.,])?[0-9]+]")
+as_tibble(str_remove(kk,"[^([0-9][.,])?[0-9]+]"))
+str_remove_all(trialy,"[^([0-9][.,])?[0-9]+]")
+
+?str_remove_all
+kukii<- as_tibble(str_remove_all(trialy,"[^([0-9][.,])?[0-9]+]"))
+kukii%>%parse_number(as.character(kukii$value),locale = locale(decimal_mark = ","))
+#if ()
+is_character(1.324)
+for (i in kukii$value){
+  if(is_character(i)){
+    print(parse_number(i))
+  }
+  else{
+    print("nothing to show here")
+  }
+}
+
+for (i in kukii$value){
+  if(is_character(i)){
+    print(parse_number(i))
+  }
+  else{
+    print("nothing to show here")
+  }
+}

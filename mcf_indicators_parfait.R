@@ -75,9 +75,10 @@ mcf_data<-mcf_data%>%
   mutate(new_self_employment=case_when(type_employ==2&main_month<3&main_years==0~1,
                                        type_employ==2&!(main_month<3&main_years==0)&!is.na(main_month)~0),
          sust_self_employment=if_else(new_self_employment==0,1,0),
-         new_improv_wage_employment = ifelse(inc_impro %in% c(1,2)|wor_condi %in% c(1,2),1,0))%>%
+         new_improv_employment = ifelse(inc_impro %in% c(1,2)|wor_condi %in% c(1,2),1,0),
+         new_improv_self_employment=ifelse(type_employ==2,new_improv_employment,NA))%>%
   move_columns(c(new_self_employment,sust_self_employment), .after=main_years)%>%
-  move_columns(new_improv_wage_employment, .after=word_condi)
+  move_columns(new_improv_employment, .after=word_condi)
 
 # weighting the newly generated variables----
 # variable: New self employment
@@ -145,39 +146,68 @@ sust_self_geo_sample_weight<-mcf_data%>%
 geo_weight_sust<-mcf_data%>%
   group_by(geo_entity,sust_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
-# variable: New improved wage employment
+# variable: New improved self employment
 
-# generating the number of new improved wage employed youth for the sampled youth population
-new_improv_wage_sample_weight<-mcf_data%>%
-  group_by(new_improv_wage_employment)%>%
+# generating the number of new improved self employed youth for the sampled youth population
+new_improv_self_sample_weight<-mcf_data%>%
+  group_by(new_improv_self_employment)%>%
   dplyr::summarize(total=n()/nrow(mcf_data))
 
 # generating the number of new improved wage employed youth taking into account the whole youth population
-new_improv_wage_pop_weight<-mcf_data%>%
-  group_by(new_improv_wage_employment)%>%
+new_improv_self_pop_weight<-mcf_data%>%
+  group_by(new_improv_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
 
 #disaggregating by gender
 improv_gender_sample_weight<-mcf_data%>%
-  group_by(gender,new_improv_wage_employment)%>%
+  group_by(gender,new_improv_self_employment)%>%
   dplyr::summarize(total=n()/nrow(mcf_data))
 
 gender_weight_improv<-mcf_data%>%
-  group_by(gender,new_improv_wage_employment)%>%
+  group_by(gender,new_improv_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
 
 #disaggregating by stratum
 stratum_weight_improv<-mcf_data%>%
-  group_by(stratum,new_improv_wage_employment)%>%
+  group_by(stratum,new_improv_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
+view(stratum_weight_improv)
+#for the following code we are calculating the percentage of improved employment among the youth population
+stratum_weight_improv1<-mcf_data%>%
+  group_by(stratum,new_improv_self_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  ungroup()%>%
+  dplyr::mutate(prp= n / sum(n))
+view(stratum_weight_improv1)
+#for the following code we are calculating the percentage of improved employment among the self employed population
+stratum_weight_improv2<-mcf_data%>%
+  group_by(stratum,new_improv_self_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  dplyr::mutate(prp= n / sum(n))
+view(stratum_weight_improv2)
+
+#for the following code we are calculating the percentage of improved employment among the self employed population
+stratum_weight_improv3<-mcf_data%>%
+  group_by(stratum,new_improv_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  dplyr::mutate(prp= n / sum(n))
+view(stratum_weight_improv3)
+
+#for the following code we are calculating the percentage of improved employment among the youth population
+stratum_weight_improv4<-mcf_data%>%
+  group_by(stratum,new_improv_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  ungroup()%>%
+  dplyr::mutate(prp= n / sum(n))
+view(stratum_weight_improv4)
 
 #disaggregating by geo_entity
 improv_geo_sample_weight<-mcf_data%>%
-  group_by(geo_entity,new_improv_wage_employment)%>%
+  group_by(geo_entity,new_improv_self_employment)%>%
   dplyr::summarize(total=n()/nrow(mcf_data))
 
 geo_weight_improv<-mcf_data%>%
-  group_by(geo_entity,new_improv_wage_employment)%>%
+  group_by(geo_entity,new_improv_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
 
 # INDICATOR L5.3.1 QUALITY OF LIFE INDEX (Individual)===========
@@ -333,3 +363,5 @@ prop_great_geo_calc <- mcf_data_l5_household %>%
   group_by(geo_entity,prop_great)%>%
   dplyr::summarize(n=sum(cell_weights))%>%
   mutate(propotional_great = n*100/sum(n))
+
+#write_dta(mcf_data_l5_household,"data/mcf_clean_parfait.dta")

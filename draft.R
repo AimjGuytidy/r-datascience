@@ -1,3 +1,13 @@
+mcf_train_sel <- select(mcf_train,new_improv_self_employment,resp_workplace,wor_condi,inc_impro)
+fitControl <- trainControl(method = "cv",summaryFunction=prSummary,
+                           classProbs=T,savePredictions = T,verboseIter = F)
+im_fit <- train(new_improv_self_employment ~ ., data = mcf_train_sel,method = "glm",metric = "AUC",
+                trControl = fitControl)
+im_fit2 <- train(new_improv_self_employment ~ ., data = mcf_train_sel,method = "xgbTree",metric = "AUC",
+                 trControl = fitControl)
+im_fit2 <- train(new_improv_self_employment ~ ., data = mcf_train_sel,method = "rf",metric = "AUC",
+                 trControl = fitControl)
+
 #Load required packages
 library(foreign) #for reading .dta files
 library(dplyr) #for the filter function
@@ -21,25 +31,31 @@ library(performance)
 library(rcompanion)#for accuracy metrics
 library(MLeval)
 library(MLmetrics)
-library("Metrics")# Install & load Metrics package
-library(mixlm)
 set.seed(7)
 #Load in data
 mcf_data<-read_dta("data/mcf_parfait.dta")
 mcf_data<-mcf_data%>%
-            select(where(is.numeric))
+  select(where(is.numeric))
 #sum(!is.na(mcf_data$new_improv_self_employment))
 mcf_data<-mcf_data%>%filter(type_employ==2)%>%
   select(-c(uniqueid:note_sec_a))
 
 #LOGISTIC REGRESSION####
-# Data Preprocessing
+# create a correlation matrix
+cormatrix <- cor(select(mcf_data,-new_improv_self_employment))
+cormatrix[is.na(cormatrix)] <-0
+colnames(cormatrix[rowSums(cormatrix)==1,])
+view(cormatrix[rowSums(cormatrix)==1,])
+# check highly correlated variables with a cutoff of 0.5
+
+highlycorrelated <- findCorrelation(cormatrix,cutoff = 0.5)
+view(highlycorrelated)
 
 pgp <- preProcess(select(mcf_data,-new_improv_self_employment),method = c("center", "scale", "YeoJohnson", "nzv"))
 
 transformed <- predict(pgp, newdata = select(mcf_data,-new_improv_self_employment))
-#head(transformed)
-#view(cor(transformed,select(mcf_data,new_improv_self_employment)))
+head(transformed)
+view(cor(transformed,select(mcf_data,new_improv_self_employment)))
 mcf_trans <- transformed
 mcf_trans$new_improv_self_employment <- mcf_data$new_improv_self_employment
 trainIndex <- createDataPartition(mcf_trans$new_improv_self_employment, p = .8, 
@@ -56,8 +72,8 @@ summary(glmy)
 
 # New model considering the significance level of previous model components
 glmy2 <- glm(new_improv_self_employment~resp_workplace + wor_condi + inc_impro,
-            data=mcf_train,
-            family = binomial(link="logit"))
+             data=mcf_train,
+             family = binomial(link="logit"))
 
 summary(glmy2)
 
@@ -77,16 +93,6 @@ pred2 <- round(predictions2)
 tab_ful <- table(pred2,mcf_test$new_improv_self_employment)
 recall(tab_ful)
 Recall(mcf_test$new_improv_self_employment,pred2)
-
-sink("logisticm3.txt")
-print(summary(glmy2))
-cat("###################################################\n")
-print(performance_accuracy(glmy2))
-cat("###################################################\n")
-cat("The confusion matrix of the predicted versus the test true values\n")
-print(confusion(mcf_test$new_improv_self_employment,pred2))
-sink()
-
 #LINEAR REGRESSION
 #we are going to create a regression model on quality of life index using prod_quality_life as our dependent variable
 mcf_data<-read_dta("data/mcf_clean_parfait.dta")
@@ -94,57 +100,18 @@ mcf_data<-mcf_data%>%
   select(where(is.numeric))
 #sum(!is.na(mcf_data$new_improv_self_employment))
 mcf_data<-mcf_data%>%
-            select(-c(uniqueid:note_sec_a))
+  select(-c(uniqueid:note_sec_a))
 
-pgp2 <- preProcess(select(mcf_data,-prod_quality_life),method = c("center", "scale", "YeoJohnson","nzv"))
+pgp2 <- preProcess(select(mcf_data,-prod_quality_life),method = c("center", "scale", "YeoJohnson"))
 
-transformed <- predict(pgp2, newdata = select(mcf_data,-prod_quality_life))
-#head(transformed)
-#view(cor(transformed,select(mcf_data,prod_quality_life)))
+transformed <- predict(pgp, newdata = select(mcf_data,-prod_quality_life))
+head(transformed)
+view(cor(transformed,select(mcf_data,prod_quality_life)))
 mcf_trans <- transformed
 mcf_trans$new_improv_wage_employment <- NULL
-mcf_trans$prod_quality_life <- mcf_data$prod_quality_life
-trainIndex <- createDataPartition(mcf_trans$prod_quality_life, p = .8, 
+mcf_trans$new_improv_self_employment <- mcf_data$new_improv_self_employment
+trainIndex <- createDataPartition(mcf_trans$new_improv_self_employment, p = .8, 
                                   list = FALSE, 
                                   times = 1)
 mcf_train <- mcf_trans[trainIndex,]
 mcf_test <-mcf_trans[-trainIndex,]
-glmy3 <-
-  lm(
-    prod_quality_life ~ internet + sanitation + food + transport + telephone
-    + bank_account + electricity + roads + transport_comp + nature +
-      internet_comp
-    + clean_water + bank_account_comp + sanitation_comp + electricity_comp
-    + nature_comp + telephone_comp + healthcare + roads_comp + healthcare_comp
-    + food_comp + clean_water_comp + loans + loans_comp + equiment_5 +
-      education + equiment_2 + language_1 + computer_ownership + language_0 +
-      floor + phone_ownership + trainings_0 + online_course,
-    data = mcf_train
-  )
-summary(glmy3)
-performance_accuracy(glmy3)
-
-glmy4 <-
-  lm(
-    prod_quality_life ~ internet + sanitation + food + transport + telephone
-    + bank_account + electricity + roads + transport_comp + nature +
-      internet_comp
-    + clean_water + bank_account_comp + sanitation_comp + electricity_comp
-    + nature_comp + telephone_comp + healthcare + roads_comp + healthcare_comp
-    + food_comp + clean_water_comp + loans + loans_comp,
-    data = mcf_train
-  )
-summary(glmy4)
-performance_accuracy(glmy4)
-
-prediction4<- predict.lm(glmy4, select(mcf_test,-prod_quality_life), type = "response")
-mean((mcf_test$prod_quality_life-prediction4)^2)
-MSE(mcf_test$prod_quality_life,prediction4)
-RMSE(mcf_test$prod_quality_life,prediction4)
-MAPE(mcf_test$prod_quality_life,prediction4)
-MAE(mcf_test$prod_quality_life,prediction4)
-#RMSLE(mcf_test$prod_quality_life,prediction4)
-R2_Score(mcf_test$prod_quality_life,prediction4)
-sink("lm.txt")
-print(summary(glmy4))
-sink()

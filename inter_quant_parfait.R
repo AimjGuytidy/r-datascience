@@ -51,3 +51,20 @@ class(vector_2)
 bc <- NA # logical
 typeof(bc)
 class(bc)
+
+#Functions in R####
+
+my_function <- function(x){
+  return (sqrt(x)/log(x))
+}
+fun1 <- my_function
+my_function(100)
+fun1(100)
+division_fun <- function(x,y){
+  return(x/y)
+}
+
+funcy <- function(x,y){
+  return((x-y)/(x+y))
+}
+funcy(54,65)

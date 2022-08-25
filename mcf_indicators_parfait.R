@@ -153,7 +153,7 @@ new_improv_self_sample_weight<-mcf_data%>%
   group_by(new_improv_self_employment)%>%
   dplyr::summarize(total=n()/nrow(mcf_data))
 
-# generating the number of new improved wage employed youth taking into account the whole youth population
+# generating the number of new improved self employed youth taking into account the whole youth population
 new_improv_self_pop_weight<-mcf_data%>%
   group_by(new_improv_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
@@ -166,6 +166,20 @@ improv_gender_sample_weight<-mcf_data%>%
 gender_weight_improv<-mcf_data%>%
   group_by(gender,new_improv_self_employment)%>%
   dplyr::summarize(total=sum(cell_weights)/sum(total_pop$Total.population))
+view(gender_weight_improv)
+
+gender_weight_improv1<-mcf_data%>%
+  group_by(gender,new_improv_self_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  ungroup()%>%
+  dplyr::mutate(prp= n / sum(n))
+view(gender_weight_improv1)
+
+gender_weight_improv2<-mcf_data%>%
+  group_by(gender,new_improv_self_employment)%>%
+  dplyr::summarize(n=sum(cell_weights))%>%
+  dplyr::mutate(prp= n / sum(n))
+view(gender_weight_improv2)
 
 #disaggregating by stratum
 stratum_weight_improv<-mcf_data%>%
@@ -364,4 +378,4 @@ prop_great_geo_calc <- mcf_data_l5_household %>%
   dplyr::summarize(n=sum(cell_weights))%>%
   mutate(propotional_great = n*100/sum(n))
 
-#write_dta(mcf_data_l5_household,"data/mcf_clean_parfait.dta")
+#write_dta(mcf_data_l5_t,"data/mcf_clean_parfait.dta")

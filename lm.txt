@@ -1,0 +1,47 @@
+
+Call:
+lm(formula = prod_quality_life ~ internet + sanitation + food + 
+    transport + telephone + bank_account + electricity + roads + 
+    transport_comp + nature + internet_comp + clean_water + bank_account_comp + 
+    sanitation_comp + electricity_comp + nature_comp + telephone_comp + 
+    healthcare + roads_comp + healthcare_comp + food_comp + clean_water_comp + 
+    loans + loans_comp, data = mcf_train)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9.5542 -0.9263 -0.2558  0.6197 21.7071 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       -23.87768    0.20788 -114.86   <2e-16 ***
+internet            1.20113    0.03583   33.52   <2e-16 ***
+sanitation          1.11727    0.04064   27.49   <2e-16 ***
+food                1.25159    0.03898   32.11   <2e-16 ***
+transport           1.14133    0.03503   32.59   <2e-16 ***
+telephone           1.08275    0.03727   29.05   <2e-16 ***
+bank_account        1.09660    0.03107   35.29   <2e-16 ***
+electricity         1.13899    0.03248   35.06   <2e-16 ***
+roads               1.15852    0.03330   34.79   <2e-16 ***
+transport_comp      1.59195    0.07352   21.65   <2e-16 ***
+nature              1.15554    0.03466   33.34   <2e-16 ***
+internet_comp       2.32383    0.09890   23.50   <2e-16 ***
+clean_water         1.12256    0.03506   32.02   <2e-16 ***
+bank_account_comp   2.13411    0.11484   18.58   <2e-16 ***
+sanitation_comp     1.69702    0.06603   25.70   <2e-16 ***
+electricity_comp    1.87471    0.08561   21.90   <2e-16 ***
+nature_comp         1.86928    0.10082   18.54   <2e-16 ***
+telephone_comp      1.55570    0.07648   20.34   <2e-16 ***
+healthcare          1.15461    0.03249   35.54   <2e-16 ***
+roads_comp          1.64247    0.07752   21.19   <2e-16 ***
+healthcare_comp     1.67455    0.07047   23.76   <2e-16 ***
+food_comp           1.63395    0.05723   28.55   <2e-16 ***
+clean_water_comp    1.77295    0.07457   23.78   <2e-16 ***
+loans               1.26830    0.03980   31.86   <2e-16 ***
+loans_comp          1.53636    0.11243   13.66   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.143 on 3226 degrees of freedom
+Multiple R-squared:  0.9654,	Adjusted R-squared:  0.9652 
+F-statistic:  3755 on 24 and 3226 DF,  p-value: < 2.2e-16
+

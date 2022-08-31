@@ -238,18 +238,18 @@ survey_data <- body_add_gg(survey_data, value = refugees_plot, style = "centered
 # create visuals for the seriousness of the conditions that respondents have
 
 difficulty<-characterize(mcf_data)%>%
-  group_by(difficulty_1,gender)%>%
-  summarise(n=sum(cell_weights),.groups = "drop")%>%
+  count(difficulty_1,gender,wt=cell_weights)%>%
   dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
   dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
          difficulty_1 = str_wrap(difficulty_1,width = 10),
-         n = as.integer(n)*100/sum(as.integer(n)))
+         n = as.integer(n),
+         n = n/sum(n))
   
   
 
 (diff_plot <- difficulty%>%
     ggplot(mapping=aes(difficulty_1,n))+
-    geom_bar(stat = "identity",position = "fill",aes(fill=gender))+
+    geom_bar(stat = "identity",position = "dodge",aes(fill=gender))+
     xlab("")+
     ylab("")+
     ggtitle("respondent conditions")+
@@ -259,9 +259,48 @@ difficulty<-characterize(mcf_data)%>%
           panel.grid = element_blank())+
     scale_fill_manual(
       values=c(Blue,Light_blue),
-      aesthetics = "fill")+
-    scale_y_continuous(limits =c(0,1), labels = scales::percent_format()))
+      aesthetics = "fill"))
 survey_data <- body_add_gg(survey_data, value = diff_plot, style = "centered" )
+
+# stacked 
+
+difficulty1<-characterize(mcf_data)%>%
+  group_by(difficulty_1,gender)%>%
+  summarise(n=sum(cell_weights))%>%
+  dplyr::mutate(n = n*100/sum(n))%>%
+  ungroup()%>%
+  #dplyr::select(difficulty_1,gender,cell_weights)%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                difficulty_1 = str_wrap(difficulty_1,width = 10),
+                n=as.integer(n))
+
+
+
+(
+  diff_plot1 <- difficulty1 %>%
+    ggplot(mapping = aes(difficulty_1, n)) +
+    geom_bar(stat = "identity", position = "fill", aes(fill = gender)) +
+    xlab("") +
+    ylab("") +
+    geom_text(
+      aes(label = paste0(n, "%")),
+      position = position_fill(vjust = 0.5),
+      size = 3,
+      color = "white"
+    ) +
+    ggtitle("respondent conditions") +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(
+      plot.background = element_rect(fill = c("#F2F2F2")),
+      panel.background = element_rect(fill = c("#F2F2F2")),
+      panel.grid = element_blank()
+    ) +
+    scale_fill_manual(values = c(Blue, Light_blue),
+                      aesthetics = "fill")
+)
+survey_data <- body_add_gg(survey_data, value = diff_plot1, style = "centered" )
+
 # create visuals for employment status
 
 employment<-characterize(mcf_data)%>%

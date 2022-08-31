@@ -23,6 +23,8 @@ library(MLeval)
 library(MLmetrics)
 library("Metrics")# Install & load Metrics package
 library(mixlm)
+#install.packages("fastDummies")
+library(fastDummies)
 set.seed(7)
 #Load in data
 mcf_data<-read_dta("data/mcf_parfait.dta")
@@ -31,6 +33,15 @@ mcf_data<-mcf_data%>%
 #sum(!is.na(mcf_data$new_improv_self_employment))
 mcf_data<-mcf_data%>%filter(type_employ==2)%>%
   select(-c(uniqueid:note_sec_a))
+
+#create dummy variables for categorical columns
+county = 0
+for (i in colnames(mcf_data)){
+  # if (setequal(class(mcf_data[,as.character(i)]) ,"numeric")){
+  #   county = county + 1
+  # }
+  print(class(mcf_data[4,as.character(i)]))
+}
 
 #LOGISTIC REGRESSION####
 # Data Preprocessing

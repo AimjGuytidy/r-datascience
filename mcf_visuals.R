@@ -9,6 +9,7 @@ library(stringr)
 library(sjmisc)
 library(tidyr)
 library(lubridate)
+library(readxl)
 Light_grey<-c("#F2F2F2") #Light grey for the background
 Blue<-c("#097ABC") #Blue
 Light_blue<-c("#9DC3E5") #Light blue
@@ -77,7 +78,42 @@ cell_weights<-cell_weights%>%
 mcf_data<- left_join(mcf_data,cell_weights, by=c("stratum","geo_entity","gender"))%>%
   move_columns(c(main_month, main_years),.before=inc_impro)
 
+# let's create a function to help us automate some operations
 
+preproc<-function(i){
+  temp<-characterize(mcf_data)%>%
+    rename(temp1=as.factor("employment"))%>%
+    group_by(temp1,gender)%>%
+    summarise(n=sum(cell_weights))%>%
+    dplyr::mutate(n = n*100/sum(n))%>%
+    ungroup()%>%
+    dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+    dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                  temp1=str_wrap(temp1,width = 10),
+                  n=as.integer(n))
+  return((assign(paste0(i,"_plot"), temp%>%
+                   ggplot(mapping=aes(temp1,n))+
+                   geom_bar(stat = "identity",position = "fill",aes(fill=gender))+
+                   xlab("")+
+                   ylab("")+
+                   geom_text(
+                     aes(label = paste0(n, "%")),
+                     position = position_fill(vjust = 0.5),
+                     size = 3,
+                     color = "white"
+                   )+
+                   ggtitle(paste(i," Graph"))+
+                   theme(plot.title = element_text(hjust = 0.5))+
+                   theme(plot.background = element_rect(fill = c("#F2F2F2")),
+                         panel.background = element_rect(fill = c("#F2F2F2")),
+                         panel.grid = element_blank(), #remove x axis ticks
+                         axis.text.y=element_blank(),  #remove y axis labels
+                         axis.ticks.y=element_blank()  #remove y axis ticks
+                   )+
+                   scale_fill_manual(
+                     values=c(Blue,Light_blue),
+                     aesthetics = "fill"))))
+}
 
 
 survey_data <- read_docx()
@@ -119,6 +155,8 @@ ager <- mcf_data%>%
   scale_y_continuous(limits =c(0,0.1), labels = scales::percent_format())+
   scale_x_continuous(breaks=seq(18,35,2),labels=seq(18,35,2)))
 
+survey_data <- body_add_gg(survey_data, value = age, style = "centered" )
+
 age_distribution<-ggplot(mcf_data,mapping = aes(age))+
   geom_density(col="#097ABC")+
   ggtitle("Age Distribution Density plot")+
@@ -150,6 +188,7 @@ mart_count$mart_status<-gsub("^[a-z0-9]+\\.\\s+","",mart_count$mart_status)
   scale_y_continuous(limits =c(0,0.8), labels = scales::percent_format()))
 survey_data <- body_add_gg(survey_data, value = mart_status, style = "centered" )
 # create relationship to head of household visuals
+
 hhead_count<-characterize(mcf_data)%>%
   count(hhrelation,wt=cell_weights)%>%
   ungroup()%>%
@@ -167,34 +206,7 @@ hhead_count$hhrelation<-gsub("^[a-z0-9]+\\.\\s+","",hhead_count$hhrelation)
         panel.grid = element_blank())+
   scale_x_continuous(limits =c(0,0.6), labels = scales::percent_format()))
 
-
-hheady<-characterize(mcf_data)%>%
-  count(hhrelation,gender)
-hheady<-hheady%>%
-  mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
-         n = n/sum(n))
-# sapply(hheady,function(x)gsub("^[a-z]+\\.\\s+","",x))
-# hheady$hhrelation<-gsub("^[a-z0-9]+\\.\\s+","",hheady$hhrelation)
-# hheady$gender<-gsub("^[a-z0-9]+\\.\\s+","",hheady$gender)
-(hhead_relation <- hheady%>%
-  ggplot(mapping=aes(n,hhrelation))+
-  geom_bar(stat = "identity",aes(fill=Blue),show.legend = FALSE)+
-  xlab("")+
-  ylab("")+
-  ggtitle("relationship to head of household")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  theme(plot.background = element_rect(fill = c("#F2F2F2")),
-        panel.background = element_rect(fill = c("#F2F2F2")),
-        panel.grid = element_blank())+
-  scale_fill_manual(
-    values=c(Blue,Light_blue),
-    aesthetics = "fill"
-  )+
-  scale_x_continuous(limits =c(0,0.5), labels = scales::percent_format()) )
 survey_data <- body_add_gg(survey_data, value = hhead_relation, style = "centered" )
-#geom_text(aes(label=hhcount),hjust=-0.5)+
-# scale_x_continuous(labels = function(x){paste0(x/1000, "k")}))
-
 
 # create visuals for Gender of the household head
 
@@ -244,8 +256,6 @@ difficulty<-characterize(mcf_data)%>%
          difficulty_1 = str_wrap(difficulty_1,width = 10),
          n = as.integer(n),
          n = n/sum(n))
-  
-  
 
 (diff_plot <- difficulty%>%
     ggplot(mapping=aes(difficulty_1,n))+
@@ -259,7 +269,8 @@ difficulty<-characterize(mcf_data)%>%
           panel.grid = element_blank())+
     scale_fill_manual(
       values=c(Blue,Light_blue),
-      aesthetics = "fill"))
+      aesthetics = "fill")+
+    scale_y_continuous(limits =c(0,0.6), labels = scales::percent_format()))
 survey_data <- body_add_gg(survey_data, value = diff_plot, style = "centered" )
 
 # stacked 
@@ -269,7 +280,6 @@ difficulty1<-characterize(mcf_data)%>%
   summarise(n=sum(cell_weights))%>%
   dplyr::mutate(n = n*100/sum(n))%>%
   ungroup()%>%
-  #dplyr::select(difficulty_1,gender,cell_weights)%>%
   dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
   dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
                 difficulty_1 = str_wrap(difficulty_1,width = 10),
@@ -294,7 +304,9 @@ difficulty1<-characterize(mcf_data)%>%
     theme(
       plot.background = element_rect(fill = c("#F2F2F2")),
       panel.background = element_rect(fill = c("#F2F2F2")),
-      panel.grid = element_blank()
+      panel.grid = element_blank(), #remove x axis ticks
+      axis.text.y=element_blank(),  #remove y axis labels
+      axis.ticks.y=element_blank()  #remove y axis ticks
     ) +
     scale_fill_manual(values = c(Blue, Light_blue),
                       aesthetics = "fill")
@@ -302,11 +314,13 @@ difficulty1<-characterize(mcf_data)%>%
 survey_data <- body_add_gg(survey_data, value = diff_plot1, style = "centered" )
 
 # create visuals for employment status
-
 employment<-characterize(mcf_data)%>%
-  count(employment,gender)%>%
-  mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
-         employment = str_wrap(employment,width = 10))
+  count(employment,gender,wt=cell_weights)%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                employment = str_wrap(employment,width = 10),
+                n = as.integer(n),
+                n = n/sum(n))
 
 
 
@@ -322,14 +336,56 @@ employment<-characterize(mcf_data)%>%
           panel.grid = element_blank())+
     scale_fill_manual(
       values=c(Blue,Light_blue),
-      aesthetics = "fill"))
+      aesthetics = "fill")+
+    scale_y_continuous(limits =c(0,.3), labels = scales::percent_format()))
 survey_data <- body_add_gg(survey_data, value = emp_plot, style = "centered" )
+
+
+
+#stacked
+employment1<-characterize(mcf_data)%>%
+  group_by(employment,gender)%>%
+  summarise(n=sum(cell_weights))%>%
+  dplyr::mutate(n = n*100/sum(n))%>%
+  ungroup()%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                employment = str_wrap(employment,width = 10),
+                n=as.integer(n))
+
+(emp_plot1 <- employment1%>%
+    ggplot(mapping=aes(employment,n))+
+    geom_bar(stat = "identity",position = "fill",aes(fill=gender))+
+    xlab("")+
+    ylab("")+
+    geom_text(
+      aes(label = paste0(n, "%")),
+      position = position_fill(vjust = 0.5),
+      size = 3,
+      color = "white"
+    )+
+    ggtitle("Employment Status")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    theme(plot.background = element_rect(fill = c("#F2F2F2")),
+          panel.background = element_rect(fill = c("#F2F2F2")),
+          panel.grid = element_blank(), #remove x axis ticks
+          axis.text.y=element_blank(),  #remove y axis labels
+          axis.ticks.y=element_blank()  #remove y axis ticks
+          )+
+    scale_fill_manual(
+      values=c(Blue,Light_blue),
+      aesthetics = "fill"))
+survey_data <- body_add_gg(survey_data, value = emp_plot1, style = "centered" )
+
 # create visuals for Farming status
 
 farming<-characterize(mcf_data)%>%
-  count(own_farming,gender)%>%
-  mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
-         own_farming = str_wrap(own_farming,width = 10))
+  count(own_farming,gender,wt=cell_weights)%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                own_farming = str_wrap(own_farming,width = 10),
+                n = as.integer(n),
+                n = n/sum(n))
 
 
 
@@ -347,6 +403,45 @@ farming<-characterize(mcf_data)%>%
       values=c(Blue,Light_blue),
       aesthetics = "fill"))
 survey_data <- body_add_gg(survey_data, value = farm_plot, style = "centered" )
+
+#stacked
+
+farming1<-characterize(mcf_data)%>%
+  group_by(own_farming,gender)%>%
+  summarise(n=sum(cell_weights))%>%
+  dplyr::mutate(n = n*100/sum(n))%>%
+  ungroup()%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                own_farming = str_wrap(own_farming,width = 10),
+                n=as.integer(n))
+
+
+
+(farm_plot1 <- farming1%>%
+    ggplot(mapping=aes(own_farming,n))+
+    geom_bar(stat = "identity",position = "fill",aes(fill=gender))+
+    xlab("")+
+    ylab("")+
+    geom_text(
+      aes(label = paste0(n, "%")),
+      position = position_fill(vjust = 0.5),
+      size = 3,
+      color = "white"
+    )+
+    ggtitle(paste0("Did you do any farm work such as growing crops,","\nraising or tending animals, fishing, forestry"))+
+    theme(plot.title = element_text(hjust = 0.5))+
+    theme(plot.background = element_rect(fill = c("#F2F2F2")),
+          panel.background = element_rect(fill = c("#F2F2F2")),
+          panel.grid = element_blank(), #remove x axis ticks
+          axis.text.y=element_blank(),  #remove y axis labels
+          axis.ticks.y=element_blank()  #remove y axis ticks
+          )+
+    scale_fill_manual(
+      values=c(Blue,Light_blue),
+      aesthetics = "fill"))
+survey_data <- body_add_gg(survey_data, value = farm_plot1, style = "centered" )
+
 # create visuals for Farming sales status
 
 farming_sale<-characterize(mcf_data)%>%
@@ -373,3 +468,5 @@ farming_sale<-characterize(mcf_data)%>%
       aesthetics = "fill"))
 survey_data <- body_add_gg(survey_data, value = farm_sale_plot, style = "centered" )
 print(survey_data, target = "Visuals.docx")
+
+

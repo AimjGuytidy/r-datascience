@@ -675,5 +675,76 @@ t <- preproc("sell_goods")
 t
 survey_data <-
   body_add_gg(survey_data, value = t, style = "centered")
+#official doc
+t_officialdoc <- preproc_dodge("officialdoc")
+survey_data <-
+  body_add_gg(survey_data, value = t_officialdoc, style = "centered")
+#stacked
+t_officialdoc_stacked <- preproc("officialdoc")
+survey_data <-
+  body_add_gg(survey_data, value = t_officialdoc_stacked, style = "centered")
+#mastercadprog
+t_mastercadprog <- preproc_dodge("mastcard_progr")
+survey_data <-
+  body_add_gg(survey_data, value = t_mastercadprog, style = "centered")
+#stacked
+t_mastercadprog_stacked <- preproc("mastcard_progr")
+survey_data <-
+  body_add_gg(survey_data, value = t_mastercadprog_stacked, style = "centered")
+
+
+# implementation partners
+
+mcf_impl <- characterize(mcf_data)%>%
+  select(contains("progr_"))
+
+as.data.frame(mcf_impl$impl_progr_1)%>%
+  ggplot(aes(mcf_impl$impl_progr_1))+
+  geom_bar(stat = "count")
+for (i in colnames(mcf_impl)){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(i))
+  survey_data <-
+    body_add_gg(survey_data, value = get(paste(i,"_dodge_graph")), style = "centered")
+  assign(paste(i,"_stack_graph"),preproc(i))
+  survey_data <-
+    body_add_gg(survey_data, value = get(paste(i,"_stack_graph")), style = "centered")
+}
+
+
+# Section B: Non-employment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 print(survey_data, target = "Visuals.docx")

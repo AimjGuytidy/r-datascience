@@ -116,6 +116,51 @@ preproc <- function(i) {
       gsub("^[a-z]+\\.\\s+", "", x)),
       temp1 = str_wrap(temp1, width = 10),
       n = as.integer(n))
+  if (nrow(temp) > 6){
+    temp <- characterize(mcf_data) %>%
+      rename(temp1 = as.factor(i)) %>%
+      group_by(temp1, gender) %>%
+      summarise(n = sum(cell_weights)) %>%
+      dplyr::mutate(n = n * 100 / sum(n)) %>%
+      ungroup() %>%
+      dplyr::mutate_all( ~ replace(., is.na(.), "Not applicable")) %>%
+      dplyr::mutate(across(-n, function(x)
+        gsub("^[a-z]+\\.\\s+", "", x)),
+        temp1 = str_wrap(temp1, width = 28),
+        n = as.integer(n))
+    return((
+      assign(
+        paste0(i, "_plot"),
+        temp %>%
+          ggplot(mapping = aes(temp1, n)) +
+          geom_bar(stat = "identity", position = "fill", aes(fill =
+                                                               gender)) +
+          xlab("") +
+          ylab("") +
+          geom_text(
+            aes(label = paste0(n, "%")),
+            position = position_fill(vjust = 0.5),
+            size = 3,
+            color = "white"
+          ) +
+          ggtitle(paste(i, " Graph"))+
+          coord_flip()+
+          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(
+            plot.background = element_rect(fill = c("#F2F2F2")),
+            panel.background = element_rect(fill = c("#F2F2F2")),
+            panel.grid = element_blank(),
+            #remove x axis ticks
+            axis.text.x = element_blank(),
+            #remove y axis labels
+            axis.ticks.x = element_blank()  #remove y axis ticks
+          ) +
+          scale_fill_manual(values = c(Blue, Light_blue),
+                            aesthetics = "fill")
+        +scale_y_discrete(guide = guide_axis(n.dodge=2))
+      )
+    )) 
+  }else{
   return((
     assign(
       paste0(i, "_plot"),
@@ -146,6 +191,7 @@ preproc <- function(i) {
                           aesthetics = "fill")
     )
   ))
+  }
 }
 
 preproc_dodge <- function(i) {
@@ -713,12 +759,20 @@ for (i in colnames(mcf_impl)){
 
 # Section B: Non-employment
 
+# apply variable
 
+gr_apply_dodge <- preproc_dodge("apply")
 
+gr_apply_stack <- preproc("apply") 
 
+# Nojob variable
 
+gr_nojob_dodge <- preproc_dodge("nojob")
+gr_nojob_dodge+coord_flip()
+gr_nojob_stack <- preproc("nojob")
 
-
+survey_data <-
+  body_add_gg(survey_data, value = gr_nojob_stack, style = "centered",height = 10)
 
 
 

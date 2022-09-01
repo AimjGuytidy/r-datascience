@@ -104,7 +104,7 @@ mcf_data <-
 
 # let's create a function to help us automate some operations
 
-preproc <- function(i) {
+preproc_stack <- function(i) {
   temp <- characterize(mcf_data) %>%
     rename(temp1 = as.factor(i)) %>%
     group_by(temp1, gender) %>%
@@ -128,9 +128,8 @@ preproc <- function(i) {
         gsub("^[a-z]+\\.\\s+", "", x)),
         temp1 = str_wrap(temp1, width = 28),
         n = as.integer(n))
-    return((
-      assign(
-        paste0(i, "_plot"),
+    
+      temp3<-
         temp %>%
           ggplot(mapping = aes(temp1, n)) +
           geom_bar(stat = "identity", position = "fill", aes(fill =
@@ -158,12 +157,13 @@ preproc <- function(i) {
           scale_fill_manual(values = c(Blue, Light_blue),
                             aesthetics = "fill")
         +scale_y_discrete(guide = guide_axis(n.dodge=2))
-      )
-    )) 
+      survey_data <-
+        body_add_gg(survey_data, value = temp3, style = "centered",height = 10)
+      return(temp3)
+     
   }else{
-  return((
-    assign(
-      paste0(i, "_plot"),
+  
+    temp3<-
       temp %>%
         ggplot(mapping = aes(temp1, n)) +
         geom_bar(stat = "identity", position = "fill", aes(fill =
@@ -189,8 +189,10 @@ preproc <- function(i) {
         ) +
         scale_fill_manual(values = c(Blue, Light_blue),
                           aesthetics = "fill")
-    )
-  ))
+    survey_data <-
+      body_add_gg(survey_data, value = temp3, style = "centered")
+    return(temp3)
+  
   }
 }
 
@@ -206,11 +208,44 @@ preproc_dodge <- function(i) {
       n = as.integer(n),
       n = n / sum(n)
     )
-  
-  return((
-    assign(
-      paste0(i, "_plot"),
-      temp %>%
+  if (nrow(temp)>6){
+    temp <- characterize(mcf_data) %>%
+      rename(temp1 = as.factor(i)) %>%
+      count(temp1, gender, wt = cell_weights) %>%
+      dplyr::mutate_all(~ replace(., is.na(.), "Not applicable")) %>%
+      dplyr::mutate(
+        across(-n, function(x)
+          gsub("^[a-z]+\\.\\s+", "", x)),
+        temp1 = str_wrap(temp1, width = 28),
+        n = as.integer(n),
+        n = n / sum(n)
+      )
+        temp3<-
+        (temp %>%
+          ggplot(mapping = aes(temp1, n)) +
+          geom_bar(stat = "identity", position = "dodge", aes(fill = gender)) +
+          xlab("") +
+          ylab("") +
+          ggtitle(paste(i, " Graph")) +
+          coord_flip()+
+          theme(plot.title = element_text(hjust = 0.5)) +
+          theme(
+            plot.background = element_rect(fill = c("#F2F2F2")),
+            panel.background = element_rect(fill = c("#F2F2F2")),
+            panel.grid = element_blank()
+          ) +
+          scale_fill_manual(values = c(Blue, Light_blue),
+                            aesthetics = "fill") +
+          scale_y_continuous(
+            limits = c(0, (max(temp$n,na.rm = TRUE) + .1)),
+            labels = scales::percent_format()
+          ))
+    survey_data <-
+      body_add_gg(survey_data, value = temp3, style = "centered",height = 10)
+  return(temp3)
+  }else{
+      temp3<-
+      (temp %>%
         ggplot(mapping = aes(temp1, n)) +
         geom_bar(stat = "identity", position = "dodge", aes(fill = gender)) +
         xlab("") +
@@ -227,9 +262,11 @@ preproc_dodge <- function(i) {
         scale_y_continuous(
           limits = c(0, (max(temp$n,na.rm = TRUE) + .1)),
           labels = scales::percent_format()
-        )
-    )
-  ))
+        ))
+  survey_data <-
+    body_add_gg(survey_data, value = temp3, style = "centered")
+  return(temp3)
+  }
 }
 
 
@@ -768,37 +805,18 @@ gr_apply_stack <- preproc("apply")
 # Nojob variable
 
 gr_nojob_dodge <- preproc_dodge("nojob")
-gr_nojob_dodge+coord_flip()
+survey_data <-
+  body_add_gg(survey_data, value = gr_nojob_dodge, style = "centered",height = 10)
 gr_nojob_stack <- preproc("nojob")
 
 survey_data <-
   body_add_gg(survey_data, value = gr_nojob_stack, style = "centered",height = 10)
 
+# Noseek variable
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+gr_noseek_dodge <- preproc_dodge("noseek")
+survey_data <-
+  body_add_gg(survey_data, value = gr_noseek_dodge, style = "centered",height = 10)
+gr_noseek_stack <- preproc_stack("noseek")
 
 print(survey_data, target = "Visuals.docx")

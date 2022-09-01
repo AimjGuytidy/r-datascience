@@ -82,7 +82,7 @@ mcf_data<- left_join(mcf_data,cell_weights, by=c("stratum","geo_entity","gender"
 
 preproc<-function(i){
   temp<-characterize(mcf_data)%>%
-    rename(temp1=as.factor("employment"))%>%
+    rename(temp1=as.factor(i))%>%
     group_by(temp1,gender)%>%
     summarise(n=sum(cell_weights))%>%
     dplyr::mutate(n = n*100/sum(n))%>%
@@ -401,7 +401,8 @@ farming<-characterize(mcf_data)%>%
           panel.grid = element_blank())+
     scale_fill_manual(
       values=c(Blue,Light_blue),
-      aesthetics = "fill"))
+      aesthetics = "fill")+
+    scale_y_continuous(limits =c(0,.3), labels = scales::percent_format()))
 survey_data <- body_add_gg(survey_data, value = farm_plot, style = "centered" )
 
 #stacked
@@ -445,11 +446,12 @@ survey_data <- body_add_gg(survey_data, value = farm_plot1, style = "centered" )
 # create visuals for Farming sales status
 
 farming_sale<-characterize(mcf_data)%>%
-  count(sell_goods,gender)%>%
-  mutate_all(~replace(., is.na(.), "Not applicable"))%>%
-  mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
-         sell_goods = str_wrap(sell_goods,width = 10),
-         n=as.integer(n))
+  count(sell_goods,gender,wt=cell_weights)%>%
+  dplyr::mutate_all(~replace(., is.na(.), "Not applicable"))%>%
+  dplyr::mutate(across(-n,function(x)gsub("^[a-z]+\\.\\s+","",x)),
+                sell_goods = str_wrap(sell_goods,width = 10),
+                n = as.integer(n),
+                n = n/sum(n))
 
 
 
@@ -458,7 +460,7 @@ farming_sale<-characterize(mcf_data)%>%
     geom_bar(stat = "identity",position = "dodge",aes(fill=gender))+
     xlab("")+
     ylab("")+
-    ggtitle(paste0("Did you do any farm work such as growing crops,","\nraising or tending animals, fishing, forestry"))+
+    ggtitle(paste0("If yes to any of the above,","\nDid you sell or barter any part of the goods"))+
     theme(plot.title = element_text(hjust = 0.5))+
     theme(plot.background = element_rect(fill = c("#F2F2F2")),
           panel.background = element_rect(fill = c("#F2F2F2")),
@@ -467,6 +469,14 @@ farming_sale<-characterize(mcf_data)%>%
       values=c(Blue,Light_blue),
       aesthetics = "fill"))
 survey_data <- body_add_gg(survey_data, value = farm_sale_plot, style = "centered" )
+
+#stacked
+t <- preproc("sell_goods")
+t
+survey_data <- body_add_gg(survey_data, value = t, style = "centered" )
+
+
+
 print(survey_data, target = "Visuals.docx")
 
 

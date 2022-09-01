@@ -179,7 +179,7 @@ preproc_dodge <- function(i) {
         scale_fill_manual(values = c(Blue, Light_blue),
                           aesthetics = "fill") +
         scale_y_continuous(
-          limits = c(0, (max(mcf_data$temp1) + .1)),
+          limits = c(0, (max(temp$n,na.rm = TRUE) + .1)),
           labels = scales::percent_format()
         )
     )
@@ -675,7 +675,5 @@ t <- preproc("sell_goods")
 t
 survey_data <-
   body_add_gg(survey_data, value = t, style = "centered")
-
-
 
 print(survey_data, target = "Visuals.docx")

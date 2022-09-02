@@ -388,3 +388,21 @@ ownfarm_dodge <-preproc_dodge(mcf_data,"own_farming",title_prep = str_wrap("Did 
 farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
 farmsale_dodge <-preproc_dodge(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
 
+#official doc
+offdoc_fill <- preproc_stack(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
+offdoc_dodge <-preproc_dodge(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
+
+#mastercadprog
+mastercard_fill <- preproc_stack(mcf_data,"mastcard_progr",title_prep = str_wrap("To your knowledge, have you ever participated in a programme collaborating with the Mastercard Foundation?" , width = 42))
+mastercard_dodge <-preproc_dodge(mcf_data,"mastcard_progr",title_prep = str_wrap("To your knowledge, have you ever participated in a programme collaborating with the Mastercard Foundation?" , width = 42))
+
+# implementation partners
+
+mcf_impl <- characterize(mcf_data)%>%
+  select(contains("progr_"),gender,geo_entity,cell_weights,stratum)
+
+for (i in colnames(mcf_impl%>%
+                   select(contains("progr_")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
+}

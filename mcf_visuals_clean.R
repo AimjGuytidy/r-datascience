@@ -348,3 +348,8 @@ hhrelation_dodge <- preproc_dodge(mcf_data,"hhrelation",title_prep = "Head of ho
 hhgender_fill <- preproc_stack(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
 hhgender_dodge <- preproc_dodge(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
 
+# create visuals for Refugees
+
+refugees_fill <- preproc_stack(mcf_data,"refuge",title_prep = "Refugee Status")
+refugees_dodge <-preproc_dodge(mcf_data,"refuge",title_prep = "Refugee Status")
+

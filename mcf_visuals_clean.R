@@ -431,20 +431,20 @@ gr_noseek_dodge <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you
 
 #Expect seek variable
 
-gr_expect_dodge <- preproc_stack(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+gr_expect_fill <- preproc_stack(mcf_data,"expect_seek",title_prep = str_wrap("If you did not seek work for any reason below option d., do you expect to seek paid work within the next 6 months? ", width = 42))
 
-gr_expect_stack <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+gr_expect_dodge <- preproc_dodge(mcf_data,"expect_seek",title_prep = str_wrap("If you did not seek work for any reason below option d., do you expect to seek paid work within the next 6 months? ", width = 42))
 
 
 # no expect seek categories 
 
 mcf_noexpect <- characterize(mcf_data)%>%
-  select(contains("noexpect_seek_"))%>%
+  select(contains("noexpect_seek_"),gender,geo_entity,cell_weights,stratum)%>%
   select(-noexpect_seek_oth)
-for (i in colnames(mcf_noexpect)){
-  assign(paste(i,"_dodge_graph"),preproc_dodge(i))
-  
-  assign(paste(i,"_stack_graph"),preproc_stack(i))
+for (i in colnames(mcf_noexpect%>%
+                   select(contains("noexpect_seek_")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_noexpect,i,title_prep = paste0("If no, why not?:",i)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_noexpect,i,title_prep = paste0("If no, why not?:",i)))
 }
 
 mcf_noexpect_other <- characterize(mcf_data)%>%
@@ -464,7 +464,7 @@ gr_noexpect_other<-mcf_noexpect_other%>%
     aes(label = paste0(round(n))),
     position = position_fill(),
     hjust = -0.9,
-    size = 6,
+    size = 4,
     color = "white"
   ) +
   
@@ -478,6 +478,5 @@ gr_noexpect_other<-mcf_noexpect_other%>%
                     aesthetics = "fill")
 survey_data <-
   body_add_gg(survey_data, value = gr_noexpect_other, style = "centered")
-
 
 print(survey_data, target = "Visuals.docx")

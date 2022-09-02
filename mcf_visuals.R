@@ -108,8 +108,8 @@ mcf_data <-
 
 # let's create a function to help us automate some operations
 
-preproc_stack <- function(i) {
-  temp <- characterize(mcf_data) %>%
+preproc_stack <- function(data_prep,i,title_prep="no title provided") {
+  temp <- characterize(data_prep) %>%
     rename(temp1 = as.factor(i)) %>%
     group_by(temp1, gender) %>%
     summarise(n = sum(cell_weights)) %>%
@@ -121,7 +121,7 @@ preproc_stack <- function(i) {
       temp1 = str_wrap(temp1, width = 10),
       n = as.integer(n))
   if (nrow(temp) > 6){
-    temp <- characterize(mcf_data) %>%
+    temp <- characterize(data_prep) %>%
       rename(temp1 = as.factor(i)) %>%
       group_by(temp1, gender) %>%
       summarise(n = sum(cell_weights)) %>%
@@ -146,7 +146,7 @@ preproc_stack <- function(i) {
             size = 3,
             color = "white"
           ) +
-          ggtitle(paste(i, " Graph"))+
+          ggtitle(title_prep)+
           coord_flip()+
           theme(plot.title = element_text(hjust = 0.5)) +
           theme(
@@ -159,8 +159,8 @@ preproc_stack <- function(i) {
             axis.ticks.x = element_blank()  #remove y axis ticks
           ) +
           scale_fill_manual(values = c(Blue, Light_blue),
-                            aesthetics = "fill")
-        +scale_y_discrete(guide = guide_axis(n.dodge=2))
+                            aesthetics = "fill")+
+          scale_y_discrete(guide = guide_axis(n.dodge=2))
       survey_data <-
         body_add_gg(survey_data, value = temp3, style = "centered",height = 10)
       return(temp3)
@@ -180,7 +180,7 @@ preproc_stack <- function(i) {
           size = 3,
           color = "white"
         ) +
-        ggtitle(paste(i, " Graph")) +
+        ggtitle(title_prep) +
         theme(plot.title = element_text(hjust = 0.5)) +
         theme(
           plot.background = element_rect(fill = c("#F2F2F2")),
@@ -758,22 +758,17 @@ survey_data <-
   body_add_gg(survey_data, value = farm_sale_plot, style = "centered")
 
 #stacked
-t <- preproc("sell_goods")
-t
-survey_data <-
-  body_add_gg(survey_data, value = t, style = "centered")
+t <- preproc_stack("sell_goods")
+
 #official doc
 t_officialdoc <- preproc_dodge("officialdoc")
-survey_data <-
-  body_add_gg(survey_data, value = t_officialdoc, style = "centered")
+
 #stacked
-t_officialdoc_stacked <- preproc("officialdoc")
-survey_data <-
-  body_add_gg(survey_data, value = t_officialdoc_stacked, style = "centered")
+t_officialdoc_stacked <- preproc_stack("officialdoc")
+
 #mastercadprog
 t_mastercadprog <- preproc_dodge("mastcard_progr")
-survey_data <-
-  body_add_gg(survey_data, value = t_mastercadprog, style = "centered")
+
 #stacked
 t_mastercadprog_stacked <- preproc_stack("mastcard_progr")
 

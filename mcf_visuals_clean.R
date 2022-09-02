@@ -364,3 +364,8 @@ for (i in colnames(mcf_cond%>%
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
 }
+
+# create visuals for the seriousness of the conditions that respondents have
+
+diff_stack <-preproc_stack(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
+diff_dodge <- preproc_dodge(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")

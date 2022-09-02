@@ -162,11 +162,13 @@ preproc_stack <- function(data_prep,i,title_prep="no title provided") {
         #remove x axis ticks
         axis.text.x = element_blank(),
         #remove y axis labels
-        axis.ticks.x = element_blank()  #remove y axis ticks
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank()#remove y axis ticks
       ) +
       scale_fill_manual(values = c(Blue, Light_blue),
                         aesthetics = "fill")+
-      scale_y_discrete(guide = guide_axis(n.dodge=2))
+      #scale_y_discrete(guide = guide_axis(n.dodge=2))+
+      scale_y_continuous(expand=expansion(mult=c(0,0.1)))
     survey_data <-
       body_add_gg(survey_data, value = temp3, style = "centered",height = 10)
     return(temp3)
@@ -195,7 +197,8 @@ preproc_stack <- function(data_prep,i,title_prep="no title provided") {
         #remove x axis ticks
         axis.text.y = element_blank(),
         #remove y axis labels
-        axis.ticks.y = element_blank()  #remove y axis ticks
+        axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank()#remove y axis ticks
       ) +
       scale_fill_manual(values = c(Blue, Light_blue),
                         aesthetics = "fill")
@@ -372,7 +375,16 @@ diff_dodge <- preproc_dodge(mcf_data,"difficulty_1",title_prep = "Difficulty due
 
 # create visuals for employment status
 
-employ_fill <- preproc_stack(mcf_data,"employment",title_prep = "Employment Status")
-employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = "Employment Status")
+employ_fill <- preproc_stack(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
+employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
 
+# create visuals for Farming status
+
+ownfarm_fill <- preproc_stack(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
+ownfarm_dodge <-preproc_dodge(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
+
+# create visuals for Farming sales status
+
+farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
+farmsale_dodge <-preproc_dodge(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
 

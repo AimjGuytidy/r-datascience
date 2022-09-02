@@ -357,4 +357,10 @@ refugees_dodge <-preproc_dodge(mcf_data,"refuge",title_prep = "Refugee Status")
 # respondents conditions visuals
 
 mcf_cond <- characterize(mcf_data)%>%
-  select(contains("resp_conditions_"))
+  select(contains("resp_conditions_"),gender,geo_entity,cell_weights,stratum)
+
+for (i in colnames(mcf_cond%>%
+                   select(contains("resp_conditions_")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
+}

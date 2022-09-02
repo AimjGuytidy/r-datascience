@@ -10,6 +10,10 @@ library(sjmisc)
 library(tidyr)
 library(lubridate)
 library(readxl)
+library(wordcloud)
+library(RColorBrewer)
+library(wordcloud2)
+
 Light_grey <- c("#F2F2F2") #Light grey for the background
 Blue <- c("#097ABC") #Blue
 Light_blue <- c("#9DC3E5") #Light blue
@@ -771,9 +775,7 @@ t_mastercadprog <- preproc_dodge("mastcard_progr")
 survey_data <-
   body_add_gg(survey_data, value = t_mastercadprog, style = "centered")
 #stacked
-t_mastercadprog_stacked <- preproc("mastcard_progr")
-survey_data <-
-  body_add_gg(survey_data, value = t_mastercadprog_stacked, style = "centered")
+t_mastercadprog_stacked <- preproc_stack("mastcard_progr")
 
 
 # implementation partners
@@ -805,18 +807,65 @@ gr_apply_stack <- preproc("apply")
 # Nojob variable
 
 gr_nojob_dodge <- preproc_dodge("nojob")
-survey_data <-
-  body_add_gg(survey_data, value = gr_nojob_dodge, style = "centered",height = 10)
+
 gr_nojob_stack <- preproc("nojob")
 
-survey_data <-
-  body_add_gg(survey_data, value = gr_nojob_stack, style = "centered",height = 10)
 
 # Noseek variable
 
 gr_noseek_dodge <- preproc_dodge("noseek")
-survey_data <-
-  body_add_gg(survey_data, value = gr_noseek_dodge, style = "centered",height = 10)
+
 gr_noseek_stack <- preproc_stack("noseek")
+
+#Expect seek variable
+
+gr_expect_dodge <- preproc_dodge("expect_seek")
+
+gr_expect_stack <- preproc_stack("expect_seek")
+
+
+# no expect seek categories 
+
+mcf_noexpect <- characterize(mcf_data)%>%
+  select(contains("noexpect_seek_"))%>%
+  select(-noexpect_seek_oth)
+for (i in colnames(mcf_noexpect)){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(i))
+
+  assign(paste(i,"_stack_graph"),preproc_stack(i))
+}
+
+mcf_noexpect_other <- characterize(mcf_data)%>%
+  select(noexpect_seek_oth,cell_weights,stratum,gender,geo_entity)%>%
+  filter(noexpect_seek_oth!="")
+mcf_noexpect_other <- mcf_noexpect_other%>%
+  count(noexpect_seek_oth,wt=cell_weights)
+
+gr_noexpect_other<-mcf_noexpect_other%>%
+  ggplot(aes(noexpect_seek_oth,n))+
+  geom_bar(stat = "identity",position = "dodge",fill=Blue) +
+  xlab("") +
+  ylab("") +
+  ggtitle("") +
+  coord_flip()+
+  geom_text(
+    aes(label = paste0(round(n))),
+    position = position_fill(),
+    hjust = -0.9,
+    size = 6,
+    color = "white"
+  ) +
+  
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank()
+  ) +
+  scale_fill_manual(values = c(Blue, Light_blue),
+                    aesthetics = "fill")
+survey_data <-
+  body_add_gg(survey_data, value = gr_noexpect_other, style = "centered")
+
 
 print(survey_data, target = "Visuals.docx")

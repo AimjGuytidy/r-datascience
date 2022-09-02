@@ -369,3 +369,10 @@ for (i in colnames(mcf_cond%>%
 
 diff_stack <-preproc_stack(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
 diff_dodge <- preproc_dodge(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
+
+# create visuals for employment status
+
+employ_fill <- preproc_stack(mcf_data,"employment",title_prep = "Employment Status")
+employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = "Employment Status")
+
+

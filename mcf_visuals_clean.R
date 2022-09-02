@@ -149,7 +149,7 @@ preproc_stack <- function(data_prep,i,title_prep="no title provided") {
       geom_text(
         aes(label = paste0(n, "%")),
         position = position_fill(vjust = 0.5),
-        size = 3,
+        size = 2,
         color = "white"
       ) +
       ggtitle(title_prep)+
@@ -342,3 +342,9 @@ mart_stat_dodge <- preproc_dodge(mcf_data,"mart_status",title_prep = "Marital St
 
 hhrelation_fill <- preproc_stack(mcf_data,"hhrelation",title_prep = "Head of household relationship")
 hhrelation_dodge <- preproc_dodge(mcf_data,"hhrelation",title_prep = "Head of household relationship")
+
+# create visuals for Gender of the household head
+
+hhgender_fill <- preproc_stack(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
+hhgender_dodge <- preproc_dodge(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
+

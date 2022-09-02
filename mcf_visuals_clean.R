@@ -353,3 +353,8 @@ hhgender_dodge <- preproc_dodge(mcf_data,"hh_gender",title_prep = "Gender of Hea
 refugees_fill <- preproc_stack(mcf_data,"refuge",title_prep = "Refugee Status")
 refugees_dodge <-preproc_dodge(mcf_data,"refuge",title_prep = "Refugee Status")
 
+
+# respondents conditions visuals
+
+mcf_cond <- characterize(mcf_data)%>%
+  select(contains("resp_conditions_"))

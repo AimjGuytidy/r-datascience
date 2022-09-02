@@ -406,3 +406,78 @@ for (i in colnames(mcf_impl%>%
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
 }
+
+
+# Section B: Non-employment
+
+# apply variable
+
+gr_apply_fill <- preproc_stack(mcf_data,"apply",title_prep = str_wrap("Over the past 3 months, have you applied/searched for work that provides wage, salary, commissions, tips, or any other pay, in cash or in-kind?", width = 42))
+
+gr_apply_dodge <- preproc_dodge(mcf_data,"apply",title_prep = str_wrap("Over the past 3 months, have you applied/searched for work that provides wage, salary, commissions, tips, or any other pay, in cash or in-kind?", width = 42)) 
+
+# Nojob variable
+
+gr_nojob_fill <- preproc_stack(mcf_data,"nojob",title_prep = str_wrap("If yes, why do you think you didn’t get the job?", width = 42))
+
+gr_nojob_dodge <- preproc_dodge(mcf_data,"nojob",title_prep = str_wrap("If yes, why do you think you didn’t get the job?", width = 42))
+
+
+# Noseek variable
+
+gr_noseek_fill <- preproc_stack(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+
+gr_noseek_dodge <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+
+#Expect seek variable
+
+gr_expect_dodge <- preproc_stack(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+
+gr_expect_stack <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
+
+
+# no expect seek categories 
+
+mcf_noexpect <- characterize(mcf_data)%>%
+  select(contains("noexpect_seek_"))%>%
+  select(-noexpect_seek_oth)
+for (i in colnames(mcf_noexpect)){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(i))
+  
+  assign(paste(i,"_stack_graph"),preproc_stack(i))
+}
+
+mcf_noexpect_other <- characterize(mcf_data)%>%
+  select(noexpect_seek_oth,cell_weights,stratum,gender,geo_entity)%>%
+  filter(noexpect_seek_oth!="")
+mcf_noexpect_other <- mcf_noexpect_other%>%
+  count(noexpect_seek_oth,wt=cell_weights)
+
+gr_noexpect_other<-mcf_noexpect_other%>%
+  ggplot(aes(noexpect_seek_oth,n))+
+  geom_bar(stat = "identity",position = "dodge",fill=Blue) +
+  xlab("") +
+  ylab("") +
+  ggtitle("") +
+  coord_flip()+
+  geom_text(
+    aes(label = paste0(round(n))),
+    position = position_fill(),
+    hjust = -0.9,
+    size = 6,
+    color = "white"
+  ) +
+  
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank()
+  ) +
+  scale_fill_manual(values = c(Blue, Light_blue),
+                    aesthetics = "fill")
+survey_data <-
+  body_add_gg(survey_data, value = gr_noexpect_other, style = "centered")
+
+
+print(survey_data, target = "Visuals.docx")

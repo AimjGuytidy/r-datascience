@@ -332,29 +332,29 @@ survey_data <-
   body_add_gg(survey_data, value = gender, style = "centered")
 
 # Age visuals
-
-age_fill<-preproc_stack(mcf_data,"age",title_prep = "Age Distribution")
 age_dodge<-preproc_dodge(mcf_data,"age",title_prep = "Age Distribution")
 
-# Marital status visuals
+age_fill<-preproc_stack(mcf_data,"age",title_prep = "Age Distribution")
 
-mart_stat_fill <- preproc_stack(mcf_data,"mart_status",title_prep = "Marital Status")
+# Marital status visuals
 mart_stat_dodge <- preproc_dodge(mcf_data,"mart_status",title_prep = "Marital Status")
 
-# Head of household relationship visuals
+mart_stat_fill <- preproc_stack(mcf_data,"mart_status",title_prep = "Marital Status")
 
-hhrelation_fill <- preproc_stack(mcf_data,"hhrelation",title_prep = "Head of household relationship")
+# Head of household relationship visuals
 hhrelation_dodge <- preproc_dodge(mcf_data,"hhrelation",title_prep = "Head of household relationship")
 
-# create visuals for Gender of the household head
+hhrelation_fill <- preproc_stack(mcf_data,"hhrelation",title_prep = "Head of household relationship")
 
-hhgender_fill <- preproc_stack(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
+# create visuals for Gender of the household head
 hhgender_dodge <- preproc_dodge(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
 
+hhgender_fill <- preproc_stack(mcf_data,"hh_gender",title_prep = "Gender of Head of households")
+
 # create visuals for Refugees
+refugees_dodge <-preproc_dodge(mcf_data,"refuge",title_prep = "Refugee Status")
 
 refugees_fill <- preproc_stack(mcf_data,"refuge",title_prep = "Refugee Status")
-refugees_dodge <-preproc_dodge(mcf_data,"refuge",title_prep = "Refugee Status")
 
 
 # respondents conditions visuals
@@ -369,32 +369,34 @@ for (i in colnames(mcf_cond%>%
 }
 
 # create visuals for the seriousness of the conditions that respondents have
-
-diff_stack <-preproc_stack(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
 diff_dodge <- preproc_dodge(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
 
-# create visuals for employment status
+diff_stack <-preproc_stack(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
 
-employ_fill <- preproc_stack(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
+# create visuals for employment status
 employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
 
-# create visuals for Farming status
+employ_fill <- preproc_stack(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
 
-ownfarm_fill <- preproc_stack(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
+# create visuals for Farming status
 ownfarm_dodge <-preproc_dodge(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
 
-# create visuals for Farming sales status
+ownfarm_fill <- preproc_stack(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
 
-farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
+# create visuals for Farming sales status
 farmsale_dodge <-preproc_dodge(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
 
+farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
+
 #official doc
-offdoc_fill <- preproc_stack(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
 offdoc_dodge <-preproc_dodge(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
 
+offdoc_fill <- preproc_stack(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
+
 #mastercadprog
-mastercard_fill <- preproc_stack(mcf_data,"mastcard_progr",title_prep = str_wrap("To your knowledge, have you ever participated in a programme collaborating with the Mastercard Foundation?" , width = 42))
 mastercard_dodge <-preproc_dodge(mcf_data,"mastcard_progr",title_prep = str_wrap("To your knowledge, have you ever participated in a programme collaborating with the Mastercard Foundation?" , width = 42))
+
+mastercard_fill <- preproc_stack(mcf_data,"mastcard_progr",title_prep = str_wrap("To your knowledge, have you ever participated in a programme collaborating with the Mastercard Foundation?" , width = 42))
 
 # implementation partners
 
@@ -411,29 +413,29 @@ for (i in colnames(mcf_impl%>%
 # Section B: Non-employment
 
 # apply variable
+gr_apply_dodge <- preproc_dodge(mcf_data,"apply",title_prep = str_wrap("Over the past 3 months, have you applied/searched for work that provides wage, salary, commissions, tips, or any other pay, in cash or in-kind?", width = 42)) 
 
 gr_apply_fill <- preproc_stack(mcf_data,"apply",title_prep = str_wrap("Over the past 3 months, have you applied/searched for work that provides wage, salary, commissions, tips, or any other pay, in cash or in-kind?", width = 42))
 
-gr_apply_dodge <- preproc_dodge(mcf_data,"apply",title_prep = str_wrap("Over the past 3 months, have you applied/searched for work that provides wage, salary, commissions, tips, or any other pay, in cash or in-kind?", width = 42)) 
 
 # Nojob variable
+gr_nojob_dodge <- preproc_dodge(mcf_data,"nojob",title_prep = str_wrap("If yes, why do you think you didn’t get the job?", width = 42))
 
 gr_nojob_fill <- preproc_stack(mcf_data,"nojob",title_prep = str_wrap("If yes, why do you think you didn’t get the job?", width = 42))
 
-gr_nojob_dodge <- preproc_dodge(mcf_data,"nojob",title_prep = str_wrap("If yes, why do you think you didn’t get the job?", width = 42))
 
 
 # Noseek variable
+gr_noseek_dodge <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
 
 gr_noseek_fill <- preproc_stack(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
 
-gr_noseek_dodge <- preproc_dodge(mcf_data,"noseek",title_prep = str_wrap("If you have not sought paid work, what is the reason you did not seek work?", width = 42))
 
 #Expect seek variable
+gr_expect_dodge <- preproc_dodge(mcf_data,"expect_seek",title_prep = str_wrap("If you did not seek work for any reason below option d., do you expect to seek paid work within the next 6 months? ", width = 42))
 
 gr_expect_fill <- preproc_stack(mcf_data,"expect_seek",title_prep = str_wrap("If you did not seek work for any reason below option d., do you expect to seek paid work within the next 6 months? ", width = 42))
 
-gr_expect_dodge <- preproc_dodge(mcf_data,"expect_seek",title_prep = str_wrap("If you did not seek work for any reason below option d., do you expect to seek paid work within the next 6 months? ", width = 42))
 
 
 # no expect seek categories 

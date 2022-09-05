@@ -364,8 +364,8 @@ mcf_cond <- characterize(mcf_data)%>%
 
 for (i in colnames(mcf_cond%>%
                    select(contains("resp_conditions_")))){
-  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
-  assign(paste(i,"_stack_graph"),preproc_stack(mcf_cond,i,title_prep = paste0("Respondents Conditions:",i)))
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_cond,i,title_prep = paste0("Respondents Conditions:",var_label(mcf_cond[c(i)]))))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_cond,i,title_prep = paste0("Respondents Conditions:",var_label(mcf_cond[c(i)]))))
 }
 
 # create visuals for the seriousness of the conditions that respondents have

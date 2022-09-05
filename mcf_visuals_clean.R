@@ -446,8 +446,8 @@ mcf_noexpect <- characterize(mcf_data)%>%
   select(-noexpect_seek_oth)
 for (i in colnames(mcf_noexpect%>%
                    select(contains("noexpect_seek_")))){
-  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_noexpect,i,title_prep = paste0("If no, why not?:",i)))
-  assign(paste(i,"_stack_graph"),preproc_stack(mcf_noexpect,i,title_prep = paste0("If no, why not?:",i)))
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_noexpect,i,title_prep = paste0("If no, why not?:",var_label(mcf_noexpect[c(i)]))))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_noexpect,i,title_prep = paste0("If no, why not?:",var_label(mcf_noexpect[c(i)]))))
 }
 
 mcf_noexpect_other <- characterize(mcf_data)%>%

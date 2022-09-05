@@ -482,4 +482,36 @@ gr_noexpect_other<-mcf_noexpect_other%>%
 survey_data <-
   body_add_gg(survey_data, value = gr_noexpect_other, style = "centered")
 
+# Section C: Education and skills
+#readletter variable
+gr_readletter_dodge <- preproc_dodge(mcf_data,"readletter",title_prep = str_wrap("Can you read a letter or a simple note?", width = 42))
+
+gr_readletter_fill <- preproc_stack(mcf_data,"readletter",title_prep = str_wrap("Can you read a letter or a simple note?", width = 42))
+
+#writeletter variable
+gr_writeletter_dodge <- preproc_dodge(mcf_data,"writeletter",title_prep = str_wrap("If yes, can you write a letter or a simple note?", width = 42))
+
+gr_writeletter_fill <- preproc_stack(mcf_data,"writeletter",title_prep = str_wrap("If yes, can you write a letter or a simple note?", width = 42))
+
+#adult_readwrite variable
+gr_adult_readwrite_dodge <- preproc_dodge(mcf_data,"adult_readwrite",title_prep = str_wrap("If no to both of the preceding questions, can any other adult in your household read or write?", width = 42))
+
+gr_adult_readwrite_fill <- preproc_stack(mcf_data,"adult_readwrite",title_prep = str_wrap("If no to both of the preceding questions, can any other adult in your household read or write?", width = 42))
+
+#culculation variable
+gr_culculation_dodge <- preproc_dodge(mcf_data,"culculation",title_prep = str_wrap("Can you perform a written calculation?", width = 42))
+
+gr_culculation_fill <- preproc_stack(mcf_data,"culculation",title_prep = str_wrap("Can you perform a written calculation?", width = 42))
+
+#language variable
+
+#language_ability variable
+
+#education variable
+gr_education_dodge <- preproc_dodge(mcf_data,"education",title_prep = str_wrap("What is the highest level of education that you have completed? ", width = 42))
+
+gr_education_fill <- preproc_stack(mcf_data,"education",title_prep = str_wrap("What is the highest level of education that you have completed?", width = 42))
+
+
+
 print(survey_data, target = "Visuals.docx")

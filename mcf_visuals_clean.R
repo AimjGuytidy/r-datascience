@@ -329,7 +329,7 @@ gendr <- characterize(mcf_data) %>%
                       aesthetics = "fill")
 )
 survey_data <-
-  body_add_gg(survey_data, value = gender, style = "centered")
+  body_add_gg(survey_data, value = gender_plot, style = "centered")
 
 # Age visuals
 age_dodge<-preproc_dodge(mcf_data,"age",title_prep = "Age Distribution")
@@ -390,8 +390,8 @@ mcf_impl <- characterize(mcf_data)%>%
 
 for (i in colnames(mcf_impl%>%
                    select(contains("progr_")))){
-  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
-  assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",var_label(mcf_impl[c(i)]))))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",var_label(mcf_impl[c(i)]))))
 }
 
 # create visuals for employment status

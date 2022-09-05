@@ -373,21 +373,6 @@ diff_dodge <- preproc_dodge(mcf_data,"difficulty_1",title_prep = "Difficulty due
 
 diff_stack <-preproc_stack(mcf_data,"difficulty_1",title_prep = "Difficulty due to conditions")
 
-# create visuals for employment status
-employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
-
-employ_fill <- preproc_stack(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
-
-# create visuals for Farming status
-ownfarm_dodge <-preproc_dodge(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
-
-ownfarm_fill <- preproc_stack(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
-
-# create visuals for Farming sales status
-farmsale_dodge <-preproc_dodge(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
-
-farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
-
 #official doc
 offdoc_dodge <-preproc_dodge(mcf_data,"officialdoc",title_prep = str_wrap("If yes to any of the above, do you have an official ID saying that you have the disability?" , width = 42))
 
@@ -408,6 +393,22 @@ for (i in colnames(mcf_impl%>%
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",i)))
 }
+
+# create visuals for employment status
+employ_dodge <-preproc_dodge(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
+
+employ_fill <- preproc_stack(mcf_data,"employment",title_prep = str_wrap("Did you do any work for wage, salary, commissions, tips, or any other pay, in cash or in-kind, even if only for one hour? (Includes persons with regular, casual, short-term or part-time intermittent and seasonal jobs, apprentices)?" , width = 42))
+
+# create visuals for Farming status
+ownfarm_dodge <-preproc_dodge(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
+
+ownfarm_fill <- preproc_stack(mcf_data,"own_farming",title_prep = str_wrap("Did you do any farm work such as growing crops, raising or tending animals, fishing, forestry, etc.?" , width = 42))
+
+# create visuals for Farming sales status
+farmsale_dodge <-preproc_dodge(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
+
+farmsale_fill <- preproc_stack(mcf_data,"sell_goods",title_prep = str_wrap("If yes to any of the above, did you sell or barter any part of the goods obtained from this work?" , width = 42))
+
 
 
 # Section B: Non-employment

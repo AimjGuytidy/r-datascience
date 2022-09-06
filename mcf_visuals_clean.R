@@ -506,7 +506,18 @@ gr_culculation_fill <- preproc_stack(mcf_data,"culculation",title_prep = str_wra
 #language variable
 
 #language_ability variable
+mcf_language_ability <- characterize(mcf_data)%>%
+  select(contains("language_ability_"),gender,geo_entity,cell_weights,stratum)
+mcf_language_ability$language_ability_1 <- set_variable_labels(mcf_language_ability$language_ability_1,.labels=c(x1="English"))
+mcf_language_ability$language_ability_2 <- set_variable_labels(mcf_language_ability$language_ability_2,.labels=c(x1="French"))
+mcf_language_ability$language_ability_3 <- set_variable_labels(mcf_language_ability$language_ability_3,.labels=c(x1="Kiswahili"))
 
+
+for (i in colnames(mcf_language_ability%>%
+                   select(contains("language_ability_")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_language_ability,i,title_prep = paste0("How do you use your language ability?:",var_label(mcf_language_ability[c(i)]))))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_language_ability,i,title_prep = paste0("How do you use your language ability?:",var_label(mcf_language_ability[c(i)]))))
+}
 #education variable
 gr_education_dodge <- preproc_dodge(mcf_data,"education",title_prep = str_wrap("What is the highest level of education that you have completed? ", width = 42))
 

@@ -512,6 +512,72 @@ gr_education_dodge <- preproc_dodge(mcf_data,"education",title_prep = str_wrap("
 
 gr_education_fill <- preproc_stack(mcf_data,"education",title_prep = str_wrap("What is the highest level of education that you have completed?", width = 42))
 
+#diploma variable
+gr_diploma_dodge <- preproc_dodge(mcf_data,"diploma",title_prep = str_wrap("If e and above, in which field of education is your diploma/certificate/degree?", width = 42))
 
+gr_diploma_fill <- preproc_stack(mcf_data,"diploma",title_prep = str_wrap("If e and above, in which field of education is your diploma/certificate/degree?", width = 42))
+
+#educ_quality variable
+gr_educ_quality_dodge <- preproc_dodge(mcf_data,"educ_quality",title_prep = str_wrap("How would you rate the quality of education received?", width = 42))
+
+gr_educ_quality_fill <- preproc_stack(mcf_data,"educ_quality",title_prep = str_wrap("How would you rate the quality of education received?", width = 42))
+
+
+#educ_knowledge variable
+gr_educ_knowledge_dodge <- preproc_dodge(mcf_data,"educ_knowledge",title_prep = str_wrap("To what extent do you think your formal education have given you the type of knowledge and skills needed to get good work opportunities?", width = 42))
+
+gr_educ_knowledge_fill <- preproc_stack(mcf_data,"educ_knowledge",title_prep = str_wrap("To what extent do you think your formal education have given you the type of knowledge and skills needed to get good work opportunities?", width = 42))
+
+#educ_relavent variable
+gr_educ_relavent_dodge <- preproc_dodge(mcf_data,"educ_relavent",title_prep = str_wrap("The education I received was relevant to my educational aspirations", width = 42))
+
+gr_educ_relavent_fill <- preproc_stack(mcf_data,"educ_relavent",title_prep = str_wrap("The education I received was relevant to my educational aspirations", width = 42))
+
+#educ_child variable
+gr_educ_child_dodge <- preproc_dodge(mcf_data,"educ_child",title_prep = str_wrap("What level of education do you want for your children?", width = 42))
+
+gr_educ_child_fill <- preproc_stack(mcf_data,"educ_child",title_prep = str_wrap("What level of education do you want for your children?", width = 42))
+
+#trainings variable
+
+#training_career variable
+gr_training_career_dodge <- preproc_dodge(mcf_data,"training_career",title_prep = str_wrap("If any of the above did the training help you in your career prospects?", width = 42))
+
+gr_training_career_fill <- preproc_stack(mcf_data,"training_career",title_prep = str_wrap("If any of the above did the training help you in your career prospects?", width = 42))
+
+#online_course variable
+gr_online_course_dodge <- preproc_dodge(mcf_data,"online_course",title_prep = str_wrap("Have you ever taken an online course?", width = 42))
+
+gr_online_course_fill <- preproc_stack(mcf_data,"online_course",title_prep = str_wrap("Have you ever taken an online course?", width = 42))
+
+#online_helpful variable
+gr_online_helpful_dodge <- preproc_dodge(mcf_data,"online_helpful",title_prep = str_wrap("If yes, was it helpful for your professional career? ", width = 42))
+
+gr_online_helpful_fill <- preproc_stack(mcf_data,"online_helpful",title_prep = str_wrap("If yes, was it helpful for your professional career? ", width = 42))
+
+#member_training variable
+
+#curr_pursuing variable
+gr_curr_pursuing_dodge <- preproc_dodge(mcf_data,"curr_pursuing",title_prep = str_wrap("Are you currently pursuing any education or training?", width = 42))
+
+gr_curr_pursuing_fill <- preproc_stack(mcf_data,"curr_pursuing",title_prep = str_wrap("Are you currently pursuing any education or training?", width = 42))
+
+#nocurrent_educ variable
+gr_nocurrent_educ_dodge <- preproc_dodge(mcf_data,"nocurrent_educ",title_prep = str_wrap("What is the reason you are not pursuing additional education?", width = 42))
+
+gr_nocurrent_educ_fill <- preproc_stack(mcf_data,"nocurrent_educ",title_prep = str_wrap("What is the reason you are not pursuing additional education?", width = 42))
+
+
+#current_educ variable
+gr_current_educ_dodge <- preproc_dodge(mcf_data,"current_educ",title_prep = str_wrap("What level of education are you pursuing?", width = 42))
+
+gr_current_educ_fill <- preproc_stack(mcf_data,"current_educ",title_prep = str_wrap("What level of education are you pursuing?", width = 42))
+
+#future_diploma variable
+ 
+
+gr_future_diploma_dodge <- preproc_dodge(mcf_data,"future_diploma",title_prep = str_wrap("If e and above, in which field of education is your future diploma/certificate/degree?", width = 42))
+
+gr_future_diploma_fill <- preproc_stack(mcf_data,"future_diploma",title_prep = str_wrap("If e and above, in which field of education is your future diploma/certificate/degree?", width = 42))
 
 print(survey_data, target = "Visuals.docx")

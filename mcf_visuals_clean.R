@@ -504,7 +504,14 @@ gr_culculation_dodge <- preproc_dodge(mcf_data,"culculation",title_prep = str_wr
 gr_culculation_fill <- preproc_stack(mcf_data,"culculation",title_prep = str_wrap("Can you perform a written calculation?", width = 42))
 
 #language variable
+mcf_lang <- characterize(mcf_data)%>%
+  select(matches("language_[0-9]$"),gender,geo_entity,cell_weights,stratum)
 
+for (i in colnames(mcf_lang%>%
+                   select(matches("language_[0-9]$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_lang,i,title_prep = paste0("I speak:",var_label(mcf_lang[c(i)]))))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_lang,i,title_prep = paste0("I speak:",var_label(mcf_lang[c(i)]))))
+}
 #language_ability variable
 mcf_language_ability <- characterize(mcf_data)%>%
   select(contains("language_ability_"),gender,geo_entity,cell_weights,stratum)

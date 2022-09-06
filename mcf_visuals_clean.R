@@ -557,7 +557,14 @@ gr_educ_child_dodge <- preproc_dodge(mcf_data,"educ_child",title_prep = str_wrap
 gr_educ_child_fill <- preproc_stack(mcf_data,"educ_child",title_prep = str_wrap("What level of education do you want for your children?", width = 42))
 
 #trainings variable
+mcf_training <- characterize(mcf_data)%>%
+  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)
 
+for (i in colnames(mcf_training%>%
+                   select(matches("trainings_[0-9]$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width = 42)))
+}
 #training_career variable
 gr_training_career_dodge <- preproc_dodge(mcf_data,"training_career",title_prep = str_wrap("If any of the above did the training help you in your career prospects?", width = 42))
 

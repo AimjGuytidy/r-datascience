@@ -581,7 +581,14 @@ gr_online_helpful_dodge <- preproc_dodge(mcf_data,"online_helpful",title_prep = 
 gr_online_helpful_fill <- preproc_stack(mcf_data,"online_helpful",title_prep = str_wrap("If yes, was it helpful for your professional career? ", width = 42))
 
 #member_training variable
+mcf_training <- characterize(mcf_data)%>%
+  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)
 
+for (i in colnames(mcf_training%>%
+                   select(matches("trainings_[0-9]$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width = 42)))
+}
 #curr_pursuing variable
 gr_curr_pursuing_dodge <- preproc_dodge(mcf_data,"curr_pursuing",title_prep = str_wrap("Are you currently pursuing any education or training?", width = 42))
 
@@ -597,6 +604,8 @@ gr_nocurrent_educ_fill <- preproc_stack(mcf_data,"nocurrent_educ",title_prep = s
 gr_current_educ_dodge <- preproc_dodge(mcf_data,"current_educ",title_prep = str_wrap("What level of education are you pursuing?", width = 42))
 
 gr_current_educ_fill <- preproc_stack(mcf_data,"current_educ",title_prep = str_wrap("What level of education are you pursuing?", width = 42))
+
+#current_training variable
 
 #future_diploma variable
  

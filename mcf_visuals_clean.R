@@ -360,10 +360,11 @@ refugees_fill <- preproc_stack(mcf_data,"refuge",title_prep = "Refugee Status")
 # respondents conditions visuals
 
 mcf_cond <- characterize(mcf_data)%>%
-  select(contains("resp_conditions_"),gender,geo_entity,cell_weights,stratum)
+  select(matches("resp_conditions_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("resp_conditions_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 
 for (i in colnames(mcf_cond%>%
-                   select(contains("resp_conditions_")))){
+                   select(matches("resp_conditions_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_cond,i,title_prep = paste0("Respondents Conditions:",var_label(mcf_cond[c(i)]))))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_cond,i,title_prep = paste0("Respondents Conditions:",var_label(mcf_cond[c(i)]))))
 }
@@ -386,10 +387,11 @@ mastercard_fill <- preproc_stack(mcf_data,"mastcard_progr",title_prep = str_wrap
 # implementation partners
 
 mcf_impl <- characterize(mcf_data)%>%
-  select(contains("progr_"),gender,geo_entity,cell_weights,stratum)
+  select(matches("progr_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("progr_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 
 for (i in colnames(mcf_impl%>%
-                   select(contains("progr_")))){
+                   select(matches("progr_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",var_label(mcf_impl[c(i)]))))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_impl,i,title_prep = paste0("Implementation Partner:",var_label(mcf_impl[c(i)]))))
 }
@@ -442,10 +444,11 @@ gr_expect_fill <- preproc_stack(mcf_data,"expect_seek",title_prep = str_wrap("If
 # no expect seek categories 
 
 mcf_noexpect <- characterize(mcf_data)%>%
-  select(contains("noexpect_seek_"),gender,geo_entity,cell_weights,stratum)%>%
-  select(-noexpect_seek_oth)
+  select(matches("noexpect_seek_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  select(-noexpect_seek_oth)%>%
+  mutate(across(matches("noexpect_seek_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 for (i in colnames(mcf_noexpect%>%
-                   select(contains("noexpect_seek_")))){
+                   select(matches("noexpect_seek_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_noexpect,i,title_prep = paste0("If no, why not?:",var_label(mcf_noexpect[c(i)]))))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_noexpect,i,title_prep = paste0("If no, why not?:",var_label(mcf_noexpect[c(i)]))))
 }
@@ -505,23 +508,25 @@ gr_culculation_fill <- preproc_stack(mcf_data,"culculation",title_prep = str_wra
 
 #language variable
 mcf_lang <- characterize(mcf_data)%>%
-  select(matches("language_[0-9]$"),gender,geo_entity,cell_weights,stratum)
+  select(matches("language_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("language_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 
 for (i in colnames(mcf_lang%>%
-                   select(matches("language_[0-9]$")))){
+                   select(matches("language_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_lang,i,title_prep = paste0("I speak:",var_label(mcf_lang[c(i)]))))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_lang,i,title_prep = paste0("I speak:",var_label(mcf_lang[c(i)]))))
 }
 #language_ability variable
 mcf_language_ability <- characterize(mcf_data)%>%
-  select(contains("language_ability_"),gender,geo_entity,cell_weights,stratum)
+  select(matches("language_ability_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("language_ability_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 mcf_language_ability$language_ability_1 <- set_variable_labels(mcf_language_ability$language_ability_1,.labels=c(x1="English"))
 mcf_language_ability$language_ability_2 <- set_variable_labels(mcf_language_ability$language_ability_2,.labels=c(x1="French"))
 mcf_language_ability$language_ability_3 <- set_variable_labels(mcf_language_ability$language_ability_3,.labels=c(x1="Kiswahili"))
 
 
 for (i in colnames(mcf_language_ability%>%
-                   select(contains("language_ability_")))){
+                   select(contains("language_ability_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_language_ability,i,title_prep = paste0("How do you use your language ability?:",var_label(mcf_language_ability[c(i)]))))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_language_ability,i,title_prep = paste0("How do you use your language ability?:",var_label(mcf_language_ability[c(i)]))))
 }
@@ -558,7 +563,8 @@ gr_educ_child_fill <- preproc_stack(mcf_data,"educ_child",title_prep = str_wrap(
 
 #trainings variable
 mcf_training <- characterize(mcf_data)%>%
-  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)
+  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("trainings_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 
 for (i in colnames(mcf_training%>%
                    select(matches("trainings_[0-9]$")))){
@@ -582,10 +588,11 @@ gr_online_helpful_fill <- preproc_stack(mcf_data,"online_helpful",title_prep = s
 
 #member_training variable
 mcf_training <- characterize(mcf_data)%>%
-  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)
+  select(matches("member_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("member_training_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 
 for (i in colnames(mcf_training%>%
-                   select(matches("trainings_[0-9]$")))){
+                   select(matches("member_training_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width=42)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_training,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_training[c(i)])),width = 42)))
 }
@@ -607,6 +614,15 @@ gr_current_educ_fill <- preproc_stack(mcf_data,"current_educ",title_prep = str_w
 
 #current_training variable
 
+mcf_curtraining <- characterize(mcf_data)%>%
+  select(matches("current_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("current_training_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+
+for (i in colnames(mcf_curtraining%>%
+                   select(matches("current_training_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_curtraining,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_curtraining[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_curtraining,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_curtraining[c(i)])),width = 42)))
+}
 #future_diploma variable
  
 

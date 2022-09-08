@@ -445,7 +445,6 @@ gr_expect_fill <- preproc_stack(mcf_data,"expect_seek",title_prep = str_wrap("If
 
 mcf_noexpect <- characterize(mcf_data)%>%
   select(matches("noexpect_seek_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  select(-noexpect_seek_oth)%>%
   mutate(across(matches("noexpect_seek_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 for (i in colnames(mcf_noexpect%>%
                    select(matches("noexpect_seek_[0-9]+$")))){
@@ -624,10 +623,68 @@ for (i in colnames(mcf_curtraining%>%
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_curtraining,i,title_prep = str_wrap(paste0("Have you ever participated in training toward any of the following skills?",var_label(mcf_curtraining[c(i)])),width = 42)))
 }
 #future_diploma variable
- 
 
 gr_future_diploma_dodge <- preproc_dodge(mcf_data,"future_diploma",title_prep = str_wrap("If e and above, in which field of education is your future diploma/certificate/degree?", width = 42))
 
 gr_future_diploma_fill <- preproc_stack(mcf_data,"future_diploma",title_prep = str_wrap("If e and above, in which field of education is your future diploma/certificate/degree?", width = 42))
+
+# Section D: Access to services and assets
+
+#extent_purchase variable
+
+gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
+
+gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
+
+#ownasset variable
+
+mcf_ownasset <- characterize(mcf_data)%>%
+  select(matches("ownasset_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("ownasset_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+mcf_ownasset$ownasset_0 <- set_variable_labels(mcf_ownasset$ownasset_0,.labels=c(x1="None"))
+mcf_ownasset$ownasset_1 <- set_variable_labels(mcf_ownasset$ownasset_1,.labels=c(x1="A house"))
+mcf_ownasset$ownasset_2 <- set_variable_labels(mcf_ownasset$ownasset_2,.labels=c(x1="Agricultural land"))
+
+
+for (i in colnames(mcf_ownasset%>%
+                   select(matches("ownasset_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_ownasset,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_ownasset[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_ownasset,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_ownasset[c(i)])),width = 42)))
+}
+
+#lose_asset variable
+
+mcf_losasset <- characterize(mcf_data)%>%
+  select(matches("lose_assets_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("lose_assets_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+mcf_losasset$lose_assets_0 <- set_variable_labels(mcf_losasset$lose_assets_0,.labels=c(x1="None"))
+mcf_losasset$lose_assets_1 <- set_variable_labels(mcf_losasset$lose_assets_1,.labels=c(x1="A house"))
+mcf_losasset$lose_assets_2 <- set_variable_labels(mcf_losasset$lose_assets_2,.labels=c(x1="Agricultural land"))
+
+for (i in colnames(mcf_losasset%>%
+                   select(matches("lose_assets_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_losasset,i,title_prep = str_wrap(paste0("Did you lose any of the above over the past 12 months:",var_label(mcf_losasset[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_losasset,i,title_prep = str_wrap(paste0("Did you lose any of the above over the past 12 months:",var_label(mcf_losasset[c(i)])),width = 42)))
+}
+
+#livestock variable
+
+mcf_livestock <- characterize(mcf_data)%>%
+  select(matches("livestocks_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("livestocks_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+mcf_livestock$livestocks_0 <- set_variable_labels(mcf_livestock$livestocks_0,.labels=c(x1="None"))
+mcf_livestock$livestocks_1 <- set_variable_labels(mcf_livestock$livestocks_1,.labels=c(x1="Chickens"))
+mcf_livestock$livestocks_2 <- set_variable_labels(mcf_livestock$livestocks_2,.labels=c(x1="Goats"))
+mcf_livestock$livestocks_3 <- set_variable_labels(mcf_livestock$livestocks_3,.labels=c(x1="Cows"))
+mcf_livestock$livestocks_4 <- set_variable_labels(mcf_livestock$livestocks_4,.labels=c(x1="Pigs"))
+mcf_livestock$livestocks_5 <- set_variable_labels(mcf_livestock$livestocks_5,.labels=c(x1="Rabbits"))
+mcf_livestock$livestocks_6 <- set_variable_labels(mcf_livestock$livestocks_6,.labels=c(x1="Sheep"))
+mcf_livestock$livestocks_7 <- set_variable_labels(mcf_livestock$livestocks_7,.labels=c(x1="Beehives"))
+
+for (i in colnames(mcf_livestock%>%
+                   select(matches("livestocks_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_livestock,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_livestock[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_livestock,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_livestock[c(i)])),width = 42)))
+}
 
 print(survey_data, target = "Visuals.docx")

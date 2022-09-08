@@ -779,131 +779,51 @@ gr_exterior_walls_dodge <- preproc_dodge(mcf_data,"exterior_walls",title_prep = 
 
 gr_exterior_walls_fill <- preproc_stack(mcf_data,"exterior_walls",title_prep = str_wrap("What is the main material of the exterior walls in your household?", width = 42))
 
-#extent_purchase variable
+vars_df <-
+  c(
+    "fuel_cooking","cropinsurance","healthcare","healthcare_comp","clean_water",
+    "clean_water_comp","sanitation","sanitation_comp","electricity","electricity_comp",
+    "telephone","telephone_comp","internet","internet_comp","transport","transport_comp",
+    "food","food_comp","roads","roads_comp","loans","loans_comp","bank_account", 	
+    "bank_account_comp","nature","nature_comp"
+  )
+var_lab <- 
+  c(
+    "What type of fuel does your household mainly use for cooking?", 
+    "Are there places in this village or near here where people can 
+    get insurance (e.g. crop insurance, livestock)?", 
+    "Over the past 12 months, how easily did you access to health care services",  
+    "How does access over the past 12 months compare to the year before?",
+    "Over the past 12 months, how easily did you access to clean water", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to safe sanitation", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to electricity", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to telephone services", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to internet services", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to transport", 
+    "How does access over the past 12 months compare to the year before?", 
+      "Over the past 12 months, how easily did you access to food", 
+    "How does access over the past 12 months compare to the year before?",
+      "Over the past 12 months, how easily did you access to roads and trading points", 
+    "How does access over the past 12 months compare to the year before?",
+      "Over the past 12 months, how easily did you access to loans", 
+    "How does access over the past 12 months compare to the year before?",
+      "Over the past 12 months, how easily did you access a bank account", 
+    "How does access over the past 12 months compare to the year before?",
+    "Over the past 12 months, how easily did you access places in nature to enjoy", 
+    "How does access over the past 12 months compare to the year before?"
+      
+  )
+meshed <- data.frame(x=vars_df,y=var_lab)
 
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-#extent_purchase variable
-
-gr_extent_purchase_dodge <- preproc_dodge(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
-gr_extent_purchase_fill <- preproc_stack(mcf_data,"extent_purchase",title_prep = str_wrap("To what extent do you participate in decision making for purchasing assets and property?", width = 42))
-
+for (i in 1:nrow(meshed[,c("x","y")][1])){
+  assign(paste(meshed[,c("x","y")][i,1],"_dodge_graph"),preproc_dodge(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  assign(paste(meshed[,c("x","y")][i,1],"_stack_graph"),preproc_stack(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  
+}
 
 print(survey_data, target = "Visuals.docx")

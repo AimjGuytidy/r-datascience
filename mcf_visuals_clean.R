@@ -387,9 +387,7 @@ mastercard_fill <- preproc_stack(mcf_data,"mastcard_progr",title_prep = str_wrap
 # implementation partners
 
 mcf_impl <- characterize(mcf_data)%>%
-  select(matches("progr_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("progr_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
-
+  select(matches("progr_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 for (i in colnames(mcf_impl%>%
                    select(matches("progr_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_impl,i,title_prep = paste0("Implementation Partner:",var_label(mcf_impl[c(i)]))))
@@ -444,8 +442,7 @@ gr_expect_fill <- preproc_stack(mcf_data,"expect_seek",title_prep = str_wrap("If
 # no expect seek categories 
 
 mcf_noexpect <- characterize(mcf_data)%>%
-  select(matches("noexpect_seek_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("noexpect_seek_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("noexpect_seek_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 for (i in colnames(mcf_noexpect%>%
                    select(matches("noexpect_seek_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_noexpect,i,title_prep = paste0("If no, why not?:",var_label(mcf_noexpect[c(i)]))))
@@ -507,8 +504,7 @@ gr_culculation_fill <- preproc_stack(mcf_data,"culculation",title_prep = str_wra
 
 #language variable
 mcf_lang <- characterize(mcf_data)%>%
-  select(matches("language_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("language_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("language_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 
 for (i in colnames(mcf_lang%>%
                    select(matches("language_[0-9]+$")))){
@@ -562,8 +558,7 @@ gr_educ_child_fill <- preproc_stack(mcf_data,"educ_child",title_prep = str_wrap(
 
 #trainings variable
 mcf_training <- characterize(mcf_data)%>%
-  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("trainings_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("trainings_[0-9]$"),gender,geo_entity,cell_weights,stratum)
 
 for (i in colnames(mcf_training%>%
                    select(matches("trainings_[0-9]$")))){
@@ -587,8 +582,7 @@ gr_online_helpful_fill <- preproc_stack(mcf_data,"online_helpful",title_prep = s
 
 #member_training variable
 mcf_training <- characterize(mcf_data)%>%
-  select(matches("member_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("member_training_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("member_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 
 for (i in colnames(mcf_training%>%
                    select(matches("member_training_[0-9]+$")))){
@@ -614,8 +608,7 @@ gr_current_educ_fill <- preproc_stack(mcf_data,"current_educ",title_prep = str_w
 #current_training variable
 
 mcf_curtraining <- characterize(mcf_data)%>%
-  select(matches("current_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("current_training_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("current_training_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 
 for (i in colnames(mcf_curtraining%>%
                    select(matches("current_training_[0-9]+$")))){
@@ -670,8 +663,8 @@ for (i in colnames(mcf_losasset%>%
 #livestock variable
 
 mcf_livestock <- characterize(mcf_data)%>%
-  select(matches("livestocks_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("livestocks_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("^livestocks_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("^livestocks_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 mcf_livestock$livestocks_0 <- set_variable_labels(mcf_livestock$livestocks_0,.labels=c(x1="None"))
 mcf_livestock$livestocks_1 <- set_variable_labels(mcf_livestock$livestocks_1,.labels=c(x1="Chickens"))
 mcf_livestock$livestocks_2 <- set_variable_labels(mcf_livestock$livestocks_2,.labels=c(x1="Goats"))
@@ -826,4 +819,90 @@ for (i in 1:nrow(meshed[,c("x","y")][1])){
   
 }
 
-print(survey_data, target = "Visuals.docx")
+
+# SECTION E:  Employment (responses only from employed/self-employed) 
+
+vars_df <-
+  c(
+    "give_chance","type_employ","title","inc_impro","wor_condi","chang_earning",
+    "chang_condition","indi_need","fami_need","resp_workplace","resp_carabout",
+    "sense_purp","fully_ambition"
+    
+  )
+var_lab <- 
+  c(
+    "If given the chance, would you like to work more hours than you currently do?", 
+    "In the income generating work that you spend most time on, are you self-employed or wage employed?", 
+    "In the job that you spend the most time on (${main_activity}), which of the following occupations describe best your current title?", 
+    "During the past 3 months, has your income from ${main_activity} (your main activity)improved?", 
+    "During the past 3 months, has the working conditions in ${main_activity} ( your main activity) improved",
+    "Compared to the same time last year, have you seen any positive or negative changes in your earnings?", 
+    "Compared to the same time last year, have you seen any positive or negative  changes in your working conditions?", 
+    "Your work pays you enough to meet your individual needs", 
+    "Your work pays you enough to meet your family needs", 
+    "You feel respected in your workplace?", 
+    "Your work is respected by those you care about?",   
+    "Your work gives you a sense of purpose?", 
+    "Your work is fully aligned with your ambition?"
+      
+  )
+meshed <- data.frame(x=vars_df,y=var_lab)
+
+for (i in 1:nrow(meshed[,c("x","y")][1])){
+  assign(paste(meshed[,c("x","y")][i,1],"_dodge_graph"),preproc_dodge(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  assign(paste(meshed[,c("x","y")][i,1],"_stack_graph"),preproc_stack(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  
+}
+
+# SECTION F:  Specific to Self-employed 
+
+vars_df <-
+  c(
+    "job_accept","any_working","intro_prod","new_mark","out_supp"
+  )
+var_lab <- 
+  c(
+    "If you were offered a full-time wage job to cover the financial needs of you and your dependents, would you accept?",
+    "Do you have anyone working for you?",
+    "Have you introduced any new products/services over the past 12 months?", 
+    "Have you found new markets in the past 12 months?",  
+    "Have you ever received any kind of outside support?" 
+  )
+meshed <- data.frame(x=vars_df,y=var_lab)
+
+for (i in 1:nrow(meshed[,c("x","y")][1])){
+  assign(paste(meshed[,c("x","y")][i,1],"_dodge_graph"),preproc_dodge(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  assign(paste(meshed[,c("x","y")][i,1],"_stack_graph"),preproc_stack(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  
+}
+
+#kindsup variable
+
+mcf_kindsup <- characterize(mcf_data)%>%
+  select(matches("kindsup_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("kindsup_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+mcf_kindsup$kindsup_1 <- set_variable_labels(mcf_kindsup$kindsup_1,.labels=c(x1="Financial"))
+mcf_kindsup$kindsup_2 <- set_variable_labels(mcf_kindsup$kindsup_2,.labels=c(x1="Business development training"))
+mcf_kindsup$kindsup_3 <- set_variable_labels(mcf_kindsup$kindsup_3,.labels=c(x1="Technical training"))
+mcf_kindsup$kindsup_4 <- set_variable_labels(mcf_kindsup$kindsup_4,.labels=c(x1="Farming Support"))
+mcf_kindsup$kindsup_5 <- set_variable_labels(mcf_kindsup$kindsup_5,.labels=c(x1="Food Support"))
+mcf_kindsup$kindsup_6 <- set_variable_labels(mcf_kindsup$kindsup_6,.labels=c(x1="Health Insurance"))
+mcf_kindsup$kindsup_98 <- set_variable_labels(mcf_kindsup$kindsup_98,.labels=c(x1="Other (explain)"))
+
+for (i in colnames(mcf_kindsup%>%
+                   select(matches("kindsup_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_kindsup,i,title_prep = str_wrap(paste0("If yes, what kind of support?",var_label(mcf_kindsup[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_kindsup,i,title_prep = str_wrap(paste0("If yes, what kind of support?",var_label(mcf_kindsup[c(i)])),width = 42)))
+}
+
+#fro_whom variable
+
+mcf_frowhom <- characterize(mcf_data)%>%
+  select(matches("fro_whom_[0-9]+_1$"),gender,geo_entity,cell_weights,stratum)
+for (i in colnames(mcf_frowhom%>%
+                   select(matches("fro_whom_[0-9]+_1$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_frowhom,i,title_prep = str_wrap(paste0("From whom:",var_label(mcf_frowhom[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_frowhom,i,title_prep = str_wrap(paste0("From whom:",var_label(mcf_frowhom[c(i)])),width = 42)))
+}
+
+print(survey_data, target = "G:/Shared drives/MCF Baseline - external baseline/4. Baseline assessment/4. QUANT/2. Data analysis/Data visualization Parfait/Visuals1.docx")

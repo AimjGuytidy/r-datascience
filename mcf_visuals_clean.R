@@ -960,6 +960,20 @@ for (i in colnames(mcf_diguse%>%
 }
 
 
+#digital_use_in_job variable visuals
+gr_digital_use_in_job_dodge <- preproc_dodge(mcf_data,"digitaluseinjob",title_prep = str_wrap("To what extent do you use digital tools in your current job?", width = 42))
+
+gr_digital_use_in_job_fill <- preproc_stack(mcf_data,"digitaluseinjob",title_prep = str_wrap("To what extent do you use digital tools in your current job?", width = 42))
+
+# computer_use variable visuals
+mcf_reasnot <- characterize(mcf_data)%>%
+  select(matches("^reasons_not_usingdigt_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
+
+for (i in colnames(mcf_reasnot%>%
+                   select(matches("^reasons_not_usingdigt_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_reasnot,i,title_prep = str_wrap(paste0("For what reasons don’t you use digital tools in your current job? (If  c or d to the above question) ",var_label(mcf_reasnot[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_reasnot,i,title_prep = str_wrap(paste0("For what reasons don’t you use digital tools in your current job? (If  c or d to the above question) ",var_label(mcf_reasnot[c(i)])),width = 42)))
+}
 
 
 

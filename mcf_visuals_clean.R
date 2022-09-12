@@ -975,11 +975,4 @@ for (i in colnames(mcf_reasnot%>%
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_reasnot,i,title_prep = str_wrap(paste0("For what reasons don’t you use digital tools in your current job? (If  c or d to the above question) ",var_label(mcf_reasnot[c(i)])),width = 42)))
 }
 
-
-
-
-
-
-
-
 print(survey_data, target = "G:/Shared drives/MCF Baseline - external baseline/4. Baseline assessment/4. QUANT/2. Data analysis/Data visualization Parfait/Visuals1.docx")

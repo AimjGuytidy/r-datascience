@@ -123,7 +123,7 @@ preproc_stack <- function(data_prep,i,title_prep="no title provided") {
     ungroup() %>%
     dplyr::mutate_all( ~ replace(., is.na(.), "Not applicable")) %>%
     dplyr::mutate(across(-n, function(x)
-      gsub("^[a-z]+\\.\\s+", "", x)),
+      gsub("^[a-z]+\\.\\s*", "", x)),
       temp1 = str_wrap(temp1, width = 10),
       n = as.integer(n))
   if (nrow(temp) > 6){
@@ -216,7 +216,7 @@ preproc_dodge <- function(data_prep,i,title_prep="no title provided") {
     dplyr::mutate_all(~ replace(., is.na(.), "Not applicable")) %>%
     dplyr::mutate(
       across(-n, function(x)
-        gsub("^[a-z]+\\.\\s+", "", x)),
+        gsub("^[a-z]+\\.\\s*", "", x)),
       temp1 = str_wrap(temp1, width = 10),
       n = as.integer(n),
       n = n / sum(n)
@@ -675,7 +675,7 @@ mcf_livestock$livestocks_6 <- set_variable_labels(mcf_livestock$livestocks_6,.la
 mcf_livestock$livestocks_7 <- set_variable_labels(mcf_livestock$livestocks_7,.labels=c(x1="Beehives"))
 
 for (i in colnames(mcf_livestock%>%
-                   select(matches("livestocks_[0-9]+$")))){
+                   select(matches("^livestocks_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_livestock,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_livestock[c(i)])),width=42)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_livestock,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_livestock[c(i)])),width = 42)))
 }
@@ -703,8 +703,8 @@ for (i in colnames(mcf_lolivestock%>%
 #equiment variable
 
 mcf_equiment <- characterize(mcf_data)%>%
-  select(matches("equiment_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("equiment_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("^equiment_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("^equiment_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 mcf_equiment$equiment_0 <- set_variable_labels(mcf_equiment$equiment_0,.labels=c(x1="None"))
 mcf_equiment$equiment_1 <- set_variable_labels(mcf_equiment$equiment_1,.labels=c(x1="Television"))
 mcf_equiment$equiment_2 <- set_variable_labels(mcf_equiment$equiment_2,.labels=c(x1="Radio"))
@@ -716,7 +716,7 @@ mcf_equiment$equiment_7 <- set_variable_labels(mcf_equiment$equiment_7,.labels=c
 mcf_equiment$equiment_8 <- set_variable_labels(mcf_equiment$equiment_8,.labels=c(x1="Bicycle"))
 
 for (i in colnames(mcf_equiment%>%
-                   select(matches("equiment_[0-9]+$")))){
+                   select(matches("^equiment_[0-9]+$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_equiment,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_equiment[c(i)])),width=42)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_equiment,i,title_prep = str_wrap(paste0("Does your household currently own any of this:",var_label(mcf_equiment[c(i)])),width = 42)))
 }
@@ -879,8 +879,8 @@ for (i in 1:nrow(meshed[,c("x","y")][1])){
 #kindsup variable
 
 mcf_kindsup <- characterize(mcf_data)%>%
-  select(matches("kindsup_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
-  mutate(across(matches("kindsup_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
+  select(matches("^kindsup_[0-9]+$"),gender,geo_entity,cell_weights,stratum)%>%
+  mutate(across(matches("^kindsup_[0-9]+$"),~ifelse(.x==1,"Yes","No")))
 mcf_kindsup$kindsup_1 <- set_variable_labels(mcf_kindsup$kindsup_1,.labels=c(x1="Financial"))
 mcf_kindsup$kindsup_2 <- set_variable_labels(mcf_kindsup$kindsup_2,.labels=c(x1="Business development training"))
 mcf_kindsup$kindsup_3 <- set_variable_labels(mcf_kindsup$kindsup_3,.labels=c(x1="Technical training"))
@@ -903,6 +903,35 @@ for (i in colnames(mcf_frowhom%>%
                    select(matches("fro_whom_[0-9]+_1$")))){
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_frowhom,i,title_prep = str_wrap(paste0("From whom:",var_label(mcf_frowhom[c(i)])),width=42)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_frowhom,i,title_prep = str_wrap(paste0("From whom:",var_label(mcf_frowhom[c(i)])),width = 42)))
+}
+
+# SECTION G:  Digital
+vars_df <-
+  c(
+    "phone_ownership",
+    "internet_access" 
+  )
+var_lab <- 
+  c(
+    "Do you own a phone?", 
+    "Can the phone access the internet?" 
+  )
+meshed <- data.frame(x=vars_df,y=var_lab)
+
+for (i in 1:nrow(meshed[,c("x","y")][1])){
+  assign(paste(meshed[,c("x","y")][i,1],"_dodge_graph"),preproc_dodge(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  assign(paste(meshed[,c("x","y")][i,1],"_stack_graph"),preproc_stack(mcf_data,meshed[,c("x","y")][i,1],title_prep = str_wrap(meshed[,c("x","y")][i,2], width = 42)))
+  
+}
+
+# phone_use variable visuals
+mcf_phoneuse <- characterize(mcf_data)%>%
+  select(matches("^phone_use_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
+
+for (i in colnames(mcf_phoneuse%>%
+                   select(matches("^phone_use_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_phoneuse,i,title_prep = str_wrap(paste0("What do you normally use a phone for?",var_label(mcf_phoneuse[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_phoneuse,i,title_prep = str_wrap(paste0("What do you normally use a phone for?",var_label(mcf_phoneuse[c(i)])),width = 42)))
 }
 
 print(survey_data, target = "G:/Shared drives/MCF Baseline - external baseline/4. Baseline assessment/4. QUANT/2. Data analysis/Data visualization Parfait/Visuals1.docx")

@@ -939,7 +939,25 @@ gr_computer_ownership_dodge <- preproc_dodge(mcf_data,"computer_ownership",title
 
 gr_computer_ownership_fill <- preproc_stack(mcf_data,"computer_ownership",title_prep = str_wrap("Do you own a computer? ", width = 42))
 
+# computer_use variable visuals
+mcf_compuse <- characterize(mcf_data)%>%
+  select(matches("^computer_use_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
 
+for (i in colnames(mcf_compuse%>%
+                   select(matches("^computer_use_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_compuse,i,title_prep = str_wrap(paste0(" what do you normally use your computer for?",var_label(mcf_compuse[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_compuse,i,title_prep = str_wrap(paste0(" what do you normally use your computer for?",var_label(mcf_compuse[c(i)])),width = 42)))
+}
+
+# digital_use variable visuals
+mcf_diguse <- characterize(mcf_data)%>%
+  select(matches("^digital_use_[0-9]+$"),gender,geo_entity,cell_weights,stratum)
+
+for (i in colnames(mcf_diguse%>%
+                   select(matches("^digital_use_[0-9]+$")))){
+  assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_diguse,i,title_prep = str_wrap(paste0(" what do you normally use your computer for?",var_label(mcf_diguse[c(i)])),width=42)))
+  assign(paste(i,"_stack_graph"),preproc_stack(mcf_diguse,i,title_prep = str_wrap(paste0(" what do you normally use your computer for?",var_label(mcf_diguse[c(i)])),width = 42)))
+}
 
 
 

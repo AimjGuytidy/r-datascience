@@ -135,7 +135,7 @@ preproc_stack <- function(data_prep,i,title_prep="no title provided") {
       ungroup() %>%
       dplyr::mutate_all( ~ replace(., is.na(.), "Not applicable")) %>%
       dplyr::mutate(across(-n, function(x)
-        gsub("^[a-z]+\\.\\s+", "", x)),
+        gsub("^[a-z]+\\.\\s*", "", x)),
         temp1 = str_wrap(temp1, width = 28),
         n = as.integer(n))
     
@@ -228,7 +228,7 @@ preproc_dodge <- function(data_prep,i,title_prep="no title provided") {
       dplyr::mutate_all(~ replace(., is.na(.), "Not applicable")) %>%
       dplyr::mutate(
         across(-n, function(x)
-          gsub("^[a-z]+\\.\\s+", "", x)),
+          gsub("^[a-z]+\\.\\s*", "", x)),
         temp1 = str_wrap(temp1, width = 28),
         n = as.integer(n),
         n = n / sum(n)
@@ -933,5 +933,21 @@ for (i in colnames(mcf_phoneuse%>%
   assign(paste(i,"_dodge_graph"),preproc_dodge(mcf_phoneuse,i,title_prep = str_wrap(paste0("What do you normally use a phone for?",var_label(mcf_phoneuse[c(i)])),width=42)))
   assign(paste(i,"_stack_graph"),preproc_stack(mcf_phoneuse,i,title_prep = str_wrap(paste0("What do you normally use a phone for?",var_label(mcf_phoneuse[c(i)])),width = 42)))
 }
+
+#computer_ownership variable visuals
+gr_computer_ownership_dodge <- preproc_dodge(mcf_data,"computer_ownership",title_prep = str_wrap("Do you own a computer? ", width = 42))
+
+gr_computer_ownership_fill <- preproc_stack(mcf_data,"computer_ownership",title_prep = str_wrap("Do you own a computer? ", width = 42))
+
+
+
+
+
+
+
+
+
+
+
 
 print(survey_data, target = "G:/Shared drives/MCF Baseline - external baseline/4. Baseline assessment/4. QUANT/2. Data analysis/Data visualization Parfait/Visuals1.docx")

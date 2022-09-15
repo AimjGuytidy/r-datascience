@@ -16,3 +16,6 @@ data_bc <-data_enum
 colnames(data_bc) <- paste("bc",colnames(data_bc),sep = "_")
 View(data_bc)
 data_bc<-rename(data_bc,prim_key=bc_prim_key)
+
+data_join <- data_bc %>% 
+  inner_join(data_enum,by="prim_key")

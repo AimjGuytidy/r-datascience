@@ -19,3 +19,11 @@ data_bc<-rename(data_bc,prim_key=bc_prim_key)
 
 data_join <- data_bc %>% 
   inner_join(data_enum,by="prim_key")
+
+data_join <- select(data_join,-prim_key)
+for(i in unique(gsub("^[b][c](_)","",names(data_join)))){
+  data_join[,paste0("equal_", i)] <- ifelse(
+    data_join[,i] == data_join[,paste0("bc_", i)], 
+    0, 1
+  )
+}

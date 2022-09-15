@@ -16,22 +16,15 @@ data_bc <-data_enum
 colnames(data_bc) <- paste("bc",colnames(data_bc),sep = "_")
 View(data_bc)
 data_bc<-rename(data_bc,prim_key=bc_prim_key)
-data_bc
+data_bc$bc_displ[32] <- 8.7
 data_join <- data_bc %>% 
   inner_join(data_enum,by="prim_key")
 
-data_join <- select(data_join,-prim_key)
-for(i in unique(gsub("^[b][c](_)","",names(data_join)))){
+for(i in unique(gsub("^(bc)(_)","",colnames(data_join)[colnames(data_join)!="prim_key"]))){
   data_join[,paste0("equal_", i)] <- ifelse(
     data_join[,i] == data_join[,paste0("bc_", i)], 
     0, 1
   )
 }
 
-
-for(i in unique(gsub("^[b][c](_)","",colnames(data_join)[colnames(data_join)!="prim_key"]))){
-  data_join[,paste0("equal_", i)] <- ifelse(
-    data_join[,i] == data_join[,paste0("bc_", i)], 
-    0, 1
-  )
-}
+filter(data_join,if_any(colnames(select(data_join,matches("^equal_+"))),~.x==1))

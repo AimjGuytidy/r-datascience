@@ -94,6 +94,11 @@ quality_refuge<-mcf_data_l5_t%>%
   dplyr::group_by(refuge)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
+#disaggregating based on stratum
+quality_employment<-mcf_data_l5_t%>%
+  dplyr::group_by(stratum)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 
 
 # step 1: averaging services improvement (subquestion b related)
@@ -126,4 +131,32 @@ prop_great_geo_count <- mcf_data_l5_t %>%
 prop_great_geo_calc <- mcf_data_l5_t %>%
   group_by(geo_entity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = n*100/sum(n))
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by pwd
+prop_great_pwd_calc <- mcf_data_l5_t %>%
+  group_by(pwd,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by refugee status
+prop_great_refugee_calc <- mcf_data_l5_t %>%
+  group_by(refuge,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by age group
+prop_great_agegroup_calc <- mcf_data_l5_t %>%
+  group_by(age_group,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by stratum
+prop_great_stratum_calc <- mcf_data_l5_t %>%
+  group_by(stratum,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+
+
+

@@ -79,13 +79,26 @@ quality_gender<-mcf_data_l5_t%>%
   dplyr::group_by(gender)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
+#disaggregating based on age group
+quality_agegroup<-mcf_data_l5_t%>%
+  dplyr::group_by(age_group)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+
+#disaggregating based on pwd
+quality_pwd<-mcf_data_l5_t%>%
+  dplyr::group_by(pwd)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+
+#disaggregating based on refugee
+quality_refuge<-mcf_data_l5_t%>%
+  dplyr::group_by(refuge)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 
 
 # step 1: averaging services improvement (subquestion b related)
 
 mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(avg_improv_quality_life=rowMeans(select(.,var_df_b$variable),na.rm = TRUE))%>%
   mutate(prop_great=case_when(avg_improv_quality_life==2~1, TRUE~0))
 
 prop_great_count <- mcf_data_l5_t %>%
@@ -93,7 +106,7 @@ prop_great_count <- mcf_data_l5_t %>%
 
 prop_great_calc <- mcf_data_l5_t %>%
   count(prop_great,wt=weights)%>%
-  mutate(propotional_great = n*100/sum(n))
+  mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by gender
 prop_great_gender_count <- mcf_data_l5_t %>%
@@ -103,7 +116,7 @@ prop_great_gender_count <- mcf_data_l5_t %>%
 prop_great_gender_calc <- mcf_data_l5_t %>%
   group_by(gender,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = n*100/sum(n))
+  mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by geo_entity
 prop_great_geo_count <- mcf_data_l5_t %>%

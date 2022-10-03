@@ -1,4 +1,5 @@
 library(dplyr)
+library(tidyr)
 library(readr)
 library(openxlsx)
 library(haven)
@@ -6,7 +7,7 @@ library(foreign)
 library(labelled)
 library(rio)
 mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
-mcf_data <- characterize(mcf_data)
+mcf_data_char <- characterize(mcf_data)
 unique(mcf_data$healthcare_access)
 #L5.3.1 Quality of life index===========
 # Data manipulation
@@ -48,7 +49,7 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 # step 2: averaging services improvement (subquestion b related)
 
 mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(avg_improv_quality_life=rowMeans(select(.,var_df_b$variable),na.rm = TRUE))
+  mutate(avg_improv_quality_life=rowMeans(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)),na.rm = TRUE))
 
 #step 3: computing the product of step 1 and step 2
 
@@ -61,16 +62,22 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(perc_quality_life=(prod_quality_life*100)/96)
 
 # compute non weighted mean and weighted mean
-qual_mean <- mean(mcf_data_l5_t$perc_quality_life)
+
+#qual_mean <- mean(mcf_data_l5_t$perc_quality_life)
+
 qual_mean_w <- weighted.mean(mcf_data_l5_t$perc_quality_life,mcf_data_l5_t$weights)
+round(qual_mean_w,2)
 #Compute weighted mean
+
+#disaggregating based on geo entity
 quality_geo<-mcf_data_l5_t%>%
   dplyr::group_by(geo_entity)%>%
-  dplyr::summarize(average=weighted.mean(perc_quality_life, weights))
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
+#disaggregating based on gender
 quality_gender<-mcf_data_l5_t%>%
   dplyr::group_by(gender)%>%
-  dplyr::summarize(average=weighted.mean(perc_quality_life, weights))
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 

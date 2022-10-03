@@ -7,8 +7,7 @@ library(labelled)
 library(rio)
 mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 mcf_data <- characterize(mcf_data)
-View(mcf_data$main_activity)
-mcf_data$weights
+unique(mcf_data$healthcare_access)
 #L5.3.1 Quality of life index===========
 # Data manipulation
 # change the values from 1-6 to 0-4
@@ -42,10 +41,9 @@ for (i in 1:length(keyword_label_b) ){
 }
 
 # step 1: summing values from variables covering subquestion a and indicator l5.3.1
-
+var_df_filter <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
 mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(sum_quality_life=rowSums(select(.,var_df$variable),na.rm = TRUE))
-
+  mutate(sum_quality_life=rowSums(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)),na.rm = TRUE))
 
 # step 2: averaging services improvement (subquestion b related)
 

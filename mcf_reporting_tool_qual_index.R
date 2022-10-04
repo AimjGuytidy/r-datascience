@@ -681,7 +681,7 @@ avg_expectation_refugee <- characterize(mcf_data) %>%
   group_by(refuge, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
                                                          TRUE), 2))%>%
-  pivot_wider(names_from = "refuge",values_from = "avg_ability_score")%>%
+  pivot_wider(names_from = "refuge",values_from = "avg_exp_score")%>%
   select(-c("a. Non refuge"))%>%
   as.data.frame()
 
@@ -690,8 +690,11 @@ avg_expectation_refugee <- characterize(mcf_data) %>%
 avg_expectation_agegroup <- characterize(mcf_data) %>%
   group_by(age_group, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
-                                                         TRUE), 2))
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "age_group",values_from = "avg_exp_score")%>%
+  as.data.frame()
 
+##########################################################
 #total youth with ability score of agree or strongly agree
 
 prop_exp_score_calc <- characterize(mcf_data) %>%

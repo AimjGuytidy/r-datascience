@@ -480,7 +480,8 @@ overall2_qualindex_prop_isic <- prop_great_calc%>%
   left_join(prop_great_pwd_calc)%>%
   left_join(prop_great_refugee_calc)%>%
   left_join(prop_great_agegroup_calc)%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","Total_overall","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall2_qualindex_prop_isic,"data/overall2_qualindex_prop_isic.xlsx")
 
 #L5.1.2b -------
@@ -546,7 +547,8 @@ overall3_avg_ability_score_isic <- avg_ability%>%
   left_join(avg_ability_pwd)%>%
   left_join(avg_ability_refugee)%>%
   left_join(avg_ability_agegroup)%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","avg_ability_score","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall3_avg_ability_score_isic,"data/overall3_avg_ability_score_isic.xlsx")
 
 
@@ -625,7 +627,8 @@ overall4_prop_ability_score_isic <- prop_ability_score_calc%>%
   left_join(prop_ability_score_pwd_calc)%>%
   left_join(prop_ability_score_refugee_calc)%>%
   left_join(prop_ability_score_agegroup_calc)%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","Total_overall","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall4_prop_ability_score_isic,"data/overall4_prop_ability_score_isic.xlsx")
 
 
@@ -700,7 +703,8 @@ overall5_avg_expectation_isic <- avg_expectation_total%>%
   left_join(avg_expectation_pwd)%>%
   left_join(avg_expectation_refugee)%>%
   left_join(avg_expectation_agegroup)%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","avg_exp_score","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall5_avg_expectation_isic,"data/overall5_avg_expectation_isic.xlsx")
 
 
@@ -778,7 +782,8 @@ overall6_prop_exp_score_isic <- prop_exp_score_calc%>%
   left_join(prop_exp_score_pwd_calc)%>%
   left_join(prop_exp_score_refugee_calc)%>%
   left_join(prop_exp_score_agegroup_calc)%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","propotional_great","b. Female","a. Male","b. Refugee","Yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall6_prop_exp_score_isic,"data/overall6_prop_exp_score_isic.xlsx")
 
 

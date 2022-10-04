@@ -165,7 +165,7 @@ prop_great_stratum_calc <- mcf_data_l5_t %>%
 mcf_data <- mcf_data%>%
   mutate(ability_score=rowMeans(select(.,c("work_trainings","training_jb_market")),na.rm = TRUE))
 mcf_data <- mcf_data%>%
-  mutate(ab_score_prop = ifelse(ability_score<=2,1,0))
+  mutate(ab_score_prop = ifelse(ability_score<=2.5,1,0))
 #average ability score 
 avg_ability<-mcf_data%>%
   group_by()%>%
@@ -195,26 +195,51 @@ avg_ability_agegroup<-mcf_data%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
 
-#Option b 
-#Proportion of strongly agree/agree educ_knowledge 
-mcf_data<-mcf_data%>%
-  mutate(agree_knowledge=case_when(educ_knowledge%in%c(1,2)~1,TRUE~0))%>%
-  move_columns(agree_knowledge,.after = educ_knowledge)
-#Overall
-agree_knowledge1<-mcf_data%>%
-  group_by(agree_knowledge)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total))
-#Disaggreation by gender 
-agree_knowledge_gender<-mcf_data%>%
-  group_by(gender,agree_knowledge)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total))
-#Disaggreation by geoentity 
-agree_knowledge_geoentity<-mcf_data%>%
-  group_by(geo_entity,agree_knowledge)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total)) 
+
+#total youth with ability score of agree or strongly agree
+
+prop_ability_score_calc <- mcf_data %>%
+  count(ab_score_prop,wt=weights)%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by gender
+prop_ability_score_gender_calc <- mcf_data %>%
+  group_by(gender,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by geo_entity
+prop_ability_score_geo_calc <- mcf_data %>%
+  group_by(geo_entity,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by pwd
+prop_ability_score_pwd_calc <- mcf_data%>%
+  group_by(pwd,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by refugee status
+prop_ability_score_refugee_calc <- mcf_data%>%
+  group_by(refuge,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by age group
+prop_ability_score_agegroup_calc <- mcf_data%>%
+  group_by(age_group,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by stratum
+prop_ability_score_stratum_calc <- mcf_data%>%
+  group_by(stratum,ab_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+
+
 
 #L5.1.2c this is not a sector specific analysis-----------------
 keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")
@@ -227,7 +252,8 @@ var_df_c <- var_df_c[1:4,]
 psych::alpha(select(mcf_data,all_of(var_df_c)))
 
 mcf_data <- mcf_data%>%
-  mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE))
+  mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
+         exp_score_prop = ifelse(expectation_score>3.5,1,0))
 
 
 avg_expectation_total<-mcf_data%>%
@@ -265,49 +291,7 @@ avg_expectation_stratum<-mcf_data%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 
-#weighted average part a
-score_indicator2c<-indicator2c%>%
-  group_by(geo_entity)%>% #you can group_by gender, geo_entity, etc; for overall, you don't group_by
-  dplyr::summarize(work_pay_indiv=weighted.mean(work_pay_indiv,weights, na.rm = TRUE),
-                   work_pay_fam=weighted.mean(work_pay_fam,weights , na.rm = TRUE ),
-                   work_from_home=weighted.mean(work_from_home,weights , na.rm = TRUE ),
-                   work_freedom=weighted.mean(work_freedom,weights , na.rm = TRUE ))
-write.xlsx(score_indicator2c, 'scores_indicator2c_3.xlsx')
 
-#part b Here were are looking at those that agree and strongly agree which are coded as 1
-indicator2c_dummy<-indicator2c%>% #to dis-aggregate, use group_by gender and geo_entity
-  mutate(work_pay_indiv=case_when(work_pay_indiv%in%c(4,5)~1, TRUE~0),
-         work_pay_fam=case_when(work_pay_fam%in%c(4,5)~1, TRUE~0),
-         work_from_home=case_when(work_from_home%in%c(4,5)~1, TRUE~0),
-         work_freedom=case_when(work_freedom%in%c(4,5)~1, TRUE~0))
-
-work_pay_indiv<-wpct(indicator2c_dummy$work_pay_indiv,indicator2c_dummy$weights)
-work_pay_fam<-wpct(indicator2c_dummy$work_pay_fam,indicator2c_dummy$weights)
-work_from_home<-wpct(indicator2c_dummy$work_from_home,indicator2c_dummy$weights)
-work_freedom<-wpct(indicator2c_dummy$work_freedom,indicator2c_dummy$weights)
-
-indicator2c_prop<-as.data.frame(rbind(work_pay_indiv,work_pay_fam,work_from_home,
-                                      work_freedom))
-indicator2c_prop<-rownames_to_column(indicator2c_prop)
-write.xlsx(indicator2c_prop,'indicator2c proportions.xlsx')
-
-#gender and geo_entity
-indicator2c_rural<-indicator2c%>% #to dis-aggregate, use group_by gender and geo_entity
-  filter(geo_entity%in%1)%>%
-  mutate(work_pay_indiv=case_when(work_pay_indiv%in%c(4,5)~1, TRUE~0),
-         work_pay_fam=case_when(work_pay_fam%in%c(4,5)~1, TRUE~0),
-         work_from_home=case_when(work_from_home%in%c(4,5)~1, TRUE~0),
-         work_freedom=case_when(work_freedom%in%c(4,5)~1, TRUE~0))
-
-work_pay_indiv<-wpct(indicator2c_rural$work_pay_indiv,indicator2c_rural$weights)
-work_pay_fam<-wpct(indicator2c_rural$work_pay_fam,indicator2c_rural$weights)
-work_from_home<-wpct(indicator2c_rural$work_from_home,indicator2c_rural$weights)
-work_freedom<-wpct(indicator2c_rural$work_freedom,indicator2c_rural$weights)
-
-indicator2c_prop<-as.data.frame(rbind(work_pay_indiv,work_pay_fam,work_from_home,
-                                      work_freedom))
-indicator2c_prop<-rownames_to_column(indicator2c_prop)
-write.xlsx(indicator2c_prop,'indicator2c proportions_ur.xlsx')
 
 
 

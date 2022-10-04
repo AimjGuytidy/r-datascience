@@ -536,49 +536,102 @@ avg_ability_refugee <- characterize(mcf_data) %>%
 avg_ability_agegroup <- characterize(mcf_data) %>%
   group_by(age_group, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
-                                                             TRUE), 2))
+                                                             TRUE), 2))%>%
+  pivot_wider(names_from = "age_group",values_from = "avg_ability_score")%>%
+  as.data.frame()
+
+overall3_avg_ability_score_isic <- avg_ability%>%
+  left_join(avg_ability_gender)%>%
+  left_join(avg_ability_geoentity)%>%
+  left_join(avg_ability_pwd)%>%
+  left_join(avg_ability_refugee)%>%
+  left_join(avg_ability_agegroup)%>%
+  as.data.frame()
+write.xlsx(overall3_avg_ability_score_isic,"data/overall3_avg_ability_score_isic.xlsx")
 
 
+
+
+
+
+######################################################################
 #total youth with ability score of agree or strongly agree
 
 prop_ability_score_calc <- characterize(mcf_data) %>%
   count(main_activity, ab_score_prop, wt = weights) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  pivot_wider(names_from = "ab_score_prop",values_from = "propotional_great")%>%
+  rename(Total_overall=Yes)%>%
+  select(-n)%>%
+  as.data.frame()
 
 #disaggregating by gender
 prop_ability_score_gender_calc <- characterize(mcf_data) %>%
   group_by(gender, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  select(-c("n","ab_score_prop"))%>%
+  pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  as.data.frame()
 
 #disaggregating by geo_entity
 prop_ability_score_geo_calc <- characterize(mcf_data) %>%
   group_by(geo_entity, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  select(-c("n","ab_score_prop"))%>%
+  pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
+  as.data.frame()
 
 #disaggregating by pwd
 prop_ability_score_pwd_calc <- characterize(mcf_data) %>%
   group_by(pwd, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  select(-c("n","ab_score_prop"))%>%
+  pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
+  select(-c("No"))%>%
+  rename(pwd_yes=Yes)%>%
+  as.data.frame()
 
 #disaggregating by refugee status
 prop_ability_score_refugee_calc <- characterize(mcf_data) %>%
   group_by(refuge, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  select(-c("n","ab_score_prop"))%>%
+  pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
+  select(-c("a. Non refuge"))%>%
+  as.data.frame()
 
 #disaggregating by age group
 prop_ability_score_agegroup_calc <- characterize(mcf_data) %>%
   group_by(age_group, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  filter(ab_score_prop=="Yes")%>%
+  select(-c("n","ab_score_prop"))%>%
+  pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
+  as.data.frame()
+
+overall4_prop_ability_score_isic <- prop_ability_score_calc%>%
+  left_join(prop_ability_score_gender_calc)%>%
+  left_join(prop_ability_score_geo_calc)%>%
+  left_join(prop_ability_score_pwd_calc)%>%
+  left_join(prop_ability_score_refugee_calc)%>%
+  left_join(prop_ability_score_agegroup_calc)%>%
+  as.data.frame()
+write.xlsx(overall4_prop_ability_score_isic,"data/overall4_prop_ability_score_isic.xlsx")
 
 
 
 
-
+#########################################################################
 #L5.1.2c this is not a sector specific analysis-----------------
 
 #Disaggregation by gender

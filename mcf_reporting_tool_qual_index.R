@@ -634,29 +634,57 @@ write.xlsx(overall4_prop_ability_score_isic,"data/overall4_prop_ability_score_is
 #########################################################################
 #L5.1.2c this is not a sector specific analysis-----------------
 
+
+
+mcf_data <- mcf_data%>%
+  mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
+         exp_score_prop = ifelse(expectation_score>3.5,"Yes","No"))
+
+
+avg_expectation_total<-characterize(mcf_data)%>%
+  group_by(main_activity)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
+  as.data.frame()
+
+
+
 #Disaggregation by gender
 avg_expectation_gender <- characterize(mcf_data) %>%
   group_by(gender, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
-                                                         TRUE), 2))
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "gender",values_from = "avg_exp_score")%>%
+  as.data.frame()
+
 
 #Disaggregation by geo entity
 avg_expectation_geoentity <- characterize(mcf_data) %>%
   group_by(geo_entity, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
-                                                         TRUE), 2))
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "geo_entity",values_from = "avg_exp_score")%>%
+  as.data.frame()
+
 
 #Disaggregation by pwds
 avg_expectation_pwd <- characterize(mcf_data) %>%
   group_by(pwd, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
-                                                         TRUE), 2))
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "pwd",values_from = "avg_exp_score")%>%
+  select(-No)%>%
+  rename(pwd_yes=Yes)%>%
+  as.data.frame()
 
 #Disaggregation by refugee status
 avg_expectation_refugee <- characterize(mcf_data) %>%
   group_by(refuge, main_activity) %>%
   dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
-                                                         TRUE), 2))
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "refuge",values_from = "avg_ability_score")%>%
+  select(-c("a. Non refuge"))%>%
+  as.data.frame()
+
 
 #Disaggregation by age group
 avg_expectation_agegroup <- characterize(mcf_data) %>%

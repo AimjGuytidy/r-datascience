@@ -393,7 +393,8 @@ overall1_qualindex_isic <- qual_mean_w%>%
   left_join(quality_agegroup)%>%
   left_join(select(quality_pwd,-c("No")))%>%
   left_join(select(quality_refuge,-c("a. Non refuge")))%>%
-  as.data.frame()
+  as.data.frame()%>%
+  select(c("main_activity","average","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
 write.xlsx(overall1,"data/overall_qualindex_isic.xlsx")
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 
 

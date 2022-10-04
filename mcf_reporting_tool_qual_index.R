@@ -161,55 +161,39 @@ prop_great_stratum_calc <- mcf_data_l5_t %>%
 
 #L5.1.2b -------
 #Option a: average ability score 
-mcf_data<-mcf_data%>%
-  mutate(educ_knowledge1=5*((educ_knowledge-min(educ_knowledge,na.rm = TRUE))/(max(educ_knowledge,na.rm = TRUE)-min(educ_knowledge,na.rm=TRUE))))
-mcf_data<-mcf_data%>%
-  mutate(educ_relavent1=5*((educ_relavent-min(educ_relavent,na.rm = TRUE))/(max(educ_relavent,na.rm = TRUE)-min(educ_relavent,na.rm=TRUE))))
-
-skillswork<-mcf_data%>%
-  dplyr::select(educ_knowledge1,educ_relavent1)
-psych::alpha(skillswork) #reliability test 
-
-#educ_knowledge 
-knowledge_ability<-mcf_data%>%
+#work_trainings and training_jb_market
+mcf_data <- mcf_data%>%
+  mutate(ability_score=rowMeans(select(.,c("work_trainings","training_jb_market")),na.rm = TRUE))
+mcf_data <- mcf_data%>%
+  mutate(ab_score_prop = ifelse(ability_score<=2,1,0))
+#average ability score 
+avg_ability<-mcf_data%>%
   group_by()%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 #Disaggregation by gender 
-knowledge_ability_gender<-mcf_data%>%
+avg_ability_gender<-mcf_data%>%
   group_by(gender)%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 #Disaggregation by geoentity 
-knowledge_ability_geoentity<-mcf_data%>%
+avg_ability_geoentity<-mcf_data%>%
   group_by(geo_entity)%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by pwds 
-knowledge_ability_pwd<-mcf_data%>%
+avg_ability_pwd<-mcf_data%>%
   group_by(pwd)%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by refugee status 
-knowledge_ability_refugee<-mcf_data%>%
+avg_ability_refugee<-mcf_data%>%
   group_by(refuge)%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by age group 
-knowledge_ability_agegroup<-mcf_data%>%
+avg_ability_agegroup<-mcf_data%>%
   group_by(age_group)%>%
-  dplyr::summarize(knowledge_average=round(weighted.mean(educ_knowledge1, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
-#educ_relavent 
-educrelevant_ability<-mcf_data%>%
-  group_by()%>%
-  dplyr::summarize(educrelevant_average=weighted.mean(educ_relavent1, weights,na.rm=TRUE))
-#Disaggregation by gender 
-educrelevant_ability1<-mcf_data%>%
-  group_by(gender)%>%
-  dplyr::summarize(educrelevant_average=weighted.mean(educ_relavent1, weights,na.rm=TRUE))
-#Disaggregation by geoentity 
-educrelevant_ability2<-mcf_data%>%
-  group_by(geo_entity)%>%
-  dplyr::summarize(educrelevant_average=weighted.mean(educ_relavent1, weights,na.rm=TRUE))
 
 #Option b 
 #Proportion of strongly agree/agree educ_knowledge 
@@ -232,33 +216,54 @@ agree_knowledge_geoentity<-mcf_data%>%
   dplyr::summarise(total=sum(weights))%>%
   mutate(propor=total/sum(total)) 
 
-#Proportion of strongly agree/agree educ_relavent 
-mcf_data<-mcf_data%>%
-  mutate(agree_relevant=case_when(educ_relavent%in%c(1,2)~1,TRUE~0))%>%
-  move_columns(agree_relevant,.after = educ_relavent)
-#Overall
-agree_relevant1<-mcf_data%>%
-  group_by(agree_relevant)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total))
-#Disaggreation by gender 
-agree_relevant_gender<-mcf_data%>%
-  group_by(gender,agree_relevant)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total))
-#Disaggreation by geoentity 
-agree_relevant_geoentity<-mcf_data%>%
-  group_by(geo_entity,agree_relevant)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(propor=total/sum(total))  
-
 #L5.1.2c this is not a sector specific analysis-----------------
-indicator2c<-combination%>% #should have weights as well 
-  select(gender, geo_entity, work_pay_indiv,work_pay_fam,work_from_home,
-         work_freedom, weights)
+keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")
+variables_for_l512_c <- mcf_data%>%look_for(keyword_label_c)
+variables_for_l512_c <-variables_for_l512_c[,"variable"]
+var_df_c <- as.data.frame(variables_for_l512_c)
+var_df_c <- var_df_c[1:4,]
 
 #Run a reliability test 
-psych::alpha(indicator2c)
+psych::alpha(select(mcf_data,all_of(var_df_c)))
+
+mcf_data <- mcf_data%>%
+  mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE))
+
+
+avg_expectation_total<-mcf_data%>%
+  group_by()%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by gender 
+avg_expectation_gender<-mcf_data%>%
+  group_by(gender)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by geo entity 
+avg_expectation_geoentity<-mcf_data%>%
+  group_by(geo_entity)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by pwds 
+avg_expectation_pwd<-mcf_data%>%
+  group_by(pwd)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by refugee status 
+avg_expectation_refugee<-mcf_data%>%
+  group_by(refuge)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by age group 
+avg_expectation_agegroup<-mcf_data%>%
+  group_by(age_group)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
+#Disaggregation by stratum 
+avg_expectation_stratum<-mcf_data%>%
+  group_by(stratum)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
 
 #weighted average part a
 score_indicator2c<-indicator2c%>%

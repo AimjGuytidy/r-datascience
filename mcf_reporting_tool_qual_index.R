@@ -710,40 +710,76 @@ write.xlsx(overall5_avg_expectation_isic,"data/overall5_avg_expectation_isic.xls
 
 prop_exp_score_calc <- characterize(mcf_data) %>%
   count(main_activity, exp_score_prop, wt = weights) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 #disaggregating by gender
 prop_exp_score_gender_calc <- characterize(mcf_data) %>%
   group_by(gender, main_activity, exp_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes")%>%
+  pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 #disaggregating by geo_entity
 prop_exp_score_geo_calc <- characterize(mcf_data) %>%
   group_by(geo_entity, main_activity, exp_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes")%>%
+  pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 #disaggregating by pwd
 prop_exp_score_pwd_calc <- characterize(mcf_data) %>%
   group_by(pwd, main_activity, exp_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes",pwd=="Yes")%>%
+  pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 #disaggregating by refugee status
 prop_exp_score_refugee_calc <- characterize(mcf_data) %>%
   group_by(refuge, main_activity, exp_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes",refuge!="a. Non refuge")%>%
+  pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 #disaggregating by age group
 prop_exp_score_agegroup_calc <- characterize(mcf_data) %>%
   group_by(age_group, main_activity, exp_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
-  mutate(propotional_great = round(n * 100 / sum(n), 2))
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop=="Yes")%>%
+  pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
 
 
-
+overall6_prop_exp_score_isic <- prop_exp_score_calc%>%
+  left_join(prop_exp_score_gender_calc)%>%
+  left_join(prop_exp_score_geo_calc)%>%
+  left_join(prop_exp_score_pwd_calc)%>%
+  left_join(prop_exp_score_refugee_calc)%>%
+  left_join(prop_exp_score_agegroup_calc)%>%
+  as.data.frame()
+write.xlsx(overall6_prop_exp_score_isic,"data/overall6_prop_exp_score_isic.xlsx")
 
 
 

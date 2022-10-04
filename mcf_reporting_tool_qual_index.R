@@ -694,6 +694,17 @@ avg_expectation_agegroup <- characterize(mcf_data) %>%
   pivot_wider(names_from = "age_group",values_from = "avg_exp_score")%>%
   as.data.frame()
 
+overall5_avg_expectation_isic <- avg_expectation_total%>%
+  left_join(avg_expectation_gender)%>%
+  left_join(avg_expectation_geoentity)%>%
+  left_join(avg_expectation_pwd)%>%
+  left_join(avg_expectation_refugee)%>%
+  left_join(avg_expectation_agegroup)%>%
+  as.data.frame()
+write.xlsx(overall5_avg_expectation_isic,"data/overall5_avg_expectation_isic.xlsx")
+
+
+
 ##########################################################
 #total youth with ability score of agree or strongly agree
 

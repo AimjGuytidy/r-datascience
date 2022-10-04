@@ -291,7 +291,47 @@ avg_expectation_stratum<-mcf_data%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 
+#total youth with ability score of agree or strongly agree
 
+prop_exp_score_calc <- mcf_data %>%
+  count(exp_score_prop,wt=weights)%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by gender
+prop_exp_score_gender_calc <- mcf_data %>%
+  group_by(gender,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by geo_entity
+prop_exp_score_geo_calc <- mcf_data %>%
+  group_by(geo_entity,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by pwd
+prop_exp_score_pwd_calc <- mcf_data%>%
+  group_by(pwd,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by refugee status
+prop_exp_score_refugee_calc <- mcf_data%>%
+  group_by(refuge,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by age group
+prop_exp_score_agegroup_calc <- mcf_data%>%
+  group_by(age_group,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
+
+#disaggregating by stratum
+prop_exp_score_stratum_calc <- mcf_data%>%
+  group_by(stratum,exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
 
 
 

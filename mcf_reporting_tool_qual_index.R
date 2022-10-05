@@ -170,17 +170,17 @@ mcf_data_k <- mcf_data_k%>%
                                                ifelse(training_jb_market==4,2,
                                                       ifelse(training_jb_market==5,1,NA))))))
 
-mcf_data <- mcf_data%>%
-  mutate(ability_score=rowMeans(select(.,c("work_trainings","training_jb_market")),na.rm = TRUE))
+mcf_data_k <- mcf_data_k%>%
+  mutate(ability_score=rowMeans(select(.,c("work_trainings_t","training_jb_market_t")),na.rm = TRUE))
 
 mcf_data_k <- mcf_data_k%>%
   mutate(ab_score_prop = ifelse(ability_score<=2.5,"yes","no"))
 
 #Run a reliability test 
-psych::alpha(select(mcf_data,all_of(var_df_c)))
+psych::alpha(select(mcf_data_k,all_of(c("work_trainings_t","training_jb_market_t"))))
 
 #average ability score 
-avg_ability<-mcf_data%>%
+avg_ability<-mcf_data_k%>%
   group_by()%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 #Disaggregation by gender 

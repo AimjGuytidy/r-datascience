@@ -517,26 +517,21 @@ write.xlsx(overall2_qualindex_prop_isic,"data/overall2_qualindex_prop_isic.xlsx"
 #Option a: average ability score 
 #work_trainings and training_jb_market
 
-mcf_data <- mcf_data%>%
-  mutate(ability_score=rowMeans(select(.,c("work_trainings","training_jb_market")),na.rm = TRUE))
-mcf_data <- mcf_data%>%
-  mutate(ab_score_prop = ifelse(ability_score<=2.5,"Yes","No"))
-
 #average ability score
-avg_ability <- characterize(mcf_data) %>%
+avg_ability <- characterize(mcf_data_k) %>%
   group_by(main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
   as.data.frame()
 #Disaggregation by gender
-avg_ability_gender <- characterize(mcf_data) %>%
+avg_ability_gender <- characterize(mcf_data_k) %>%
   group_by(gender, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
   pivot_wider(names_from = "gender",values_from = "avg_ability_score")%>%
   as.data.frame()
 #Disaggregation by geoentity
-avg_ability_geoentity <- characterize(mcf_data) %>%
+avg_ability_geoentity <- characterize(mcf_data_k) %>%
   group_by(geo_entity, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
@@ -544,7 +539,7 @@ avg_ability_geoentity <- characterize(mcf_data) %>%
   as.data.frame()
 
 #Disaggregation by pwds
-avg_ability_pwd <- characterize(mcf_data) %>%
+avg_ability_pwd <- characterize(mcf_data_k) %>%
   group_by(pwd, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
@@ -554,7 +549,7 @@ avg_ability_pwd <- characterize(mcf_data) %>%
   as.data.frame()
 
 #Disaggregation by refugee status
-avg_ability_refugee <- characterize(mcf_data) %>%
+avg_ability_refugee <- characterize(mcf_data_k) %>%
   group_by(refuge, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
@@ -563,7 +558,7 @@ avg_ability_refugee <- characterize(mcf_data) %>%
   as.data.frame()
 
 #Disaggregation by age group
-avg_ability_agegroup <- characterize(mcf_data) %>%
+avg_ability_agegroup <- characterize(mcf_data_k) %>%
   group_by(age_group, main_activity) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
@@ -588,13 +583,16 @@ write.xlsx(overall3_avg_ability_score_isic,"data/overall3_avg_ability_score_isic
 ######################################################################
 #total youth with ability score of agree or strongly agree
 
-prop_ability_score_calc <- characterize(mcf_data) %>%
-  count(main_activity, ab_score_prop, wt = weights) %>%
+prop_ability_score_calc <- characterize(mcf_data_k) %>%
+  group_by(main_activity, ab_score_prop) %>%
+  summarise(n = sum(weights))%>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
-  pivot_wider(names_from = "ab_score_prop",values_from = "propotional_great")%>%
-  rename(Total_overall=Yes)%>%
+  #filter(ab_score_prop=="Yes")%>%
   select(-n)%>%
+  pivot_wider(names_from = "ab_score_prop",values_from = "propotional_great")%>%
+  select(c("main_activity","yes"))%>%
+  rename(Total_overall=yes)%>%
+  
   as.data.frame()
 
 #disaggregating by gender

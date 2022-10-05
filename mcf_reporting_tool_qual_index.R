@@ -596,31 +596,33 @@ prop_ability_score_calc <- characterize(mcf_data_k) %>%
   as.data.frame()
 
 #disaggregating by gender
-prop_ability_score_gender_calc <- characterize(mcf_data) %>%
+prop_ability_score_gender_calc <- characterize(mcf_data_k) %>%
   group_by(gender, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
-  select(-c("n","ab_score_prop"))%>%
+  
+  select(-c("n"))%>%
   pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  filter(ab_score_prop=="yes")%>%
+  select(-ab_score_prop)%>%
   as.data.frame()
 
 #disaggregating by geo_entity
-prop_ability_score_geo_calc <- characterize(mcf_data) %>%
+prop_ability_score_geo_calc <- characterize(mcf_data_k) %>%
   group_by(geo_entity, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
+  filter(ab_score_prop=="yes")%>%
   select(-c("n","ab_score_prop"))%>%
   pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
   as.data.frame()
 
 #disaggregating by pwd
-prop_ability_score_pwd_calc <- characterize(mcf_data) %>%
+prop_ability_score_pwd_calc <- characterize(mcf_data_k) %>%
   group_by(pwd, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
+  filter(ab_score_prop=="yes")%>%
   select(-c("n","ab_score_prop"))%>%
   pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
   select(-c("No"))%>%
@@ -628,22 +630,22 @@ prop_ability_score_pwd_calc <- characterize(mcf_data) %>%
   as.data.frame()
 
 #disaggregating by refugee status
-prop_ability_score_refugee_calc <- characterize(mcf_data) %>%
+prop_ability_score_refugee_calc <- characterize(mcf_data_k) %>%
   group_by(refuge, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
+  filter(ab_score_prop=="yes")%>%
   select(-c("n","ab_score_prop"))%>%
   pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
   select(-c("a. Non refuge"))%>%
   as.data.frame()
 
 #disaggregating by age group
-prop_ability_score_agegroup_calc <- characterize(mcf_data) %>%
+prop_ability_score_agegroup_calc <- characterize(mcf_data_k) %>%
   group_by(age_group, main_activity, ab_score_prop) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
-  filter(ab_score_prop=="Yes")%>%
+  filter(ab_score_prop=="yes")%>%
   select(-c("n","ab_score_prop"))%>%
   pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
   as.data.frame()

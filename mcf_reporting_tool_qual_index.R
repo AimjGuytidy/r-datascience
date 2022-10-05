@@ -144,10 +144,13 @@ prop_great_agegroup_calc <- mcf_data_l5_t %>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by stratum
-prop_great_stratum_calc <- mcf_data_l5_t %>%
+prop_great_stratum_calc <- characterize(mcf_data_l5_t) %>%
   group_by(stratum,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))
+  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  filter(prop_great=="Yes")%>%
+  select(-c("n","prop_great"))
+  
 
 
 #L5.1.2b -------
@@ -256,49 +259,38 @@ var_df_c <- var_df_c[1:4,]
 
 #Run a reliability test 
 psych::alpha(select(mcf_data,all_of(var_df_c)))
-
+#filtering out unemployed and students
 mcf_data <- mcf_data%>%
+  filter(stratum==1|stratum==2)%>%
   mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
-         exp_score_prop = ifelse(expectation_score>3.5,1,0))
-#######################################################
-# mcf_data <- mcf_data%>%
-#   mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
-#          exp_score_prop = ifelse(expectation_score>3.5,"yes","no"))
-# 
-# exppy1 <- characterize(mcf_data) %>%
-#   group_by(main_activity,exp_score_prop)%>%
-#   dplyr::summarise(total=sum(weights))%>%
-#   mutate(exp_tot = total/sum(total))%>%
-#   select(-c(total))%>%
-#   pivot_wider(names_from = "exp_score_prop",values_from = "exp_tot")
+         exp_score_prop = ifelse(round(expectation_score)>=4,1,0))
 
-
-avg_expectation_total<-mcf_data%>%
+avg_expectation_total<-characterize(mcf_data)%>%
   group_by()%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by gender 
-avg_expectation_gender<-mcf_data%>%
+avg_expectation_gender<-characterize(mcf_data)%>%
   group_by(gender)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by geo entity 
-avg_expectation_geoentity<-mcf_data%>%
+avg_expectation_geoentity<-characterize(mcf_data)%>%
   group_by(geo_entity)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by pwds 
-avg_expectation_pwd<-mcf_data%>%
+avg_expectation_pwd<-characterize(mcf_data)%>%
   group_by(pwd)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by refugee status 
-avg_expectation_refugee<-mcf_data%>%
+avg_expectation_refugee<-characterize(mcf_data)%>%
   group_by(refuge)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by age group 
-avg_expectation_agegroup<-mcf_data%>%
+avg_expectation_agegroup<-characterize(mcf_data)%>%
   group_by(age_group)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
 
@@ -311,7 +303,8 @@ avg_expectation_stratum<-mcf_data%>%
 #total youth with ability score of agree or strongly agree
 
 prop_exp_score_calc <- mcf_data %>%
-  count(exp_score_prop,wt=weights)%>%
+  group_by(exp_score_prop)%>%
+  dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by gender

@@ -70,6 +70,9 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 qual_mean_w <- weighted.mean(mcf_data_l5_t$perc_quality_life,mcf_data_l5_t$weights)
 View(qual_mean_w)
 #Compute weighted mean
+quality_overall<-mcf_data_l5_t%>%
+  dplyr::group_by()%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on geo entity
 quality_geo<-mcf_data_l5_t%>%
@@ -77,7 +80,7 @@ quality_geo<-mcf_data_l5_t%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on gender
-quality_gender<-mcf_data_l5_t%>%
+quality_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(gender)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
@@ -87,12 +90,12 @@ quality_agegroup<-mcf_data_l5_t%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on pwd
-quality_pwd<-mcf_data_l5_t%>%
+quality_pwd<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(pwd)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on refugee
-quality_refuge<-mcf_data_l5_t%>%
+quality_refuge<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(refuge)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
@@ -108,37 +111,38 @@ quality_employment<-characterize(mcf_data_l5_t)%>%
 mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(prop_great=case_when(avg_improv_quality_life==2~1, TRUE~0))
 
+prop_great_overall <- characterize(mcf_data_l5_t) %>%
+  group_by(prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = round(n*100/sum(n),2))
 #disaggregating by gender
 
-prop_great_gender_calc <- mcf_data_l5_t %>%
+prop_great_gender_calc <- characterize(mcf_data_l5_t) %>%
   group_by(gender,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by geo_entity
-prop_great_geo_count <- mcf_data_l5_t %>%
-  count(geo_entity,prop_great,wt=weights)
 
-
-prop_great_geo_calc <- mcf_data_l5_t %>%
+prop_great_geo_calc <- characterize(mcf_data_l5_t) %>%
   group_by(geo_entity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by pwd
-prop_great_pwd_calc <- mcf_data_l5_t %>%
+prop_great_pwd_calc <- characterize(mcf_data_l5_t) %>%
   group_by(pwd,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by refugee status
-prop_great_refugee_calc <- mcf_data_l5_t %>%
+prop_great_refugee_calc <- characterize(mcf_data_l5_t) %>%
   group_by(refuge,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by age group
-prop_great_agegroup_calc <- mcf_data_l5_t %>%
+prop_great_agegroup_calc <- characterize(mcf_data_l5_t) %>%
   group_by(age_group,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
@@ -208,7 +212,7 @@ avg_ability_agegroup<-characterize(mcf_data_k)%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
 #Disaggregation by stratum 
-avg_ability_stratum<-mcf_data%>%
+avg_ability_stratum<-characterize(mcf_data_k)%>%
   group_by(stratum)%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
 
@@ -253,7 +257,7 @@ prop_ability_score_agegroup_calc <- characterize(mcf_data_k)%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by stratum
-prop_ability_score_stratum_calc <- characterize(mcf_data)%>%
+prop_ability_score_stratum_calc <- characterize(mcf_data_k)%>%
   group_by(stratum,ab_score_prop)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))

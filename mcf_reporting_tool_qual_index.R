@@ -43,14 +43,15 @@ for (i in 1:length(keyword_label_b) ){
 }
 
 # step 1: summing values from variables covering subquestion a and indicator l5.3.1
-var_df_filter <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
+#var_df_filter <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
 mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(sum_quality_life=rowSums(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)),na.rm = TRUE))
+  mutate(sum_quality_life=rowSums(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
+                                         ),na.rm = TRUE))
 
 # step 2: averaging services improvement (subquestion b related)
 
 mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(avg_improv_quality_life=rowMeans(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)),na.rm = TRUE))
+  mutate(avg_improv_quality_life=rowMeans(select(.,var_df_b$variable),na.rm = TRUE))
 
 #step 3: computing the product of step 1 and step 2
 
@@ -67,7 +68,7 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 #qual_mean <- mean(mcf_data_l5_t$perc_quality_life)
 
 qual_mean_w <- weighted.mean(mcf_data_l5_t$perc_quality_life,mcf_data_l5_t$weights)
-round(qual_mean_w,2)
+View(qual_mean_w)
 #Compute weighted mean
 
 #disaggregating based on geo entity
@@ -165,7 +166,11 @@ prop_great_stratum_calc <- mcf_data_l5_t %>%
 mcf_data <- mcf_data%>%
   mutate(ability_score=rowMeans(select(.,c("work_trainings","training_jb_market")),na.rm = TRUE))
 mcf_data <- mcf_data%>%
-  mutate(ab_score_prop = ifelse(ability_score<=2.5,1,0))
+  mutate(ab_score_prop = ifelse(ability_score<=2.5,"yes","no"))
+
+#Run a reliability test 
+psych::alpha(select(mcf_data,all_of(var_df_c)))
+
 #average ability score 
 avg_ability<-mcf_data%>%
   group_by()%>%
@@ -202,9 +207,16 @@ avg_ability_stratum<-mcf_data%>%
 
 #total youth with ability score of agree or strongly agree
 
-prop_ability_score_calc <- mcf_data %>%
-  count(ab_score_prop,wt=weights)%>%
-  mutate(propotional_great = round(n*100/sum(n),2))
+# prop_ability_score_calc <- mcf_data %>%
+#   count(ab_score_prop,wt=weights)%>%
+#   mutate(propotional_great = round(n*100/sum(n),2))
+
+prop_ability_score_calc11 <- characterize(mcf_data) %>%
+  group_by(ab_score_prop)%>%
+  dplyr::summarise(total=sum(weights))%>%
+  mutate(propotional_great = total/sum(total))%>%
+  select(-c(total))%>%
+  pivot_wider(names_from = "ab_score_prop",values_from = "propotional_great")
 
 #disaggregating by gender
 prop_ability_score_gender_calc <- mcf_data %>%
@@ -237,7 +249,7 @@ prop_ability_score_agegroup_calc <- mcf_data%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by stratum
-prop_ability_score_stratum_calc <- mcf_data%>%
+prop_ability_score_stratum_calc <- characterize(mcf_data)%>%
   group_by(stratum,ab_score_prop)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
@@ -258,6 +270,17 @@ psych::alpha(select(mcf_data,all_of(var_df_c)))
 mcf_data <- mcf_data%>%
   mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
          exp_score_prop = ifelse(expectation_score>3.5,1,0))
+#######################################################
+# mcf_data <- mcf_data%>%
+#   mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
+#          exp_score_prop = ifelse(expectation_score>3.5,"yes","no"))
+# 
+# exppy1 <- characterize(mcf_data) %>%
+#   group_by(main_activity,exp_score_prop)%>%
+#   dplyr::summarise(total=sum(weights))%>%
+#   mutate(exp_tot = total/sum(total))%>%
+#   select(-c(total))%>%
+#   pivot_wider(names_from = "exp_score_prop",values_from = "exp_tot")
 
 
 avg_expectation_total<-mcf_data%>%
@@ -332,7 +355,7 @@ prop_exp_score_agegroup_calc <- mcf_data%>%
   mutate(propotional_great = round(n*100/sum(n),2))
 
 #disaggregating by stratum
-prop_exp_score_stratum_calc <- mcf_data%>%
+prop_exp_score_stratum_calc <- characterize(mcf_data)%>%
   group_by(stratum,exp_score_prop)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_great = round(n*100/sum(n),2))
@@ -341,10 +364,16 @@ prop_exp_score_stratum_calc <- mcf_data%>%
 #######################################################################
 # ISIC data disaggregation
 ######################################################################
+qual_mean_w11 <- characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(stratum)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+write.xlsx(qual_mean_w11,"data/stratum_qualindex_isic.xlsx")
 
-qual_mean_w <- characterize(mcf_data_l5_t)%>%
+qual_mean_w1 <- characterize(mcf_data_l5_t)%>%
   dplyr::group_by(main_activity)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+write.xlsx(qual_mean_w1,"data/sectors_qualindex_isic.xlsx")
+
 #Compute weighted mean
 
 #disaggregating based on geo entity
@@ -387,7 +416,7 @@ quality_refuge<-characterize(mcf_data_l5_t)%>%
   as.data.frame()
 write.xlsx(quality_refuge,"data/ref_isic.xlsx")
 
-overall1_qualindex_isic <- qual_mean_w%>%
+overall1_qualindex_isic <- qual_mean_w1%>%
   left_join(quality_gender)%>%
   left_join(quality_geo)%>%
   left_join(quality_agegroup)%>%
@@ -395,26 +424,26 @@ overall1_qualindex_isic <- qual_mean_w%>%
   left_join(select(quality_refuge,-c("a. Non refuge")))%>%
   as.data.frame()%>%
   select(c("main_activity","average","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
-write.xlsx(overall1,"data/overall_qualindex_isic.xlsx")
+write.xlsx(overall1_qualindex_isic,"data/overall_qualindex_isic.xlsx")
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 
 
 # step 1: averaging services improvement (subquestion b related)
 # ############
-# mcf_data_l5_t<-mcf_data_l5_t%>%
-#   mutate(prop_great=case_when(avg_improv_quality_life==2~"Yes", TRUE~"No"))
-# 
-# prop_great_count <- characterize(mcf_data_l5_t) %>%
-#   count(prop_great,wt=weights)
+mcf_data_l5_t<-mcf_data_l5_t%>%
+  mutate(prop_great=case_when(round(avg_improv_quality_life)==2~"Yes", TRUE~"No"))
+
+
 ######################################################
-prop_great_calc <- characterize(mcf_data_l5_t) %>%
-  count(main_activity,prop_great,wt=weights)%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
-  select(-n)%>%
+
+prop_great_calc1 <- characterize(mcf_data_l5_t) %>%
+  group_by(main_activity,prop_great)%>%
+  dplyr::summarise(total=sum(weights))%>%
+  mutate(propotional_great = total/sum(total))%>%
+  select(-c(total))%>%
   pivot_wider(names_from = "prop_great",values_from = "propotional_great")%>%
-  select(-No)%>%
-  rename(Total_overall=Yes)%>%
-  as.data.frame()
-write.xlsx(prop_great_calc,"data/prop_great_isic.xlsx")
+  select(-No)
+
+write.xlsx(prop_great_calc1,"data/prop_great_isic.xlsx")
 
 #disaggregating by gender
 

@@ -97,9 +97,9 @@ quality_refuge<-mcf_data_l5_t%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on stratum
-quality_employment<-mcf_data_l5_t%>%
+quality_employment<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(stratum)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights))
 
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 
 
@@ -108,17 +108,7 @@ quality_employment<-mcf_data_l5_t%>%
 mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(prop_great=case_when(avg_improv_quality_life==2~1, TRUE~0))
 
-prop_great_count <- mcf_data_l5_t %>%
-  count(prop_great,wt=weights)
-
-prop_great_calc <- mcf_data_l5_t %>%
-  count(prop_great,wt=weights)%>%
-  mutate(propotional_great = round(n*100/sum(n),2))
-
 #disaggregating by gender
-prop_great_gender_count <- mcf_data_l5_t %>%
-  count(gender,prop_great,wt=weights)
-
 
 prop_great_gender_calc <- mcf_data_l5_t %>%
   group_by(gender,prop_great)%>%
@@ -441,7 +431,8 @@ prop_great_calc1 <- characterize(mcf_data_l5_t) %>%
   mutate(propotional_great = total/sum(total))%>%
   select(-c(total))%>%
   pivot_wider(names_from = "prop_great",values_from = "propotional_great")%>%
-  select(-No)
+  select(-No)%>%
+  rename(Total_overall="Yes")
 
 write.xlsx(prop_great_calc1,"data/prop_great_isic.xlsx")
 
@@ -450,10 +441,10 @@ write.xlsx(prop_great_calc1,"data/prop_great_isic.xlsx")
 prop_great_gender_calc <- characterize(mcf_data_l5_t) %>%
   group_by(gender,main_activity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
   select(-n)%>%
-  filter(prop_great=="Yes")%>%
   pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
   select(-prop_great)%>%
   as.data.frame()
   
@@ -463,10 +454,10 @@ prop_great_gender_calc <- characterize(mcf_data_l5_t) %>%
 prop_great_geo_calc <- characterize(mcf_data_l5_t) %>%
   group_by(geo_entity,main_activity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
   select(-n)%>%
-  filter(prop_great=="Yes")%>%
   pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
   select(-prop_great)%>%
   as.data.frame()
 
@@ -474,10 +465,10 @@ prop_great_geo_calc <- characterize(mcf_data_l5_t) %>%
 prop_great_pwd_calc <- characterize(mcf_data_l5_t) %>%
   group_by(pwd,main_activity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
   select(-n)%>%
-  filter(prop_great=="Yes")%>%
   pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
   select(-c("prop_great","No"))%>%
   rename(pwd_yes=Yes)%>%
   as.data.frame()
@@ -486,10 +477,10 @@ prop_great_pwd_calc <- characterize(mcf_data_l5_t) %>%
 prop_great_refugee_calc <- characterize(mcf_data_l5_t) %>%
   group_by(refuge,main_activity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
   select(-n)%>%
-  filter(prop_great=="Yes")%>%
   pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
   select(-c("prop_great","a. Non refuge"))%>%
   as.data.frame()
 
@@ -497,14 +488,14 @@ prop_great_refugee_calc <- characterize(mcf_data_l5_t) %>%
 prop_great_agegroup_calc <- characterize(mcf_data_l5_t) %>%
   group_by(age_group,main_activity,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_great = round(n*100/sum(n),2))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
   select(-n)%>%
-  filter(prop_great=="Yes")%>%
   pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
   select(-prop_great)%>%
   as.data.frame()
 
-overall2_qualindex_prop_isic <- prop_great_calc%>%
+overall2_qualindex_prop_isic <- prop_great_calc1%>%
   left_join(prop_great_gender_calc)%>%
   left_join(prop_great_geo_calc)%>%
   left_join(prop_great_pwd_calc)%>%

@@ -75,7 +75,7 @@ quality_overall<-mcf_data_l5_t%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on geo entity
-quality_geo<-mcf_data_l5_t%>%
+quality_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
@@ -85,7 +85,7 @@ quality_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 
 #disaggregating based on age group
-quality_agegroup<-mcf_data_l5_t%>%
+quality_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
 

@@ -410,7 +410,7 @@ prop_quality_gender<-characterize(mcf_data_l5_t)%>%
   select(-c("n","prop_great"))
 prop_quality_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",prop_quality_gender$value)
 #disaggregating based on age group
-quality_agegroup<-characterize(mcf_data_l5_t)%>%
+prop_quality_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
@@ -430,6 +430,7 @@ prop_quality_pwd<-characterize(mcf_data_l5_t)%>%
 
 
 
+df_proportional_quality_life_demo <-rbind(prop_quality_gender,prop_quality_geo,prop_quality_agegroup,prop_quality_pwd)
 
 
 

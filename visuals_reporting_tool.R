@@ -9,7 +9,7 @@ library(rio)
 library(psych)
 library(ggplot2)
 library(stringr)
-
+library(forcats)
 Light_grey <- c("#F2F2F2") #Light grey for the background
 Blue <- c("#097ABC") #Blue
 Light_blue <- c("#9DC3E5") #Light blue
@@ -107,6 +107,37 @@ ggplot(df_ability_demo,aes(value,avg_ability_score))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+
+
+
+#Disaggregation by stratum
+avg_ability_stratum<-characterize(mcf_data_k)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
+
+ggplot(avg_ability_stratum,aes(str_wrap(value,15),avg_ability_score))+
+  geom_bar(stat = "identity",fill=Blue,aes(group=value))+
+  geom_text(aes(label=paste0(round(avg_ability_score,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+
+
+
+
 
 ########################################## 
 #Visualizing L5.1.2c
@@ -275,8 +306,15 @@ quality_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
+#disaggregating based on pwd
+quality_pwd<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(pwd)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  filter(pwd=="Yes")%>%
+  mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
+  pivot_longer(pwd,names_to = "name",values_to = "value")
 
-df_quality_life_demo <-rbind(quality_gender,quality_geo,quality_agegroup)
+df_quality_life_demo <-rbind(quality_gender,quality_geo,quality_agegroup,quality_pwd)
 
 ggplot(df_quality_life_demo,aes(value,average))+
   geom_bar(stat = "identity",fill=Blue)+

@@ -158,6 +158,46 @@ ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
     axis.text.x = element_blank()
   )
 #Visuals of average expectation score across demographics
+#average expectation score 
+avg_expectation_total<-characterize(mcf_data)%>%
+  group_by()%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+#Disaggregation by gender 
+avg_expectation_gender<-characterize(mcf_data)%>%
+  group_by(gender)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(gender,names_to = "name",values_to = "value")
+avg_expectation_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",avg_expectation_gender$value)
+#Disaggregation by geo entity 
+avg_expectation_geoentity<-characterize(mcf_data)%>%
+  group_by(geo_entity)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(geo_entity,names_to = "name",values_to = "value")
+#Disaggregation by age group 
+avg_expectation_agegroup<-characterize(mcf_data)%>%
+  group_by(age_group)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(age_group,names_to = "name",values_to = "value")
+
+df_expectation_demo <-rbind(avg_expectation_gender,avg_expectation_geoentity,avg_expectation_agegroup)
+
+ggplot(df_expectation_demo,aes(value,avg_exp_score))+
+  geom_bar(stat = "identity",fill=Blue)+
+  geom_text(aes(label=paste0(round(avg_exp_score,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
 
 
 #####################################################################

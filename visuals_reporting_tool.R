@@ -359,4 +359,33 @@ ggplot(qual_life_stratum,aes(str_wrap(value,15),avg_qual_life))+
     axis.ticks.y = element_blank()#remove y axis ticks
   )
 
+#Proportion of youth reporting 
+mcf_data_l5_t<-mcf_data_l5_t%>%
+  mutate(prop_great=case_when(round(avg_improv_quality_life)==2~1, TRUE~0))
+
+#disaggregating by stratum
+prop_quality_stratum <- characterize(mcf_data_l5_t) %>%
+  group_by(stratum)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))
+
+ggplot(prop_quality_stratum,aes(str_wrap(stratum,15),propotional_qual_life))+
+  geom_bar(stat = "identity",fill=Blue)+
+  geom_text(aes(label=paste0(round(propotional_qual_life,2),"%")),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+#disaggregating by demographics
 

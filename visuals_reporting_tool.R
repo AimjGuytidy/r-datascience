@@ -335,3 +335,28 @@ ggplot(df_quality_life_demo,aes(value,average))+
   )
 
 
+#Disaggregation by stratum
+qual_life_stratum<-characterize(mcf_data_l5_t)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(avg_qual_life=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
+
+ggplot(qual_life_stratum,aes(str_wrap(value,15),avg_qual_life))+
+  geom_bar(stat = "identity",fill=Blue,aes(group=value))+
+  geom_text(aes(label=paste0(round(avg_qual_life,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+

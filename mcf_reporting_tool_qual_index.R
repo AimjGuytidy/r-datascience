@@ -760,7 +760,7 @@ prop_exp_score_geo_calc <- characterize(mcf_data) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes")%>%
+  filter(exp_score_prop==1)%>%
   pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
   select(-exp_score_prop)%>%
   as.data.frame()
@@ -771,7 +771,7 @@ prop_exp_score_pwd_calc <- characterize(mcf_data) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes",pwd=="Yes")%>%
+  filter(exp_score_prop==1,pwd=="Yes")%>%
   pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
   select(-exp_score_prop)%>%
   as.data.frame()
@@ -782,7 +782,7 @@ prop_exp_score_refugee_calc <- characterize(mcf_data) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes",refuge!="a. Non refuge")%>%
+  filter(exp_score_prop==1,refuge!="a. Non refuge")%>%
   pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
   select(-exp_score_prop)%>%
   as.data.frame()
@@ -793,7 +793,7 @@ prop_exp_score_agegroup_calc <- characterize(mcf_data) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes")%>%
+  filter(exp_score_prop==1)%>%
   pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
   select(-exp_score_prop)%>%
   as.data.frame()

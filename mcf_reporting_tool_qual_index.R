@@ -662,16 +662,9 @@ write.xlsx(overall4_prop_ability_score_isic,"data/overall4_prop_ability_score_is
 
 
 
-
+# THIS IS THE REMAINING PART!!!!!
 #########################################################################
 #L5.1.2c this is not a sector specific analysis-----------------
-
-
-
-mcf_data <- mcf_data%>%
-  mutate(expectation_score = rowMeans(select(.,all_of(var_df_c)),na.rm = TRUE),
-         exp_score_prop = ifelse(expectation_score>3.5,"Yes","No"))
-
 
 avg_expectation_total<-characterize(mcf_data)%>%
   group_by(main_activity)%>%
@@ -742,10 +735,11 @@ write.xlsx(overall5_avg_expectation_isic,"data/overall5_avg_expectation_isic.xls
 #total youth with ability score of agree or strongly agree
 
 prop_exp_score_calc <- characterize(mcf_data) %>%
-  count(main_activity, exp_score_prop, wt = weights) %>%
+  group_by(main_activity, exp_score_prop) %>%
+  summarise(n=sum(weights))%>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes")%>%
+  filter(exp_score_prop==1)%>%
   select(-exp_score_prop)%>%
   as.data.frame()
 

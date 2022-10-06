@@ -365,9 +365,11 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 
 #disaggregating by stratum
 prop_quality_stratum <- characterize(mcf_data_l5_t) %>%
-  group_by(stratum)%>%
+  group_by(stratum,prop_great)%>%
   dplyr::summarize(n=sum(weights))%>%
-  mutate(propotional_qual_life = round(n*100/sum(n),2))
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  select(-c("n","prop_great"))
 
 ggplot(prop_quality_stratum,aes(str_wrap(stratum,15),propotional_qual_life))+
   geom_bar(stat = "identity",fill=Blue)+
@@ -388,4 +390,49 @@ ggplot(prop_quality_stratum,aes(str_wrap(stratum,15),propotional_qual_life))+
   )
 
 #disaggregating by demographics
+
+#disaggregating based on geo entity
+prop_quality_geo<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(geo_entity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  pivot_longer(geo_entity,names_to = "name",values_to = "value")%>%
+  select(-c("n","prop_great"))
+
+#disaggregating based on gender
+prop_quality_gender<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(gender,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  pivot_longer(gender,names_to = "name",values_to = "value")%>%
+  select(-c("n","prop_great"))
+prop_quality_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",prop_quality_gender$value)
+#disaggregating based on age group
+quality_agegroup<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(age_group,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  pivot_longer(age_group,names_to = "name",values_to = "value")%>%
+  select(-c("n","prop_great"))
+#disaggregating based on pwd
+prop_quality_pwd<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(pwd,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  filter(pwd=="Yes")%>%
+  mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
+  pivot_longer(pwd,names_to = "name",values_to = "value")%>%
+  select(-c("n","prop_great"))
+
+
+
+
+
+
+
+
 

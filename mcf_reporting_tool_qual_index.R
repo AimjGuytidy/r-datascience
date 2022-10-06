@@ -749,7 +749,7 @@ prop_exp_score_gender_calc <- characterize(mcf_data) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
   select(-n)%>%
-  filter(exp_score_prop=="Yes")%>%
+  filter(exp_score_prop==1)%>%
   pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
   select(-exp_score_prop)%>%
   as.data.frame()

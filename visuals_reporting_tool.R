@@ -46,6 +46,8 @@ col_name2 <- gsub("^[a-zA-Z0-9]+\\.\\s","",col_name2)
 df_1 <- tibble(work=c(col_name1,col_name2),value=c(weighted.mean(mcf_data_k$work_trainings_t,mcf_data_k$weights,na.rm=TRUE),
                                                    weighted.mean(mcf_data_k$training_jb_market_t,mcf_data_k$weights,na.rm=TRUE)))
 #View(tibble("{col_name}":=weighted.mean(mcf_data_k$work_trainings_t,mcf_data_k$weights,na.rm=TRUE))
+
+#Visuals of determinants of ability
 ggplot(data=df_1,mapping = aes(str_wrap(work,32),value))+
   geom_bar(stat = "identity",fill=Blue)+
   geom_text(aes(label=paste0(round(value,2))),
@@ -63,6 +65,31 @@ ggplot(data=df_1,mapping = aes(str_wrap(work,32),value))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+
+#Visuals of average ability score across demographics
+#average ability score 
+avg_ability<-mcf_data_k%>%
+  group_by()%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
+#Disaggregation by gender 
+avg_ability_gender<-characterize(mcf_data_k)%>%
+  group_by(gender)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(gender,names_to = "name",values_to = "value")
+avg_ability_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",avg_ability_gender$value)
+#Disaggregation by geoentity 
+avg_ability_geoentity<-characterize(mcf_data_k)%>%
+  group_by(geo_entity)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(geo_entity,names_to = "name",values_to = "value")
+#Disaggregation by age group 
+avg_ability_agegroup<-characterize(mcf_data_k)%>%
+  group_by(age_group)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(age_group,names_to = "name",values_to = "value")
+
+df_ability_demo <-rbind(avg_ability_gender,avg_ability_geoentity,avg_ability_agegroup)
+
 ########################################## 
 #Visualizing L5.1.2c
 
@@ -92,7 +119,7 @@ df_2 <- tibble(expectation=c(col_name3,col_name4,col_name5,col_name6),value=c(we
                                                    weighted.mean(mcf_data[[var_df_c[2]]],mcf_data$weights,na.rm=TRUE),weighted.mean(mcf_data[[var_df_c[3]]],mcf_data$weights,na.rm=TRUE),
                                                    weighted.mean(mcf_data[[var_df_c[4]]],mcf_data$weights,na.rm=TRUE)))
 
-
+#visuals of determinants of expectations
 ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
   geom_bar(stat = "identity",fill=Blue)+
   coord_flip()+
@@ -112,3 +139,10 @@ ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
     axis.ticks.y = element_blank(),#remove y axis ticks
     axis.text.x = element_blank()
   )
+#Visuals of average expectation score across demographics
+
+
+#####################################################################
+#####################################################################
+#Visualizing the quality of life index
+

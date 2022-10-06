@@ -90,6 +90,24 @@ avg_ability_agegroup<-characterize(mcf_data_k)%>%
 
 df_ability_demo <-rbind(avg_ability_gender,avg_ability_geoentity,avg_ability_agegroup)
 
+ggplot(df_ability_demo,aes(value,avg_ability_score))+
+  geom_bar(stat = "identity",fill=Blue)+
+  geom_text(aes(label=paste0(round(avg_ability_score,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
 ########################################## 
 #Visualizing L5.1.2c
 

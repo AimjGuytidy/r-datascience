@@ -433,7 +433,86 @@ prop_quality_pwd<-characterize(mcf_data_l5_t)%>%
 df_proportional_quality_life_demo <-rbind(prop_quality_gender,prop_quality_geo,prop_quality_agegroup,prop_quality_pwd)
 
 
+ggplot(df_proportional_quality_life_demo,aes(str_wrap(value,15),propotional_qual_life))+
+  geom_bar(stat = "identity",fill=Blue)+
+  geom_text(aes(label=paste0(round(propotional_qual_life,2),"%")),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+
+View(mcf_data_l5_t%>%
+  select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)))
 
 
 
+col_name8<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[1]]])
+col_name8 <- gsub("^[a-zA-Z0-9]+\\s","",col_name8)
+col_name9<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[2]]])
+col_name9 <- gsub("^[a-zA-Z0-9]+\\s","",col_name9)
+col_name10<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[3]]])
+col_name10 <- gsub("^[a-zA-Z0-9]+\\s","",col_name10)
+col_name11<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[4]]])
+col_name11 <- gsub("^[a-zA-Z0-9]+\\s","",col_name11)
+col_name12<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[5]]])
+col_name12 <- gsub("^[a-zA-Z0-9]+\\s","",col_name12)
+col_name13<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[6]]])
+col_name13 <- gsub("^[a-zA-Z0-9]+\\s","",col_name13)
+col_name14<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[7]]])
+col_name14 <- gsub("^[a-zA-Z0-9]+\\s","",col_name14)
+col_name15<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[8]]])
+col_name15 <- gsub("^[a-zA-Z0-9]+\\s","",col_name15)
+col_name16<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[9]]])
+col_name16 <- gsub("^[a-zA-Z0-9]+\\s","",col_name16)
+col_name17<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[10]]])
+col_name17 <- gsub("^[a-zA-Z0-9]+\\s","",col_name17)
+col_name18<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[11]]])
+col_name18 <- gsub("^[a-zA-Z0-9]+\\s","",col_name18)
+col_name19<- var_label(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[12]]])
+col_name19 <- gsub("^[a-zA-Z0-9]+\\s","",col_name19)
 
+df_qual_life_dependency <- tibble(quality_dependency=c(col_name8,col_name9,col_name10,col_name11,col_name12,
+                             col_name13,col_name14,col_name15,col_name16,col_name17,
+                             col_name18,col_name19),value=c(weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[1]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[2]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[3]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[4]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[5]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[6]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[7]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[8]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[9]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[10]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[11]]],mcf_data_l5_t$weights,na.rm=TRUE),
+                                                            weighted.mean(mcf_data_l5_t[[grep("_access$", var_df$variable,value=TRUE, ignore.case =T)[12]]],mcf_data_l5_t$weights,na.rm=TRUE)))
+
+
+ggplot(df_qual_life_dependency,aes(str_wrap(quality_dependency,42),value))+
+  geom_bar(stat = "identity",fill=Blue)+
+  coord_flip()+
+  geom_text(aes(label=paste0(round(value,2))),
+            hjust=-.12,
+            size = 2.5)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )

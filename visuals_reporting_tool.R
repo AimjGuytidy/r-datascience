@@ -346,9 +346,17 @@ quality_overall<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by()%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
   mutate(name="Overall",value="Overall")
+#disaggregating based on refugee
+quality_refuge<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refuge)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  filter(refuge=="b. Refugee")%>%
+  mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
+  pivot_longer(refuge,names_to = "name",values_to = "value")
 
 
-df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum,quality_overall)%>%
+
+df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum,quality_overall,quality_refuge)%>%
   select(value,average)%>%
   rename(`Quality of life index` = average)
 
@@ -600,7 +608,7 @@ quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
 df_quality_life_improvement_demo_segments <-rbind(quality_improvement_overall,
                                                   quality_improvement_gender,quality_improvement_geo,
                                                   quality_improvement_agegroup,quality_improvement_pwd,
-                                                  avg_qual_life_improv_segments)%>%
+                                                  avg_qual_life_improv_segments,quality_improvement_refuge)%>%
   select(value,average)%>%
   rename(`Quality of life improvement score` = average)
 

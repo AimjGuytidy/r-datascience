@@ -548,29 +548,30 @@ ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
 #disaggregating average quality of life improvement by demographics 
 
 #disaggregating based on geo entity
-quality_geo<-characterize(mcf_data_l5_t)%>%
+quality_improvement_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
   pivot_longer(geo_entity,names_to = "name",values_to = "value")
 
 #disaggregating based on gender
-quality_gender<-characterize(mcf_data_l5_t)%>%
+quality_improvement_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(gender)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
   pivot_longer(gender,names_to = "name",values_to = "value")
-quality_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_gender$value)
+quality_improvement_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_improvement_gender$value)
 #disaggregating based on age group
-quality_agegroup<-characterize(mcf_data_l5_t)%>%
+quality_improvement_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
 #disaggregating based on pwd
-quality_pwd<-characterize(mcf_data_l5_t)%>%
+quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(pwd)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
   filter(pwd=="Yes")%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
 
-df_quality_life_demo <-rbind(quality_gender,quality_geo,quality_agegroup,quality_pwd)
+df_quality_life_improvement_demo <-rbind(quality_improvement_gender,quality_improvement_geo,
+                             quality_improvement_agegroup,quality_improvement_pwd)
 

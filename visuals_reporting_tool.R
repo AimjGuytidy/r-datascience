@@ -171,7 +171,7 @@ df_2 <- tibble(expectation=c(col_name3,col_name4,col_name5,col_name6),value=c(we
 
 #visuals of determinants of expectations
 ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
-  geom_bar(stat = "identity",fill=Blue)+
+  geom_bar(stat = "identity",fill=Blue,width =.35 )+
   coord_flip()+
   geom_text(aes(label=paste0(round(value,2))),
             hjust=-.2,
@@ -193,7 +193,9 @@ ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
 #average expectation score 
 avg_expectation_total<-characterize(mcf_data)%>%
   group_by()%>%
-  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2))%>%
+  mutate(name="Overall",value="Overall")
 
 #Disaggregation by gender 
 avg_expectation_gender<-characterize(mcf_data)%>%
@@ -211,8 +213,32 @@ avg_expectation_agegroup<-characterize(mcf_data)%>%
   group_by(age_group)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
+#Disaggregation by pwd
+avg_expectation_pwd<-characterize(mcf_data)%>%
+  group_by(pwd)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights
+                                                     ,na.rm=TRUE),2))%>%
+  filter(pwd=="Yes")%>%
+  mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
+  pivot_longer(pwd,names_to = "name",values_to = "value")
+#Disaggregation by refuge 
+avg_expectation_refuge<-characterize(mcf_data)%>%
+  group_by(refuge)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2))%>%
+  filter(refuge=="b. Refugee")%>%
+  mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
+  pivot_longer(refuge,names_to = "name",values_to = "value")
 
-df_expectation_demo <-rbind(avg_expectation_gender,avg_expectation_geoentity,avg_expectation_agegroup)
+x <- c("Overall" ,"Female","Male" ,"IDP/ Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-35" ,"Self employed","Wage employed" ," Unemployed/Non job-seekers","Students")
+
+df_expectation_demo_segment <-rbind(avg_expectation_total,avg_expectation_refuge,avg_expectation_gender,
+                            avg_expectation_geoentity,avg_expectation_agegroup,
+                            avg_expectation_pwd)%>%
+  slice(match(x,value))%>%
+  select(-name)%>%
+  select(`Disaggregation categories`=value,`Average score`=avg_exp_score)
 
 ggplot(df_expectation_demo,aes(value,avg_exp_score))+
   geom_bar(stat = "identity",fill=Blue)+

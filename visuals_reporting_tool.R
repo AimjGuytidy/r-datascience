@@ -516,3 +516,61 @@ ggplot(df_qual_life_dependency,aes(str_wrap(quality_dependency,42),value))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+
+
+#Visualizing the quality of life improvement across segments
+
+avg_qual_life_improv_segments <- characterize(mcf_data_l5_t)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
+
+ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
+  geom_bar(stat = "identity",fill=Blue,aes(group=value))+
+  geom_text(aes(label=paste0(round(average,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+############################################################
+
+#disaggregating average quality of life improvement by demographics 
+
+#disaggregating based on geo entity
+quality_geo<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(geo_entity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_longer(geo_entity,names_to = "name",values_to = "value")
+
+#disaggregating based on gender
+quality_gender<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(gender)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_longer(gender,names_to = "name",values_to = "value")
+quality_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_gender$value)
+#disaggregating based on age group
+quality_agegroup<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(age_group)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_longer(age_group,names_to = "name",values_to = "value")
+#disaggregating based on pwd
+quality_pwd<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(pwd)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  filter(pwd=="Yes")%>%
+  mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
+  pivot_longer(pwd,names_to = "name",values_to = "value")
+
+df_quality_life_demo <-rbind(quality_gender,quality_geo,quality_agegroup,quality_pwd)
+

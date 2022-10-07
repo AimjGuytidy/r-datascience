@@ -194,6 +194,7 @@ ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
 avg_expectation_total<-characterize(mcf_data)%>%
   group_by()%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))
+
 #Disaggregation by gender 
 avg_expectation_gender<-characterize(mcf_data)%>%
   group_by(gender)%>%
@@ -215,6 +216,33 @@ df_expectation_demo <-rbind(avg_expectation_gender,avg_expectation_geoentity,avg
 
 ggplot(df_expectation_demo,aes(value,avg_exp_score))+
   geom_bar(stat = "identity",fill=Blue)+
+  geom_text(aes(label=paste0(round(avg_exp_score,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+
+#Disaggregation based on employment status
+avg_expectation_stratum<-characterize(mcf_data)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
+
+ggplot(avg_expectation_stratum,aes(str_wrap(value,12),avg_exp_score))+
+  geom_bar(stat = "identity",fill=Blue,width = .35)+
+  coord_cartesian(ylim = c(1.0,5.0))+
   geom_text(aes(label=paste0(round(avg_exp_score,2))),
             vjust=-.5,
             size = 3.3)+

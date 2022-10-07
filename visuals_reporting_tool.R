@@ -572,6 +572,32 @@ quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
 
-df_quality_life_improvement_demo <-rbind(quality_improvement_gender,quality_improvement_geo,
+#disaggregating based on total
+quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by()%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  mutate(name="Overall",value="Overall")
+
+df_quality_life_improvement_demo <-rbind(quality_improvement_overall,quality_improvement_gender,quality_improvement_geo,
                              quality_improvement_agegroup,quality_improvement_pwd)
+
+ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
+  geom_bar(stat = "identity",fill=Blue,aes(group=value))+
+  geom_text(aes(label=paste0(round(average,2))),
+            vjust=-.5,
+            size = 3.3)+
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove y axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank()#remove y axis ticks
+  )
+
+
 

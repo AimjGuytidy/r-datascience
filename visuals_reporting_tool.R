@@ -292,24 +292,24 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 #disaggregating based on geo entity
 quality_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(geo_entity,names_to = "name",values_to = "value")
 
 #disaggregating based on gender
 quality_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(gender)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(gender,names_to = "name",values_to = "value")
 quality_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_gender$value)
 #disaggregating based on age group
 quality_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
 #disaggregating based on pwd
 quality_pwd<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(pwd)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   filter(pwd=="Yes")%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
@@ -338,10 +338,16 @@ ggplot(df_quality_life_demo,aes(value,average))+
 #Disaggregation by stratum
 qual_life_stratum<-characterize(mcf_data_l5_t)%>%
   group_by(stratum)%>%
-  dplyr::summarize(avg_qual_life=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
   pivot_longer(stratum,names_to = "name",values_to = "value")
+#disaggregating based on total
+quality_overall<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by()%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  mutate(name="Overall",value="Overall")
 
-ggplot(qual_life_stratum,aes(str_wrap(value,15),avg_qual_life))+
+
+ggplot(qual_life_stratum,aes(str_wrap(value,15),average))+
   geom_bar(stat = "identity",fill=Blue,aes(group=value))+
   geom_text(aes(label=paste0(round(avg_qual_life,2))),
             vjust=-.5,
@@ -581,8 +587,8 @@ quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
 df_quality_life_improvement_demo <-rbind(quality_improvement_overall,quality_improvement_gender,quality_improvement_geo,
                              quality_improvement_agegroup,quality_improvement_pwd)
 
-ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
-  geom_bar(stat = "identity",fill=Blue,aes(group=value))+
+ggplot(df_quality_life_improvement_demo,aes(str_wrap(value,15),average))+
+  geom_bar(stat = "identity",fill=Blue,aes(group=value),width = .7)+
   geom_text(aes(label=paste0(round(average,2))),
             vjust=-.5,
             size = 3.3)+
@@ -600,4 +606,7 @@ ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
   )
 
 
+
+#very important
+#### pivot_wider(select(df_quality_life_improvement_demo,-name),names_from = "value",values_from = "average")
 

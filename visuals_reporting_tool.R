@@ -347,6 +347,10 @@ quality_overall<-characterize(mcf_data_l5_t)%>%
   mutate(name="Overall",value="Overall")
 
 
+df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum,quality_overall)%>%
+  select(value,average)%>%
+  rename(`Quality of life index` = average)
+
 ggplot(qual_life_stratum,aes(str_wrap(value,15),average))+
   geom_bar(stat = "identity",fill=Blue,aes(group=value))+
   geom_text(aes(label=paste0(round(avg_qual_life,2))),

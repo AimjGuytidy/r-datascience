@@ -228,7 +228,7 @@ overall3_avg_ability_score_isic <- avg_ability%>%
   left_join(avg_ability_agegroup)%>%
   as.data.frame()%>%
   select(c("main_activity","avg_ability_score","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
-write.xlsx(overall3_avg_ability_score_isic,"data/avg_ability_score_isic.xlsx")
+#write.xlsx(overall3_avg_ability_score_isic,"data/avg_ability_score_isic.xlsx")
 
 
 
@@ -236,8 +236,8 @@ write.xlsx(overall3_avg_ability_score_isic,"data/avg_ability_score_isic.xlsx")
 
 
 ######################################################################
-#total youth with ability score of agree or strongly agree
-
+###########################################################
+#calculating proportions of L5.1.2b
 prop_ability_score_calc <- characterize(mcf_data_k) %>%
   group_by(main_activity, ab_score_prop) %>%
   summarise(n = sum(weights))%>%
@@ -313,10 +313,7 @@ overall4_prop_ability_score_isic <- prop_ability_score_calc%>%
   left_join(prop_ability_score_agegroup_calc)%>%
   as.data.frame()%>%
   select(c("main_activity","Total_overall","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
-write.xlsx(overall4_prop_ability_score_isic,"data/prop_ability_score_isic.xlsx")
-
-
-
+write.xlsx(overall4_prop_ability_score_isic,"data/prop_ability_activities_isic.xlsx")
 
 
 ########################################## 
@@ -465,6 +462,7 @@ ggplot(avg_expectation_stratum,aes(str_wrap(value,12),avg_exp_score))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+
 
 
 #####################################################################

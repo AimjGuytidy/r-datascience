@@ -366,6 +366,12 @@ ggplot(data=df_2,mapping = aes(str_wrap(expectation,32),value))+
     axis.text.x = element_blank()
   )
 #Visuals of average expectation score across demographics
+#disaggregate by main sectors
+avg_expectation_sector<-characterize(mcf_data)%>%
+  group_by(main_sector)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2))
+write.xlsx(avg_expectation_sector,"data/exp_by_sector.xlsx")
 #average expectation score 
 avg_expectation_total<-characterize(mcf_data)%>%
   group_by()%>%
@@ -1101,7 +1107,7 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 prop_great_calc1 <- characterize(mcf_data_l5_t) %>%
   group_by(main_activity,prop_great)%>%
   dplyr::summarise(total=sum(weights))%>%
-  mutate(propotional_great = total/sum(total))%>%
+  mutate(propotional_great = total*100/sum(total))%>%
   select(-c(total))%>%
   pivot_wider(names_from = "prop_great",values_from = "propotional_great")%>%
   select(-No)%>%

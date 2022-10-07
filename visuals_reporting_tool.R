@@ -583,6 +583,14 @@ quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
 
+#disaggregating based on refugee
+quality_improvement_refuge<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refuge)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  filter(refuge=="b. Refugee")%>%
+  mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
+  pivot_longer(refuge,names_to = "name",values_to = "value")
+
 #disaggregating based on total
 quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by()%>%

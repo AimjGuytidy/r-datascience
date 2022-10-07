@@ -19,7 +19,7 @@ Green <- c("#8ccc98") #Green
 Dark_grey <- c("#7F7F7F") #Dark grey
 Dark_green <- c("#49711E") #Dark green
 
-#Visualizing L5.1.2b to get the overall view
+#Visualizing L5.1.2b to get the overall view#####
 mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 mcf_data_k <- mcf_data%>%
   mutate(work_trainings_t=ifelse(work_trainings==1,5,
@@ -49,8 +49,9 @@ df_1 <- tibble(work=c(col_name1,col_name2),value=c(weighted.mean(mcf_data_k$work
 #View(tibble("{col_name}":=weighted.mean(mcf_data_k$work_trainings_t,mcf_data_k$weights,na.rm=TRUE))
 
 #Visuals of determinants of ability
-ggplot(data=df_1,mapping = aes(str_wrap(work,32),value))+
-  geom_bar(stat = "identity",fill=Blue)+
+ggplot(data=df_1,mapping = aes(str_wrap(work,22),value))+
+  geom_bar(stat = "identity",fill=Blue,width = .35)+
+  coord_cartesian(ylim = c(1,5))+
   geom_text(aes(label=paste0(round(value,2))),
             vjust=-.5,
             size = 4)+
@@ -71,7 +72,9 @@ ggplot(data=df_1,mapping = aes(str_wrap(work,32),value))+
 #average ability score 
 avg_ability<-mcf_data_k%>%
   group_by()%>%
-  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,
+                                                         na.rm=TRUE),2))%>%
+  mutate(name="Overall",value="Overall")
 #Disaggregation by gender 
 avg_ability_gender<-characterize(mcf_data_k)%>%
   group_by(gender)%>%
@@ -88,8 +91,41 @@ avg_ability_agegroup<-characterize(mcf_data_k)%>%
   group_by(age_group)%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
+#Disaggregation by pwd
+avg_ability_pwd<-characterize(mcf_data_k)%>%
+  group_by(pwd)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights
+                                                     ,na.rm=TRUE),2))%>%
+  filter(pwd=="Yes")%>%
+  mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
+  pivot_longer(pwd,names_to = "name",values_to = "value")
+#Disaggregation by refuge 
+avg_ability_refuge<-characterize(mcf_data_k)%>%
+  group_by(refuge)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,
+                                                     na.rm=TRUE),2))%>%
+  filter(refuge=="b. Refugee")%>%
+  mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
+  pivot_longer(refuge,names_to = "name",values_to = "value")
 
-df_ability_demo <-rbind(avg_ability_gender,avg_ability_geoentity,avg_ability_agegroup)
+#Disaggregation by stratum
+avg_ability_stratum<-characterize(mcf_data_k)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
+
+
+x <- c("Overall" ,"Female","Male" ,"IDP/ Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-35" ,"Self employed","Wage employed" ," Unemployed/Non job-seekers","Students")
+
+df_ability_demo <-rbind(avg_ability_gender,avg_ability_geoentity,avg_ability_agegroup,
+                        avg_ability_stratum,avg_ability,avg_ability_refuge,avg_ability_pwd)%>%
+  slice(match(x,value))%>%
+  select(-name)%>%
+  select(`Disaggregation categories`=value,`Average score`=avg_ability_score)
+var_label(df_ability_demo$`Disaggregation categories`) <- NULL
+
+#write.xlsx(df_ability_demo,"data/avg_ability_table.xlsx")
 
 ggplot(df_ability_demo,aes(value,avg_ability_score))+
   geom_bar(stat = "identity",fill=Blue)+
@@ -111,11 +147,7 @@ ggplot(df_ability_demo,aes(value,avg_ability_score))+
 
 
 
-#Disaggregation by stratum
-avg_ability_stratum<-characterize(mcf_data_k)%>%
-  group_by(stratum)%>%
-  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,na.rm=TRUE),2))%>%
-  pivot_longer(stratum,names_to = "name",values_to = "value")
+
 
 ggplot(avg_ability_stratum,aes(str_wrap(value,15),avg_ability_score))+
   geom_bar(stat = "identity",fill=Blue,aes(group=value))+
@@ -141,7 +173,7 @@ ggplot(avg_ability_stratum,aes(str_wrap(value,15),avg_ability_score))+
 
 
 ########################################## 
-#Visualizing L5.1.2c
+#Visualizing L5.1.2c#####
 
 mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")

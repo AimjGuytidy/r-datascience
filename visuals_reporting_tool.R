@@ -10,6 +10,7 @@ library(psych)
 library(ggplot2)
 library(stringr)
 library(forcats)
+library(data.table)
 Light_grey <- c("#F2F2F2") #Light grey for the background
 Blue <- c("#097ABC") #Blue
 Light_blue <- c("#9DC3E5") #Light blue
@@ -351,9 +352,9 @@ df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum
   select(value,average)%>%
   rename(`Quality of life index` = average)
 
-ggplot(qual_life_stratum,aes(str_wrap(value,15),average))+
+ggplot(df_quality_life_demo_seg_overall,aes(str_wrap(value,15),`Quality of life index`))+
   geom_bar(stat = "identity",fill=Blue,aes(group=value))+
-  geom_text(aes(label=paste0(round(avg_qual_life,2))),
+  geom_text(aes(label=paste0(round(`Quality of life index`,2))),
             vjust=-.5,
             size = 3.3)+
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -560,24 +561,24 @@ ggplot(avg_qual_life_improv_segments,aes(str_wrap(value,15),average))+
 #disaggregating based on geo entity
 quality_improvement_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   pivot_longer(geo_entity,names_to = "name",values_to = "value")
 
 #disaggregating based on gender
 quality_improvement_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(gender)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   pivot_longer(gender,names_to = "name",values_to = "value")
 quality_improvement_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_improvement_gender$value)
 #disaggregating based on age group
 quality_improvement_agegroup<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(age_group)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   pivot_longer(age_group,names_to = "name",values_to = "value")
 #disaggregating based on pwd
 quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(pwd)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   filter(pwd=="Yes")%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
@@ -585,15 +586,19 @@ quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
 #disaggregating based on total
 quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by()%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   mutate(name="Overall",value="Overall")
 
-df_quality_life_improvement_demo <-rbind(quality_improvement_overall,quality_improvement_gender,quality_improvement_geo,
-                             quality_improvement_agegroup,quality_improvement_pwd)
+df_quality_life_improvement_demo_segments <-rbind(quality_improvement_overall,
+                                                  quality_improvement_gender,quality_improvement_geo,
+                                                  quality_improvement_agegroup,quality_improvement_pwd,
+                                                  avg_qual_life_improv_segments)%>%
+  select(value,average)%>%
+  rename(`Quality of life improvement score` = average)
 
-ggplot(df_quality_life_improvement_demo,aes(str_wrap(value,15),average))+
+ggplot(df_quality_life_improvement_demo_segments,aes(str_wrap(value,15),`Quality of life improvement score`))+
   geom_bar(stat = "identity",fill=Blue,aes(group=value),width = .7)+
-  geom_text(aes(label=paste0(round(average,2))),
+  geom_text(aes(label=paste0(round(`Quality of life improvement score`,2))),
             vjust=-.5,
             size = 3.3)+
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -608,6 +613,27 @@ ggplot(df_quality_life_improvement_demo,aes(str_wrap(value,15),average))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+
+
+# Join the quality of life index and improvement score
+
+quality_life_index_improv <- df_quality_life_demo_seg_overall%>%
+  left_join(df_quality_life_improvement_demo_segments)
+
+
+
+
+x <- c("Overall" ,"Female","Male" ,"IDP/ Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-35" ,"Self employed","Wage employed" ," Unemployed/Non job-seekers","Students")
+
+quality_life_index_improv <- quality_life_index_improv%>%
+  slice(match(x,value))
+
+var_label(quality_life_index_improv$value) <- NULL
+
+write.xlsx(quality_life_index_improv,"data/quality_life_table.xlsx")
+
+
 
 
 

@@ -462,6 +462,152 @@ ggplot(avg_expectation_stratum,aes(str_wrap(value,12),avg_exp_score))+
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank()#remove y axis ticks
   )
+#######################################
+#considering main activity L5.1.2c
+
+
+avg_expectation_total<-characterize(mcf_data)%>%
+  group_by(main_activity)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,na.rm=TRUE),2))%>%
+  as.data.frame()
+
+
+
+#Disaggregation by gender
+avg_expectation_gender <- characterize(mcf_data) %>%
+  group_by(gender, main_activity) %>%
+  dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "gender",values_from = "avg_exp_score")%>%
+  as.data.frame()
+
+
+#Disaggregation by geo entity
+avg_expectation_geoentity <- characterize(mcf_data) %>%
+  group_by(geo_entity, main_activity) %>%
+  dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "geo_entity",values_from = "avg_exp_score")%>%
+  as.data.frame()
+
+
+#Disaggregation by pwds
+avg_expectation_pwd <- characterize(mcf_data) %>%
+  group_by(pwd, main_activity) %>%
+  dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "pwd",values_from = "avg_exp_score")%>%
+  select(-No)%>%
+  rename(pwd_yes=Yes)%>%
+  as.data.frame()
+
+#Disaggregation by refugee status
+avg_expectation_refugee <- characterize(mcf_data) %>%
+  group_by(refuge, main_activity) %>%
+  dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "refuge",values_from = "avg_exp_score")%>%
+  select(-c("a. Non refuge"))%>%
+  as.data.frame()
+
+
+#Disaggregation by age group
+avg_expectation_agegroup <- characterize(mcf_data) %>%
+  group_by(age_group, main_activity) %>%
+  dplyr::summarize(avg_exp_score = round(weighted.mean(expectation_score, weights, na.rm =
+                                                         TRUE), 2))%>%
+  pivot_wider(names_from = "age_group",values_from = "avg_exp_score")%>%
+  as.data.frame()
+
+overall5_avg_expectation_isic <- avg_expectation_total%>%
+  left_join(avg_expectation_gender)%>%
+  left_join(avg_expectation_geoentity)%>%
+  left_join(avg_expectation_pwd)%>%
+  left_join(avg_expectation_refugee)%>%
+  left_join(avg_expectation_agegroup)%>%
+  as.data.frame()%>%
+  select(c("main_activity","avg_exp_score","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
+write.xlsx(overall5_avg_expectation_isic,"data/avg_expectation_isic.xlsx")
+
+#########################
+#calculating proportions for L5.1.2c
+##########################################################
+#total youth with ability score of agree or strongly agree
+
+prop_exp_score_calc <- characterize(mcf_data) %>%
+  group_by(main_activity, exp_score_prop) %>%
+  summarise(n=sum(weights))%>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1)%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+#disaggregating by gender
+prop_exp_score_gender_calc <- characterize(mcf_data) %>%
+  group_by(gender, main_activity, exp_score_prop) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1)%>%
+  pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+#disaggregating by geo_entity
+prop_exp_score_geo_calc <- characterize(mcf_data) %>%
+  group_by(geo_entity, main_activity, exp_score_prop) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1)%>%
+  pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+#disaggregating by pwd
+prop_exp_score_pwd_calc <- characterize(mcf_data) %>%
+  group_by(pwd, main_activity, exp_score_prop) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1,pwd=="Yes")%>%
+  pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+#disaggregating by refugee status
+prop_exp_score_refugee_calc <- characterize(mcf_data) %>%
+  group_by(refuge, main_activity, exp_score_prop) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1,refuge!="a. Non refuge")%>%
+  pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+#disaggregating by age group
+prop_exp_score_agegroup_calc <- characterize(mcf_data) %>%
+  group_by(age_group, main_activity, exp_score_prop) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_great = round(n * 100 / sum(n), 2))%>%
+  select(-n)%>%
+  filter(exp_score_prop==1)%>%
+  pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
+  select(-exp_score_prop)%>%
+  as.data.frame()
+
+
+overall6_prop_exp_score_isic <- prop_exp_score_calc%>%
+  left_join(prop_exp_score_gender_calc)%>%
+  left_join(prop_exp_score_geo_calc)%>%
+  left_join(prop_exp_score_pwd_calc)%>%
+  left_join(prop_exp_score_refugee_calc)%>%
+  left_join(prop_exp_score_agegroup_calc)%>%
+  as.data.frame()%>%
+  select(c("main_activity","propotional_great","b. Female","a. Male","b. Refugee","Yes","Rural","Urban","18-24","25-35"))
+write.xlsx(overall6_prop_exp_score_isic,"data/prop_exp_score_isic.xlsx")
 
 
 
@@ -473,6 +619,7 @@ mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 #L5.3.1 Quality of life index===========
 # Data manipulation
 # change the values from 1-6 to 0-4
+mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 mcf_data_l5_t <- mcf_data
 
 keyword_label<-c("D14",	"D16",	"D18",	"D20",	"D22",	"D24",	"D26",	"D28",	"D30",	"D32",	"D34",	"D36")
@@ -678,10 +825,28 @@ prop_quality_pwd<-characterize(mcf_data_l5_t)%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")%>%
   select(-c("n","prop_great"))
 
+#disaggregating based on pwd
+prop_quality_refuge<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refuge,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1&refuge=="b. Refugee")%>%
+  pivot_longer(refuge,names_to = "name",values_to = "value")%>%
+  select(-c("n","prop_great"))
 
+prop_quality_overall<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
+  filter(prop_great==1)%>%
+  mutate(name="Overall",value="Overall")%>%
+  select(-c("n","prop_great"))
 
-df_proportional_quality_life_demo <-rbind(prop_quality_gender,prop_quality_geo,prop_quality_agegroup,prop_quality_pwd)
-
+df_proportional_quality_life_demo <-rbind(prop_quality_overall,prop_quality_refuge,
+                                          prop_quality_gender,prop_quality_geo,
+                                          prop_quality_agegroup,prop_quality_pwd)%>%
+  select(-name,value,propotional_qual_life)
+#write.xlsx(df_proportional_quality_life_demo,"data/prop_qual.xlsx")
 
 ggplot(df_proportional_quality_life_demo,aes(str_wrap(value,15),propotional_qual_life))+
   geom_bar(stat = "identity",fill=Blue)+
@@ -881,9 +1046,133 @@ var_label(quality_life_index_improv$value) <- NULL
 write.xlsx(quality_life_index_improv,"data/quality_life_table.xlsx")
 
 
+#########################
+qual_mean_w1 <- characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))
+#disaggregating based on geo entity
+quality_geo<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(geo_entity,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_wider(names_from = "geo_entity",values_from = "average")%>%
+  as.data.frame()
+#disaggregating based on gender
+quality_gender<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(gender,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_wider(names_from = "gender",values_from = "average")%>%
+  as.data.frame()
+
+#disaggregating based on age group
+quality_agegroup<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(age_group,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_wider(names_from = "age_group",values_from = "average")%>%
+  as.data.frame()
+
+#disaggregating based on pwd
+quality_pwd<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(pwd,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_wider(names_from = "pwd",values_from = "average")%>%
+  rename(pwd_yes=Yes)%>%
+  as.data.frame()
+
+#disaggregating based on refugee
+quality_refuge<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refuge,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights),2))%>%
+  pivot_wider(names_from = "refuge",values_from = "average")
+
+overall1_qualindex_isic <- qual_mean_w1%>%
+  left_join(quality_gender)%>%
+  left_join(quality_geo)%>%
+  left_join(quality_agegroup)%>%
+  left_join(select(quality_pwd,-c("No")))%>%
+  left_join(select(quality_refuge,-c("a. Non refuge")))%>%
+  as.data.frame()%>%
+  select(c("main_activity","average","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
+write.xlsx(overall1_qualindex_isic,"data/qualindex_isic.xlsx")
+####################################################################
+
+mcf_data_l5_t<-mcf_data_l5_t%>%
+  mutate(prop_great=case_when(round(avg_improv_quality_life)==2~"Yes", TRUE~"No"))
+
+prop_great_calc1 <- characterize(mcf_data_l5_t) %>%
+  group_by(main_activity,prop_great)%>%
+  dplyr::summarise(total=sum(weights))%>%
+  mutate(propotional_great = total/sum(total))%>%
+  select(-c(total))%>%
+  pivot_wider(names_from = "prop_great",values_from = "propotional_great")%>%
+  select(-No)%>%
+  rename(Total_overall="Yes")
+
+#disaggregating by gender
+
+prop_great_gender_calc <- characterize(mcf_data_l5_t) %>%
+  group_by(gender,main_activity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
+  select(-n)%>%
+  pivot_wider(names_from = "gender",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
+  select(-prop_great)%>%
+  as.data.frame()
 
 
+#disaggregating by geo_entity
 
-#very important
-#### pivot_wider(select(df_quality_life_improvement_demo,-name),names_from = "value",values_from = "average")
+prop_great_geo_calc <- characterize(mcf_data_l5_t) %>%
+  group_by(geo_entity,main_activity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
+  select(-n)%>%
+  pivot_wider(names_from = "geo_entity",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
+  select(-prop_great)%>%
+  as.data.frame()
+
+#disaggregating by pwd
+prop_great_pwd_calc <- characterize(mcf_data_l5_t) %>%
+  group_by(pwd,main_activity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
+  select(-n)%>%
+  pivot_wider(names_from = "pwd",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
+  select(-c("prop_great","No"))%>%
+  rename(pwd_yes=Yes)%>%
+  as.data.frame()
+
+#disaggregating by refugee status
+prop_great_refugee_calc <- characterize(mcf_data_l5_t) %>%
+  group_by(refuge,main_activity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
+  select(-n)%>%
+  pivot_wider(names_from = "refuge",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
+  select(-c("prop_great","a. Non refuge"))%>%
+  as.data.frame()
+
+#disaggregating by age group
+prop_great_agegroup_calc <- characterize(mcf_data_l5_t) %>%
+  group_by(age_group,main_activity,prop_great)%>%
+  dplyr::summarize(n=sum(weights))%>%
+  mutate(propotional_great = n*100/sum(n))%>%
+  select(-n)%>%
+  pivot_wider(names_from = "age_group",values_from = "propotional_great")%>%
+  filter(prop_great=="Yes")%>%
+  select(-prop_great)%>%
+  as.data.frame()
+
+overall2_qualindex_prop_isic <- prop_great_calc1%>%
+  left_join(prop_great_gender_calc)%>%
+  left_join(prop_great_geo_calc)%>%
+  left_join(prop_great_pwd_calc)%>%
+  left_join(prop_great_refugee_calc)%>%
+  left_join(prop_great_agegroup_calc)%>%
+  as.data.frame()%>%
+  select(c("main_activity","Total_overall","b. Female","a. Male","b. Refugee","pwd_yes","Rural","Urban","18-24","25-35"))
+write.xlsx(overall2_qualindex_prop_isic,"data/qualindex_prop_isic.xlsx")
 

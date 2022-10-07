@@ -240,9 +240,11 @@ df_expectation_demo_segment <-rbind(avg_expectation_total,avg_expectation_refuge
   select(-name)%>%
   select(`Disaggregation categories`=value,`Average score`=avg_exp_score)
 
-ggplot(df_expectation_demo,aes(value,avg_exp_score))+
+#write.xlsx(df_expectation_demo_segment,"data/expectation_score_table.xlsx")
+
+ggplot(df_expectation_demo_segment,aes(`Disaggregation categories`,`Average score`))+
   geom_bar(stat = "identity",fill=Blue)+
-  geom_text(aes(label=paste0(round(avg_exp_score,2))),
+  geom_text(aes(label=paste0(round(`Average score`,2))),
             vjust=-.5,
             size = 3.3)+
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -307,7 +309,6 @@ for (i in 1:length(keyword_label) ){
   mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==3]<-2
   mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==4]<-3
   mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==5]<-4
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==6]<-0
 }
 
 # change the values from 1-3 to 0-2 
@@ -320,7 +321,6 @@ for (i in 1:length(keyword_label_b) ){
   mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==1]<-0
   mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==2]<-1
   mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==3]<-2
-  mcf_data_l5_t[,var_df_b[i,]][is.na(mcf_data_l5_t[,var_df_b[i,]])]<-1
 }
 
 # step 1: summing values from variables covering subquestion a and indicator l5.3.1

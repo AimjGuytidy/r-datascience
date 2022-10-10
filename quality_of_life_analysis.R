@@ -169,14 +169,9 @@ telephone_total <-rbind(telephone_access_possess_overall,
                            telephone_access_possess_age,
                         telephone_access_possess_stratum)
 
-bank_account_total <-rbind(bank_account_access_possess_overall,
-                           bank_account_access_possess_gender,
-                           bank_account_access_possess_geo,
-                           bank_account_access_possess_age,
-                           bank_account_access_possess_stratum)
+transport_total <-rbind(transport_access_possess_overall,
+                           transport_access_possess_gender,
+                           transport_access_possess_geo,
+                           transport_access_possess_age,
+                        transport_access_possess_stratum)
 
-bank_account_total <-rbind(bank_account_access_possess_overall,
-                           bank_account_access_possess_gender,
-                           bank_account_access_possess_geo,
-                           bank_account_access_possess_age,
-                           bank_account_access_possess_stratum)

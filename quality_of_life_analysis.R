@@ -175,3 +175,16 @@ transport_total <-rbind(transport_access_possess_overall,
                            transport_access_possess_age,
                         transport_access_possess_stratum)
 
+access_table <- bank_account_total%>%
+  left_join(clean_water_total)%>%
+  left_join(electricity_total)%>%
+  left_join(food_total)%>%
+  left_join(healthcare_total)%>%
+  left_join(internet_total)%>%
+  left_join(loans_total)%>%
+  left_join(nature_total)%>%
+  left_join(roads_total)%>%
+  left_join(sanitation_total)%>%
+  left_join(telephone_total)%>%
+  left_join(transport_total)%>%
+  select(-prop_great)

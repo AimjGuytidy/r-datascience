@@ -26,44 +26,87 @@ keyword_label<-c("D14",	"D16",	"D18",	"D20",	"D22",	"D24",	"D26",	"D28",	"D30",	
 variables_for_l531_a <- mcf_data_l5_t%>%look_for(keyword_label)
 variables_for_l531_a <-variables_for_l531_a[,"variable"]
 var_df <- as.data.frame(variables_for_l531_a)
+services_access <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
 
-for (i in 1:length(keyword_label) ){
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==1]<-0
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==2]<-1
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==3]<-2
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==4]<-3
-  mcf_data_l5_t[,var_df[i,]][mcf_data_l5_t[,var_df[i,]]==5]<-4
+
+for (i in 1:length(services_access) ){
+  mcf_data_l5_t[,services_access[i]][mcf_data_l5_t[,services_access[i]]==1]<-0
+  mcf_data_l5_t[,services_access[i]][mcf_data_l5_t[,services_access[i]]==2]<-1
+  mcf_data_l5_t[,services_access[i]][mcf_data_l5_t[,services_access[i]]==3]<-2
+  mcf_data_l5_t[,services_access[i]][mcf_data_l5_t[,services_access[i]]==4]<-3
+  mcf_data_l5_t[,services_access[i]][mcf_data_l5_t[,services_access[i]]==5]<-4
 }
 
-# change the values from 1-3 to 0-2 
-keyword_label_b<-c("D15",	"D17",	"D19",	"D21",	"D23",	"D25",	"D27",	"D29",	"D31",	"D33",	"D35",	"D37")
-variables_for_l531_b <- mcf_data_l5_t%>%look_for(keyword_label_b)
-variables_for_l531_b <-variables_for_l531_b[,"variable"]
-var_df_b <- as.data.frame(variables_for_l531_b)
+#filter services that had been accessed to easily
+# mcf_data_l5_tt <- mcf_data_l5_t%>%
+#   filter(if_all(services_access,~.>=2))
 
-for (i in 1:length(keyword_label_b) ){
-  mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==1]<-0
-  mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==2]<-1
-  mcf_data_l5_t[,var_df_b[i,]][mcf_data_l5_t[,var_df_b[i,]]==3]<-2
+for (i in services_access){
+  assign(paste0(i,"_possess_gender"),
+         characterize(mcf_data_l5_t%>%
+           mutate(prop_great=case_when(!!as.name(i)>=2~1, TRUE~0))%>%
+           group_by(gender,prop_great)%>%
+             dplyr::summarize(n=sum(weights))%>%
+             mutate(!!gsub("_access$","",i) := round(n*100/sum(n),2))%>%
+             filter(prop_great==1)%>%
+             select(-n)%>%
+             rename(name=gender)))
+         }
+  
+for (i in services_access){
+  assign(paste0(i,"_possess_geo"),
+         characterize(mcf_data_l5_t%>%
+                        mutate(prop_great=case_when(!!as.name(i)>=2~1, TRUE~0))%>%
+                        group_by(geo_entity,prop_great)%>%
+                        dplyr::summarize(n=sum(weights))%>%
+                        mutate(!!gsub("_access$","",i) := round(n*100/sum(n),2))%>%
+                        filter(prop_great==1)%>%
+                        select(-n)%>%
+                      rename(name=geo_entity)))
 }
 
-# step 1: summing values from variables covering subquestion a and indicator l5.3.1
-#var_df_filter <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
-mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(sum_quality_life=rowSums(select(.,grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
-  ),na.rm = TRUE))
+for (i in services_access){
+  assign(paste0(i,"_possess_age"),
+         characterize(mcf_data_l5_t%>%
+                        mutate(prop_great=case_when(!!as.name(i)>=2~1, TRUE~0))%>%
+                        group_by(age_group,prop_great)%>%
+                        dplyr::summarize(n=sum(weights))%>%
+                        mutate(!!gsub("_access$","",i) := round(n*100/sum(n),2))%>%
+                        filter(prop_great==1)%>%
+                        select(-n)%>%
+                        rename(name=age_group)))
+    
+}
 
-# step 2: averaging services improvement (subquestion b related)
+for (i in services_access){
+  assign(paste0(i,"_possess_stratum"),
+         characterize(mcf_data_l5_t%>%
+                        mutate(prop_great=case_when(!!as.name(i)>=2~1, TRUE~0))%>%
+                        group_by(stratum,prop_great)%>%
+                        dplyr::summarize(n=sum(weights))%>%
+                        mutate(!!gsub("_access$","",i) := round(n*100/sum(n),2))%>%
+                        filter(prop_great==1)%>%
+                        select(-n)%>%
+                        rename(name=stratum)))
+  
+}
 
-mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(avg_improv_quality_life=rowMeans(select(.,var_df_b$variable),na.rm = TRUE))
+for (i in services_access){
+  assign(paste0(i,"_possess_overall"),
+         characterize(mcf_data_l5_t%>%
+                        mutate(prop_great=case_when(!!as.name(i)>=2~1, TRUE~0))%>%
+                        group_by(prop_great)%>%
+                        dplyr::summarize(n=sum(weights))%>%
+                        mutate(!!gsub("_access$","",i) := round(n*100/sum(n),2),
+                               name="Overall")%>%
+                        select(name,prop_great,!!gsub("_access$","",i))%>%
+                        filter(prop_great==1)))
+}
 
-#step 3: computing the product of step 1 and step 2
+bank_account_total <-rbind(bank_account_access_possess_overall,
+                           bank_account_access_possess_gender,
+                           bank_account_access_possess_geo,
+                           bank_account_access_possess_age,
+                           bank_account_access_possess_stratum)
 
-mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(prod_quality_life=avg_improv_quality_life*sum_quality_life)
 
-#step 4: adjusting the index to 100 from step 3
-
-mcf_data_l5_t<-mcf_data_l5_t%>%
-  mutate(perc_quality_life=(prod_quality_life*100)/96)

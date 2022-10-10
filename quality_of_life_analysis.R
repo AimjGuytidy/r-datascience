@@ -109,4 +109,74 @@ bank_account_total <-rbind(bank_account_access_possess_overall,
                            bank_account_access_possess_age,
                            bank_account_access_possess_stratum)
 
+clean_water_total <-rbind(clean_water_access_possess_overall,
+                          clean_water_access_possess_gender,
+                          clean_water_access_possess_geo,
+                          clean_water_access_possess_age,
+                          clean_water_access_possess_stratum)
 
+electricity_total <-rbind(electricity_access_possess_overall,
+                          electricity_access_possess_gender,
+                          electricity_access_possess_geo,
+                          electricity_access_possess_age,
+                          electricity_access_possess_stratum)
+
+food_total <-rbind(food_access_possess_overall,
+                   food_access_possess_gender,
+                   food_access_possess_geo,
+                   food_access_possess_age,
+                   food_access_possess_stratum)
+
+healthcare_total <-rbind(healthcare_access_possess_overall,
+                         healthcare_access_possess_gender,
+                         healthcare_access_possess_geo,
+                         healthcare_access_possess_age,
+                         healthcare_access_possess_stratum)
+
+internet_total <-rbind(internet_access_possess_overall,
+                       internet_access_possess_gender,
+                       internet_access_possess_geo,
+                       internet_access_possess_age,
+                       internet_access_possess_stratum)
+
+loans_total <-rbind(loans_access_possess_overall,
+                           loans_access_possess_gender,
+                           loans_access_possess_geo,
+                           loans_access_possess_age,
+                    loans_access_possess_stratum)
+
+nature_total <-rbind(nature_access_possess_overall,
+                           nature_access_possess_gender,
+                           nature_access_possess_geo,
+                           nature_access_possess_age,
+                     nature_access_possess_stratum)
+
+roads_total <-rbind(roads_access_possess_overall,
+                           roads_access_possess_gender,
+                           roads_access_possess_geo,
+                           roads_access_possess_age,
+                    roads_access_possess_stratum)
+
+sanitation_total <-rbind(sanitation_access_possess_overall,
+                           sanitation_access_possess_gender,
+                           sanitation_access_possess_geo,
+                           sanitation_access_possess_age,
+                         sanitation_access_possess_stratum)
+
+telephone_total <-rbind(telephone_access_possess_overall,
+                           telephone_access_possess_gender,
+                           telephone_access_possess_geo,
+                           telephone_access_possess_age,
+                        telephone_access_possess_stratum)
+
+bank_account_total <-rbind(bank_account_access_possess_overall,
+                           bank_account_access_possess_gender,
+                           bank_account_access_possess_geo,
+                           bank_account_access_possess_age,
+                           bank_account_access_possess_stratum)
+
+bank_account_total <-rbind(bank_account_access_possess_overall,
+                           bank_account_access_possess_gender,
+                           bank_account_access_possess_geo,
+                           bank_account_access_possess_age,
+                           bank_account_access_possess_stratum)

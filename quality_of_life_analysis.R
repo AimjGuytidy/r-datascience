@@ -188,3 +188,6 @@ access_table <- bank_account_total%>%
   left_join(telephone_total)%>%
   left_join(transport_total)%>%
   select(-prop_great)
+
+# write.xlsx(access_table,"data/access_table.xlsx")
+

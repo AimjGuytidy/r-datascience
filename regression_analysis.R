@@ -100,3 +100,34 @@ sink("linear regression on quality of life using control variables.txt")
 print(summary(lm_r6))
 sink()
 closeAllConnections()
+
+# regression on working status against D&F 
+
+data_working <- mcf_data_df_shock%>%
+  filter(stratum!=3)%>%
+  mutate(working= ifelse(stratum==4,0,1))%>% #filter out students
+  mutate(gender_male=ifelse(gender==1,1,0),
+         gender_female=ifelse(gender==2,1,0),
+         age_24=ifelse(age_group=="18-24",1,0),
+         age_35=ifelse(age_group=="25-35",1,0),
+         geo_rural=ifelse(geo_entity==2,1,0),
+         geo_urban=ifelse(geo_entity==1,1,0))
+
+glm_r7 = glm(working~DFWIA1,
+           data = data_working,
+           family = "binomial")
+sink("linear regression on working status.txt")
+print(summary(glm_r7))
+sink()
+closeAllConnections()
+
+glm_r8 = glm(formula=working~gender_male+education+
+             geo_urban+age_24+DFWIA1,
+           data = data_working,
+           family = "binomial")
+sink("linear regression on working status using control variables.txt")
+print(summary(glm_r8))
+sink()
+closeAllConnections()
+
+

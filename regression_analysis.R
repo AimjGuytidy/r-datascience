@@ -75,4 +75,28 @@ print(summary(lm_r4))
 sink()
 closeAllConnections()
 
+#Simple linear regression of age education level geo-entity and gender against 
+#quality of life index
+data_qualitylife <- mcf_data_df_shock%>%
+  filter(stratum!=3)%>% #filter out students
+  mutate(gender_male=ifelse(gender==1,1,0),
+         gender_female=ifelse(gender==2,1,0),
+         age_24=ifelse(age_group=="18-24",1,0),
+         age_35=ifelse(age_group=="25-35",1,0),
+         geo_rural=ifelse(geo_entity==2,1,0),
+         geo_urban=ifelse(geo_entity==1,1,0))
 
+lm_r5 = lm(formula=perc_quality_life~DFWIA1,
+           data = data_qualitylife)
+sink("linear regression on quality of life.txt")
+print(summary(lm_r5))
+sink()
+closeAllConnections()
+
+lm_r6 = lm(formula=perc_quality_life~gender_male+education+
+             geo_urban+age_24+DFWIA1,
+           data = data_qualitylife)
+sink("linear regression on quality of life using control variables.txt")
+print(summary(lm_r6))
+sink()
+closeAllConnections()

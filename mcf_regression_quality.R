@@ -23,6 +23,7 @@ best_model <- glmnet(x,y,alpha=1,lambda = best_lambda)
 sink("coefficients.txt")
 coef(best_model)
 sink()
+closeAllConnections()
 
 #Regression with df , adaptive and absorptive against quality of life index-----
 
@@ -74,6 +75,7 @@ best_model <- glmnet(x,y,alpha=1,lambda = best_lambda)
 sink("coefficients3.txt")
 coef(best_model)
 sink()
+closeAllConnections()
 
 #simple Regression with df against adaptive, absorptive and quality of life----
 
@@ -82,17 +84,31 @@ lm_r = lm(formula=absorptive_index~DFWIA1,
 sink("coefficients_df_absorptive.txt")
 coef(summary(lm_r))
 sink()
+closeAllConnections()
 
 lm_r1 = lm(formula=adaptative_index~DFWIA1,
           data = mcf_data_df_shock)
 sink("coefficients_df_adaptative.txt")
 coef(summary(lm_r1))
 sink()
+closeAllConnections()
 
 lm_r2 = lm(formula=perc_quality_life~DFWIA1,
            data = mcf_data_df_shock)
 sink("coefficients_df_quallife.txt")
 coef(summary(lm_r2))
 sink()
-
+closeAllConnections()
 #Simple linear regression of age education level geo-entity and gender against quality of life index
+data_reg <- mcf_data_df_shock%>%
+  mutate(gender_male=ifelse(gender==1,1,0),
+         gender_female=ifelse(gender==2,1,0),
+         age_24=ifelse(age_group=="18-24",1,0),
+         age_35=ifelse(age_group=="25-35",1,0),)
+
+lm_r3 = lm(formula=perc_quality_life~gender_male+gender_female+education+geo_rural+geo_urban,
+           data = mcf_data_df_shock)
+sink("coefficients_df_quallife.txt")
+coef(summary(lm_r3))
+sink()
+closeAllConnections()

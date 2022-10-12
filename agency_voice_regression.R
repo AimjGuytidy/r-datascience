@@ -193,12 +193,45 @@ combination4<-mcf_data%>%
 filled_comb_aspiration <- combination4%>%
   dplyr::select(-aspirations1,-aspirations2,-avg_aspiration)
 
+combined_agency <- filled_comb_aspiration%>%
+  dplyr::left_join(filtered_comb_growth)%>%
+  dplyr::left_join(filtered_comb1)
+
+data_exp_abilities <- read_dta("data/mcf_data_qual_regression.dta")
+
+data_agency <- combined_agency%>%
+  dplyr::left_join(data_exp_abilities)
+
+data_agency <- data_agency%>%
+  dplyr::mutate(work_trainings_t=ifelse(work_trainings==1,5,
+                                 ifelse(work_trainings==2,4,
+                                        ifelse(work_trainings==3,3,
+                                               ifelse(work_trainings==4,2,
+                                                      ifelse(work_trainings==5,1,NA))))))
+data_agency <- data_agency%>%
+  dplyr::mutate(training_jb_market_t=ifelse(training_jb_market==1,5,
+                                     ifelse(training_jb_market==2,4,
+                                            ifelse(training_jb_market==3,3,
+                                                   ifelse(training_jb_market==4,2,
+                                                          ifelse(training_jb_market==5,1,NA))))))
 
 
-growth_stratum<-characterize(filtered_comb_growth)%>%
-  dplyr::group_by(stratum)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =stratum,  values_from = average)%>%
-  as.data.frame()
+data_agency <- data_agency%>%
+  dplyr::mutate(ability_score=rowMeans(dplyr::select(.,c("work_trainings_t","training_jb_market_t")),na.rm = TRUE))
 
+#L5.1.2c this is not a sector specific analysis-----------------
+keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")
+variables_for_l512_c <- data_agency%>%look_for(keyword_label_c)
+variables_for_l512_c <-variables_for_l512_c[,"variable"]
+var_df_c <- as.data.frame(variables_for_l512_c)
+var_df_c <- var_df_c[1:4,]
+#filtering out unemployed and students
+data_agency <- data_agency%>%
+  dplyr::filter(stratum==1|stratum==2)%>%
+  dplyr::mutate(expectation_score = rowMeans(dplyr::select(.,all_of(var_df_c)),na.rm = TRUE),
+         exp_score_prop = ifelse(round(expectation_score)>=4,1,0))
 
+agency_reg <- data_agency%>%
+  dplyr::select(uniqueid,DFWIA1,access,growth,aspirations,ability_score,expectation_score)
+
+agency_reg1 <- drop_na(agency_reg)

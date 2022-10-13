@@ -276,43 +276,58 @@ markers_access_age <- combination %>%
   ) %>%
   as.data.frame() %>%
   pivot_wider(names_from = "age_group")
-#Access to employment by sectors ------------------------
-combination4<-combination%>%
-  select(sector_choices_name_1,ease_access_digni_1 ,employing_youth_1,
-         youth_country_lead_1,opp_start_business_1,employing_women_1,
-         opp_lead_position_1,youth_advancement_1, weights)%>%
-  rowwise()%>%
-  mutate(access=mean(employing_youth_1:opp_lead_position_1, na.rm=TRUE), 
-         access1=round(mean((ease_access_digni_1:youth_advancement_1), na.rm=TRUE)),
-         access2=case_when(access1%in%c(4,5)~1, access1%in%c(1,2,3)~0))%>%
-  group_by(sector_choices_name_1)%>%
-  dplyr::summarise(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from=sector_choices_name_1, values_from = average)
-write.xlsx(combination4, 'access_employment_TA.xlsx',overwrite = TRUE)
 
-combination5<-combination%>%
-  select(sector_choices_name_1,ease_access_digni_1 ,employing_youth_1,
-         youth_country_lead_1,opp_start_business_1,employing_women_1,
-         opp_lead_position_1,youth_advancement_1, weights)%>%
-  rowwise()%>%
-  mutate(access=mean(employing_youth_1:opp_lead_position_1, na.rm=TRUE), 
-         access1=round(mean((ease_access_digni_1:youth_advancement_1), na.rm=TRUE)),
-         access2=case_when(access1%in%c(4,5)~1, access1%in%c(1,2,3)~0))%>%
-  group_by(sector_choices_name_1,access2)%>%
-  dplyr::summarise(total=sum(weights))%>%
-  mutate(perc=total/sum(total))%>%
-  filter(access2!=0)%>%
-  select(-c(total))%>%
-  pivot_wider(names_from=sector_choices_name_1, values_from = perc)
-write.xlsx(combination5, 'access_employment_TA_perc.xlsx',overwrite = TRUE)
+markers_access_stratum <- combination %>%
+  select(
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(stratum) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c(
+      "ease_access_digni_1" ,
+      "employing_youth_1",
+      "youth_country_lead_1",
+      "opp_start_business_1",
+      "employing_women_1",
+      "opp_lead_position_1",
+      "youth_advancement_1"
+    )
+  ) %>%
+  as.data.frame() %>%
+  mutate(
+    stratum =
+      case_when(
+        stratum == 1 ~ "Wage employed",
+        stratum == 2 ~ "Self employed",
+        stratum == 3 ~ "Students",
+        stratum == 4 ~ "Unemployed/Non job-seekers"
+      )
+  ) %>%
+  pivot_wider(names_from = "stratum") %>%
+  move_columns(`Wage employed`,.after = `Self employed`) %>%
+  move_columns(`Unemployed/Non job-seekers`,.before = Students)
 
-combination9<-combination%>%
-  select(sector_choices_name_1,ease_access_digni_1 ,employing_youth_1,
-         youth_country_lead_1,opp_start_business_1,employing_women_1,
-         opp_lead_position_1,youth_advancement_1, weights)%>%
-  group_by(sector_choices_name_1)%>%
-  dplyr::summarise(across(ease_access_digni_1:youth_advancement_1, ~weighted.mean(.x, weights, na.rm=TRUE)))
-write.xlsx(combination9, 'access_employment_TA_markers.xlsx',overwrite = TRUE)
+combine_access <- markers_access_gender%>%
+  left_join(markers_access_refuge)%>%
+  left_join(markers_access_pwd)%>%
+  left_join(markers_access_geo)%>%
+  left_join(markers_access_age)%>%
+  left_join(markers_access_stratum)
+
+#write.xlsx(combine_access,"data/access_disag.xlsx")
+
 
 #L.5.1.1b - new ----------------------------
 #Overall access to employment ---
@@ -330,123 +345,228 @@ markers_participation<-combination%>%
          youth_gender_equity_1,youth_improv_work_1, weights)%>%
   group_by()%>%
   dplyr::summarize(across(youth_contrib_econ_1:youth_improv_work_1, ~weighted.mean(.x, weights, na.rm=TRUE)))
-write.xlsx(markers_participation,'markers_particip.xlsx', overwrite=TRUE)
-#psych::alpha(combination3[,7:12])
 
-growth_average<-combination5%>%
-  group_by()%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))
 
-growth_gender<-characterize(combination5)%>%
-  group_by(gender)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =gender,  values_from = average)%>%
+markers_participation_gender <- combination %>%
+  select(
+    gender,
+    stratum,
+    youth_contrib_econ_1,
+    youth_contrib_innov_1,
+    youth_improv_envir_1,
+    youth_particp_local_1,
+    youth_gender_equity_1,
+    youth_improv_work_1,
+    weights
+  ) %>%
+  group_by(gender) %>%
+  dplyr::summarize(across(
+    youth_contrib_econ_1:youth_improv_work_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c(
+      "youth_contrib_econ_1" ,
+      "youth_contrib_innov_1",
+      "youth_improv_envir_1",
+      "youth_particp_local_1",
+      "youth_gender_equity_1",
+      "youth_improv_work_1"
+    )
+  ) %>%
   as.data.frame()%>%
-  move_columns(`b. Female`, .before=`a. Male`)
+  mutate(gender =
+           ifelse(gender == 2,
+                  "Female", "Male")) %>%
+  pivot_wider(names_from = "gender") %>%
+  move_columns(Male,.after = Female)
 
-growth_refugee<-characterize(combination5)%>%
-  group_by(refuge)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =refuge,  values_from = average)%>%
-  select(-c(`a. Non refuge`))%>%
-  as.data.frame()
-
-growth_pwd<-characterize(combination5)%>%
-  group_by(pwd)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =pwd,  values_from = average)%>%
-  select(-c(No))%>%
-  as.data.frame()
-growth_geo<-characterize(combination5)%>%
-  group_by(geo_entity)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =geo_entity,  values_from = average)%>%
-  as.data.frame()
-growth_age<-characterize(combination5)%>%
-  group_by(age_group)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =age_group,  values_from = average)%>%
-  as.data.frame()
-growth_stratum<-characterize(combination5)%>%
-  group_by(stratum)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))%>%
-  pivot_wider(names_from =stratum,  values_from = average)%>%
-  as.data.frame()
-
-growth_final<-growth_average%>%
-  cbind(growth_gender)%>%
-  cbind(growth_refugee)%>% 
-  cbind(growth_pwd)%>%
-  cbind(growth_geo)%>%
-  cbind(growth_age)%>%
-  cbind(growth_stratum)
-
-write.xlsx(growth_final, 'growth_final.xlsx',overwrite=TRUE)
-
-#percentages  
-growth_perc_average<-combination5%>%
-  group_by(growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))
-
-growth_perc_gender<-characterize(combination5)%>%
-  group_by(gender,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =gender,  values_from =perc)%>%
+markers_access_refuge <- combination %>%
+  select(
+    refuge,
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(refuge) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  dplyr::filter(refuge==2)%>%
+  pivot_longer(cols = c("ease_access_digni_1" ,
+                        "employing_youth_1",
+                        "youth_country_lead_1",
+                        "opp_start_business_1",
+                        "employing_women_1",
+                        "opp_lead_position_1",
+                        "youth_advancement_1")
+  ) %>%
   as.data.frame()%>%
-  move_columns(`b. Female`, .before=`a. Male`)
+  select(-refuge,`IDP/ Refugee`=value)
 
-growth_perc_refugee<-characterize(combination5)%>%
-  group_by(refuge,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =refuge,  values_from =perc)%>%
-  select(-c(`a. Non refuge`))%>%
-  as.data.frame()
 
-growth_perc_pwd<-characterize(combination5)%>%
-  group_by(pwd,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =pwd,  values_from =perc)%>%
-  select(-c(No))%>%
-  as.data.frame()
-growth_perc_geo<-characterize(combination5)%>%
-  group_by(geo_entity,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =geo_entity,  values_from =perc)%>%
-  as.data.frame()
-growth_perc_age<-characterize(combination5)%>%
-  group_by(age_group,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =age_group,  values_from =perc)%>%
-  as.data.frame()
-growth_perc_stratum<-characterize(combination5)%>%
-  group_by(stratum,growth2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =stratum,  values_from =perc)%>%
-  as.data.frame()
+markers_access_pwd <- combination %>%
+  select(
+    pwd,
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(pwd) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  dplyr::filter(pwd==1)%>%
+  pivot_longer(cols = c("ease_access_digni_1" ,
+                        "employing_youth_1",
+                        "youth_country_lead_1",
+                        "opp_start_business_1",
+                        "employing_women_1",
+                        "opp_lead_position_1",
+                        "youth_advancement_1")
+  ) %>%
+  as.data.frame()%>%
+  select(-pwd,PWD=value)
 
-growth_perc_final<-growth_perc_average%>%
-  left_join(growth_perc_gender)%>%
-  left_join(growth_perc_refugee)%>% 
-  left_join(growth_perc_pwd)%>%
-  left_join(growth_perc_geo)%>%
-  left_join(growth_perc_age)%>%
-  left_join(growth_perc_stratum)
 
-write.xlsx(growth_perc_final, 'growth_perc_final.xlsx',overwrite=TRUE)
+markers_access_geo <- combination %>%
+  select(
+    geo_entity,
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(geo_entity) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(cols = c("ease_access_digni_1" ,
+                        "employing_youth_1",
+                        "youth_country_lead_1",
+                        "opp_start_business_1",
+                        "employing_women_1",
+                        "opp_lead_position_1",
+                        "youth_advancement_1")
+  ) %>%
+  as.data.frame() %>%
+  mutate(geo_entity =
+           ifelse(geo_entity == 2,
+                  "Rural", "Urban")) %>%
+  pivot_wider(names_from = "geo_entity") %>%
+  move_columns(Urban,.after = Rural)
+
+markers_access_age <- combination %>%
+  select(
+    age_group,
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(age_group) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(cols = c("ease_access_digni_1" ,
+                        "employing_youth_1",
+                        "youth_country_lead_1",
+                        "opp_start_business_1",
+                        "employing_women_1",
+                        "opp_lead_position_1",
+                        "youth_advancement_1")
+  ) %>%
+  as.data.frame() %>%
+  pivot_wider(names_from = "age_group")
+
+markers_access_stratum <- combination %>%
+  select(
+    stratum,
+    ease_access_digni_1 ,
+    employing_youth_1,
+    youth_country_lead_1,
+    opp_start_business_1,
+    employing_women_1,
+    opp_lead_position_1,
+    youth_advancement_1,
+    weights
+  ) %>%
+  group_by(stratum) %>%
+  dplyr::summarize(across(
+    ease_access_digni_1:youth_advancement_1,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c(
+      "ease_access_digni_1" ,
+      "employing_youth_1",
+      "youth_country_lead_1",
+      "opp_start_business_1",
+      "employing_women_1",
+      "opp_lead_position_1",
+      "youth_advancement_1"
+    )
+  ) %>%
+  as.data.frame() %>%
+  mutate(
+    stratum =
+      case_when(
+        stratum == 1 ~ "Wage employed",
+        stratum == 2 ~ "Self employed",
+        stratum == 3 ~ "Students",
+        stratum == 4 ~ "Unemployed/Non job-seekers"
+      )
+  ) %>%
+  pivot_wider(names_from = "stratum") %>%
+  move_columns(`Wage employed`,.after = `Self employed`) %>%
+  move_columns(`Unemployed/Non job-seekers`,.before = Students)
+
+combine_access <- markers_access_gender%>%
+  left_join(markers_access_refuge)%>%
+  left_join(markers_access_pwd)%>%
+  left_join(markers_access_geo)%>%
+  left_join(markers_access_age)%>%
+  left_join(markers_access_stratum)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #participation by sectors ------------------------
 combination6<-combination%>%
   select(sector_choices_name_1, youth_contrib_econ_1,youth_contrib_innov_1,

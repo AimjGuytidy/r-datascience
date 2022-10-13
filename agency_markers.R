@@ -728,3 +728,13 @@ markers_aspiration_stratum <- combination8 %>%
   pivot_wider(names_from = "stratum") %>%
   move_columns(`Wage employed`,.after = `Self employed`) %>%
   move_columns(`Unemployed/Non job-seekers`,.before = Students)
+
+combine_aspiration <- markers_aspiration_gender%>%
+  left_join(markers_aspiration_refuge)%>%
+  left_join(markers_aspiration_pwd)%>%
+  left_join(markers_aspiration_geo)%>%
+  left_join(markers_aspiration_age)%>%
+  left_join(markers_aspiration_stratum)
+
+#write.xlsx(combine_aspiration,"data/markers_aspirations.xlsx")
+

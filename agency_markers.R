@@ -738,3 +738,305 @@ combine_aspiration <- markers_aspiration_gender%>%
 
 #write.xlsx(combine_aspiration,"data/markers_aspirations.xlsx")
 
+
+#abilities scores
+
+mcf_data <- mcf_data %>%
+  dplyr::mutate(work_trainings_t = ifelse(work_trainings == 1, 5,
+                                          ifelse(
+                                            work_trainings == 2, 4,
+                                            ifelse(work_trainings == 3, 3,
+                                                   ifelse(
+                                                     work_trainings == 4, 2,
+                                                     ifelse(work_trainings ==
+                                                              5, 1, NA)
+                                                   ))
+                                          )))
+mcf_data <- mcf_data %>%
+  dplyr::mutate(training_jb_market_t = ifelse(
+    training_jb_market == 1,
+    5,
+    ifelse(
+      training_jb_market == 2,
+      4,
+      ifelse(
+        training_jb_market == 3,
+        3,
+        ifelse(training_jb_market ==
+                 4, 2,
+               ifelse(training_jb_market ==
+                        5, 1, NA))
+      )
+    )
+  ))
+
+
+markers_abilities <- mcf_data %>%
+  select(work_trainings_t, training_jb_market_t, weights) %>%
+  group_by() %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  ))
+
+markers_abilities_gender <- mcf_data %>%
+  select(gender,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(gender) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(gender =
+           ifelse(gender == 2,
+                  "Female", "Male")) %>%
+  pivot_wider(names_from = "gender") %>%
+  move_columns(Male,.after = Female)
+
+markers_abilities_refuge <- mcf_data %>%
+  select(refuge,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(refuge) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>% 
+  dplyr::filter(refuge==2)%>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  select(-refuge,`IDP/ Refugee`=value)
+
+
+markers_abilities_pwd <- mcf_data %>%
+  select(pwd,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(pwd) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  dplyr::filter(pwd==1)%>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  select(-pwd,PWD=value)
+
+
+markers_abilities_geo <- mcf_data %>%
+  select(geo_entity,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(geo_entity) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(geo_entity =
+           ifelse(geo_entity == 2,
+                  "Rural", "Urban")) %>%
+  pivot_wider(names_from = "geo_entity") %>%
+  move_columns(Urban,.after = Rural)
+
+markers_abilities_age <- mcf_data %>%
+  select(age_group,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(age_group) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  pivot_wider(names_from = "age_group")
+
+markers_abilities_stratum <- mcf_data %>%
+  select(stratum,work_trainings_t,training_jb_market_t,
+         weights) %>%
+  group_by(stratum) %>%
+  dplyr::summarize(across(
+    work_trainings_t:training_jb_market_t,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_trainings_t","training_jb_market_t"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(
+    stratum =
+      case_when(
+        stratum == 1 ~ "Wage employed",
+        stratum == 2 ~ "Self employed",
+        stratum == 3 ~ "Students",
+        stratum == 4 ~ "Unemployed/Non job-seekers"
+      )
+  ) %>%
+  pivot_wider(names_from = "stratum") %>%
+  move_columns(`Wage employed`,.after = `Self employed`) %>%
+  move_columns(`Unemployed/Non job-seekers`,.before = Students)
+
+combine_abilities <- markers_abilities_gender%>%
+  left_join(markers_abilities_refuge)%>%
+  left_join(markers_abilities_pwd)%>%
+  left_join(markers_abilities_geo)%>%
+  left_join(markers_abilities_age)%>%
+  left_join(markers_abilities_stratum)
+
+#write.xlsx(combine_abilities,"data/markers_abilities.xlsx")
+
+#L5.1.2c this is not a sector specific analysis-----------------
+keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")
+variables_for_l512_c <- mcf_data%>%look_for(keyword_label_c)
+variables_for_l512_c <-variables_for_l512_c[,"variable"]
+var_df_c <- as.data.frame(variables_for_l512_c)
+var_df_c <- var_df_c[1:4,]
+#filtering out unemployed and students
+mcf_exp <- mcf_data%>%
+  dplyr::filter(stratum==1|stratum==2)
+
+
+
+markers_expectations <- mcf_exp %>%
+  select(work_pay_indiv,work_pay_fam,work_from_home,work_freedom, weights) %>%
+  group_by() %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  ))
+
+markers_expectations_gender <- mcf_exp %>%
+  select(gender,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(gender) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(gender =
+           ifelse(gender == 2,
+                  "Female", "Male")) %>%
+  pivot_wider(names_from = "gender") %>%
+  move_columns(Male,.after = Female)
+
+markers_expectations_refuge <- mcf_exp %>%
+  select(refuge,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(refuge) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>% 
+  dplyr::filter(refuge==2)%>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  select(-refuge,`IDP/ Refugee`=value)
+
+
+markers_expectations_pwd <- mcf_exp %>%
+  select(pwd,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(pwd) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  dplyr::filter(pwd==1)%>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  select(-pwd,PWD=value)
+
+
+markers_expectations_geo <- mcf_exp %>%
+  select(geo_entity,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(geo_entity) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(geo_entity =
+           ifelse(geo_entity == 2,
+                  "Rural", "Urban")) %>%
+  pivot_wider(names_from = "geo_entity") %>%
+  move_columns(Urban,.after = Rural)
+
+markers_expectations_age <- mcf_exp %>%
+  select(age_group,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(age_group) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  pivot_wider(names_from = "age_group")
+
+markers_expectations_stratum <- mcf_exp %>%
+  select(stratum,work_pay_indiv,work_pay_fam,work_from_home,work_freedom,
+         weights) %>%
+  group_by(stratum) %>%
+  dplyr::summarize(across(
+    work_pay_indiv:work_freedom,
+    ~ weighted.mean(.x, weights, na.rm = TRUE)
+  )) %>%
+  pivot_longer(
+    cols = c("work_pay_indiv","work_pay_fam","work_from_home","work_freedom"
+    )
+  ) %>%
+  as.data.frame()%>%
+  mutate(
+    stratum =
+      case_when(
+        stratum == 1 ~ "Wage employed",
+        stratum == 2 ~ "Self employed",
+        stratum == 3 ~ "Students",
+        stratum == 4 ~ "Unemployed/Non job-seekers"
+      )
+  ) %>%
+  pivot_wider(names_from = "stratum") %>%
+  move_columns(`Wage employed`,.after = `Self employed`) %>%
+  move_columns(`Unemployed/Non job-seekers`,.before = Students)
+
+combine_expectations <- markers_expectations_gender%>%
+  left_join(markers_expectations_refuge)%>%
+  left_join(markers_expectations_pwd)%>%
+  left_join(markers_expectations_geo)%>%
+  left_join(markers_expectations_age)%>%
+  left_join(markers_expectations_stratum)

@@ -1025,14 +1025,9 @@ markers_expectations_stratum <- mcf_exp %>%
     stratum =
       case_when(
         stratum == 1 ~ "Wage employed",
-        stratum == 2 ~ "Self employed",
-        stratum == 3 ~ "Students",
-        stratum == 4 ~ "Unemployed/Non job-seekers"
-      )
-  ) %>%
+        stratum == 2 ~ "Self employed")) %>%
   pivot_wider(names_from = "stratum") %>%
-  move_columns(`Wage employed`,.after = `Self employed`) %>%
-  move_columns(`Unemployed/Non job-seekers`,.before = Students)
+  move_columns(`Wage employed`,.after = `Self employed`)
 
 combine_expectations <- markers_expectations_gender%>%
   left_join(markers_expectations_refuge)%>%
@@ -1040,3 +1035,6 @@ combine_expectations <- markers_expectations_gender%>%
   left_join(markers_expectations_geo)%>%
   left_join(markers_expectations_age)%>%
   left_join(markers_expectations_stratum)
+
+#write.xlsx(combine_expectations,"data/markers_expectations.xlsx")
+

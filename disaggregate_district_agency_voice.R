@@ -144,7 +144,8 @@ markers_access<-combination%>%
 #disaggregation by district
 access_district<-combination2%>%
   group_by(district_calc)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))
+  dplyr::summarize(average=weighted.mean(access, weights))%>%
+  rename(District = district_calc,`Access to  Employment`=average)
 
 access_district_main <- characterize(combination2)%>%
   group_by(district_calc,main_activity)%>%
@@ -195,7 +196,8 @@ combination5<-combination%>%
 #disaggregation by district
 growth_district<-combination5%>%
   group_by(district_calc)%>%
-  dplyr::summarize(average=weighted.mean(growth, weights))
+  dplyr::summarize(average=weighted.mean(growth, weights))%>%
+  rename(District = district_calc,`Growth access`=average)
 
 growth_district_main <- characterize(combination5)%>%
   group_by(district_calc,main_activity)%>%
@@ -219,7 +221,8 @@ combination4<-mcf_data%>%
 #disaggregation by district
 aspirations_district<-combination4%>%
   group_by(district_calc)%>%
-  dplyr::summarize(average=weighted.mean(aspirations, weights))
+  dplyr::summarize(average=weighted.mean(aspirations, weights)) %>%
+  rename(District = district_calc,`Aspirations access`=average)
 
 aspirations_district_main <- characterize(combination4)%>%
   group_by(district_calc,main_activity)%>%
@@ -227,4 +230,4 @@ aspirations_district_main <- characterize(combination4)%>%
   pivot_wider(names_from = "main_activity",values_from = "average")
 
 #-----------------------------------------------------------------------------
-
+combined_ddistrict <- acc

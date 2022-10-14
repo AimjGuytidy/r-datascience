@@ -230,4 +230,13 @@ aspirations_district_main <- characterize(combination4)%>%
   pivot_wider(names_from = "main_activity",values_from = "average")
 
 #-----------------------------------------------------------------------------
-combined_ddistrict <- acc
+combined_ddistrict <- access_district %>%
+  left_join(growth_district)%>%
+  left_join(aspirations_district)
+
+combo <- read.csv2("data/combined_district.csv")
+
+altogether <- combined_ddistrict %>%
+  left_join(combo)
+
+#write.xlsx(altogether,"data/combination_district_total.xlsx")

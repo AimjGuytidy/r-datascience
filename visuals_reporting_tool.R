@@ -702,15 +702,28 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(perc_quality_life=(prod_quality_life*100)/96)
 
-
-#disaggregating based on geo entity
+#----------------------------------------------------------------------------
+#disaggregating based on district
 quality_district<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(district_calc)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))
 
+#disaggregating based on district and main activity
+quality_main_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(district_calc,main_activity)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_wider(names_from = "main_activity",values_from = "average")
 
+#attach to combine
+combined_district <- combined_district %>%
+  left_join(quality_district)
 
-
+combined_district <- rename(combined_district,District = district_calc,
+                            `Ability score`=avg_ability_score,
+                            `Expectation score`=avg_exp_score,
+                            `Quality of Life index`=average)
+#write_csv2(combined_district,"data/combined_district.csv")
+#-----------------------------------------------------------------------------
 #disaggregating based on geo entity
 quality_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%

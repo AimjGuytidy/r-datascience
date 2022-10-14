@@ -75,6 +75,11 @@ avg_ability<-mcf_data_k%>%
   dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,
                                                          na.rm=TRUE),2))%>%
   mutate(name="Overall",value="Overall")
+#Disaggregatie by district
+avg_ability_district<-mcf_data_k%>%
+  group_by(district_calc)%>%
+  dplyr::summarize(avg_ability_score=round(weighted.mean(ability_score, weights,
+                                                         na.rm=TRUE),2))
 #Disaggregation by gender 
 avg_ability_gender<-characterize(mcf_data_k)%>%
   group_by(gender)%>%
@@ -178,6 +183,13 @@ avg_ability <- characterize(mcf_data_k) %>%
   dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
                                                              TRUE), 2))%>%
   as.data.frame()
+#disaggregate by district
+avg_ability_main_district <- characterize(mcf_data_k) %>%
+  group_by(district_calc,main_activity) %>%
+  dplyr::summarize(avg_ability_score = round(weighted.mean(ability_score, weights, na.rm =
+                                                             TRUE), 2))%>%
+  as.data.frame() %>%
+  pivot_wider(names_from = "main_activity",values_from = "avg_ability_score")
 #Disaggregation by gender
 avg_ability_gender <- characterize(mcf_data_k) %>%
   group_by(gender, main_activity) %>%
@@ -372,6 +384,23 @@ avg_expectation_sector<-characterize(mcf_data)%>%
   dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
                                                      na.rm=TRUE),2))
 write.xlsx(avg_expectation_sector,"data/exp_by_sector.xlsx")
+
+#disaggregation by district
+avg_expectation_district<-characterize(mcf_data)%>%
+  group_by(district_calc)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2))
+#disaggregation by district and main activity
+avg_expectation_main_district<-characterize(mcf_data)%>%
+  group_by(district_calc,main_activity)%>%
+  dplyr::summarize(avg_exp_score=round(weighted.mean(expectation_score, weights,
+                                                     na.rm=TRUE),2)) %>%
+  as.data.frame() %>%
+  pivot_wider(names_from = "main_activity",values_from = "avg_exp_score")
+
+combined_district <- avg_ability_district %>%
+  left_join(avg_expectation_district)
+
 #average expectation score 
 avg_expectation_total<-characterize(mcf_data)%>%
   group_by()%>%
@@ -621,7 +650,6 @@ write.xlsx(overall6_prop_exp_score_isic,"data/prop_exp_score_isic.xlsx")
 #####################################################################
 #Visualizing the quality of life index
 
-mcf_data <- read_sav("data/mcf_data_new_reporting_tool.sav")
 #L5.3.1 Quality of life index===========
 # Data manipulation
 # change the values from 1-6 to 0-4

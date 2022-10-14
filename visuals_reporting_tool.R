@@ -702,6 +702,15 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(perc_quality_life=(prod_quality_life*100)/96)
 
+
+#disaggregating based on geo entity
+quality_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))
+
+
+
+
 #disaggregating based on geo entity
 quality_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%

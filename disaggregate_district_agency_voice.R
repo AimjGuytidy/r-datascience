@@ -610,7 +610,7 @@ markers_access<-combination%>%
   dplyr::summarize(across(ease_access_digni_1:youth_advancement_1, ~weighted.mean(.x, weights, na.rm=TRUE)))
 #write.xlsx(markers_access,'markers_access.xlsx', overwrite=TRUE)
 
-
+#-------------------------------------------------------------------------
 #disaggregation by district
 access_district<-combination2%>%
   group_by(district_calc)%>%
@@ -620,122 +620,7 @@ access_district_main <- characterize(combination2)%>%
   group_by(district_calc,main_activity)%>%
   dplyr::summarize(average=weighted.mean(access, weights)) %>%
   pivot_wider(names_from = "main_activity",values_from = "average")
-
-#psych::alpha(combination2[,4:8])
-access_average<-combination2%>%
-  group_by()%>%
-  dplyr::summarize(average=weighted.mean(access, weights))
-
-access_gender<-characterize(combination2)%>%
-  group_by(gender)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =gender,  values_from = average)%>%
-  as.data.frame()%>%
-  move_columns(`b. Female`, .before=`a. Male`)
-
-access_refugee<-characterize(combination2)%>%
-  group_by(refuge)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =refuge,  values_from = average)%>%
-  select(-c(`a. Non refuge`))%>%
-  as.data.frame()
-
-access_pwd<-characterize(combination2)%>%
-  group_by(pwd)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =pwd,  values_from = average)%>%
-  select(-c(No))%>%
-  as.data.frame()
-access_geo<-characterize(combination2)%>%
-  group_by(geo_entity)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =geo_entity,  values_from = average)%>%
-  as.data.frame()
-access_age<-characterize(combination2)%>%
-  group_by(age_group)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =age_group,  values_from = average)%>%
-  as.data.frame()
-access_stratum<-characterize(combination2)%>%
-  group_by(stratum)%>%
-  dplyr::summarize(average=weighted.mean(access, weights))%>%
-  pivot_wider(names_from =stratum,  values_from = average)%>%
-  as.data.frame()
-
-access_final<-access_average%>%
-  bind_cols(access_gender)%>%
-  bind_cols(access_refugee)%>% 
-  bind_cols(access_pwd)%>%
-  bind_cols(access_geo)%>%
-  bind_cols(access_age)%>%
-  bind_cols(access_stratum)
-
-write.xlsx(access_final, 'access_final.xlsx',overwrite=TRUE)
-
-#percentages  
-access_perc_average<-combination2%>%
-  group_by(access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))
-
-access_perc_gender<-characterize(combination2)%>%
-  group_by(gender,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =gender,  values_from =perc)%>%
-  as.data.frame()%>%
-  move_columns(`b. Female`, .before=`a. Male`)
-
-access_perc_refugee<-characterize(combination2)%>%
-  group_by(refuge,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =refuge,  values_from =perc)%>%
-  select(-c(`a. Non refuge`))%>%
-  as.data.frame()
-
-access_perc_pwd<-characterize(combination2)%>%
-  group_by(pwd,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =pwd,  values_from =perc)%>%
-  select(-c(No))%>%
-  as.data.frame()
-access_perc_geo<-characterize(combination2)%>%
-  group_by(geo_entity,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =geo_entity,  values_from =perc)%>%
-  as.data.frame()
-access_perc_age<-characterize(combination2)%>%
-  group_by(age_group,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =age_group,  values_from =perc)%>%
-  as.data.frame()
-access_perc_stratum<-characterize(combination2)%>%
-  group_by(stratum,access2)%>%
-  dplyr::summarize(total=sum(weights, na.rm=TRUE))%>%
-  mutate(perc=total/sum(total))%>%
-  select(-c(total))%>%
-  pivot_wider(names_from =stratum,  values_from =perc)%>%
-  as.data.frame()
-
-access_perc_final<-access_perc_average%>%
-  left_join(access_perc_gender)%>%
-  left_join(access_perc_refugee)%>% 
-  left_join(access_perc_pwd)%>%
-  left_join(access_perc_geo)%>%
-  left_join(access_perc_age)%>%
-  left_join(access_perc_stratum)
-
-write.xlsx(access_perc_final, 'access_perc_final.xlsx',overwrite=TRUE)
+#--------------------------------------------------------------------------
 
 #Access to employment by sectors ------------------------
 combination4<-combination%>%

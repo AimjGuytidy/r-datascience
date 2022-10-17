@@ -351,6 +351,7 @@ qual_life_DF_employed<-mcf_data_l5_t%>%
   rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
 
 qual_life_DF_combined <- rbind(qual_life_DF,qual_life_DF_employed)
+#write.xlsx(qual_life_DF_combined,"data/qual_life_DF_combined.xlsx")
 
 #------------------------------------------------------------------------------
 
@@ -370,7 +371,7 @@ growth_DF_employed<-combination5%>%
 
 
 growth_DF_combined <- rbind(growth_DF,growth_DF_employed)
-
+#write.xlsx(growth_DF_combined,"data/growth_DF_combined.xlsx")
 #------------------------------------------------------------------------------
 
 aspirations_DF<-combination4%>%
@@ -387,6 +388,7 @@ aspirations_DF_employed<-combination4%>%
   rename(`Dignified and Fulfilling Work` = DFWIA1,`Aspirations access`=average)
 
 aspirations_DF_combined <- rbind(aspirations_DF,aspirations_DF_employed)
+#write.xlsx(aspirations_DF_combined,"data/aspirations_DF_combined.xlsx")
 #------------------------------------------------------------------------------
 
 access_DF<-combination2%>%
@@ -403,3 +405,39 @@ access_DF_employed<-combination2%>%
   rename(`Dignified and Fulfilling Work` = DFWIA1,`Access to employment`=average)
 
 access_DF_combined <- rbind(access_DF,access_DF_employed)
+#write.xlsx(access_DF_combined,"data/access_DF_combined.xlsx")
+#------------------------------------------------------------------------------
+data_agency <- data_agency%>%
+  dplyr::mutate(work_trainings_t=ifelse(work_trainings==1,5,
+                                        ifelse(work_trainings==2,4,
+                                               ifelse(work_trainings==3,3,
+                                                      ifelse(work_trainings==4,2,
+                                                             ifelse(work_trainings==5,1,NA))))))
+data_agency <- data_agency%>%
+  dplyr::mutate(training_jb_market_t=ifelse(training_jb_market==1,5,
+                                            ifelse(training_jb_market==2,4,
+                                                   ifelse(training_jb_market==3,3,
+                                                          ifelse(training_jb_market==4,2,
+                                                                 ifelse(training_jb_market==5,1,NA))))))
+
+
+data_agency <- dplyr::distinct(data_agency)%>%
+  as.data.frame()%>%
+  dplyr::mutate(ability_score=rowMeans(dplyr::select(.,c("work_trainings_t","training_jb_market_t")),na.rm = TRUE))
+
+#L5.1.2c this is not a sector specific analysis-----------------
+keyword_label_c<-c("J1.",	"J2.",	"J3.",	"J4.")
+variables_for_l512_c <- data_agency%>%look_for(keyword_label_c)
+variables_for_l512_c <-variables_for_l512_c[,"variable"]
+var_df_c <- as.data.frame(variables_for_l512_c)
+var_df_c <- var_df_c[1:4,]
+#filtering out unemployed and students
+data_agency <- data_agency%>%
+  dplyr::filter(stratum==1|stratum==2)%>%
+  dplyr::mutate(expectation_score = rowMeans(dplyr::select(.,all_of(var_df_c)),na.rm = TRUE),
+                exp_score_prop = ifelse(round(expectation_score)>=4,1,0))
+
+
+
+
+

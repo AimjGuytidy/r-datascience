@@ -326,7 +326,15 @@ qual_life_district<-mcf_data_l5_t%>%
   group_by(district_calc)%>%
   dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
   rename(District = district_calc,`Quality of Life index`=average)
+#write.xlsx(qual_life_district,"data/quality_life_district.xlsx")
+qual_life_score_district<-mcf_data_l5_t%>%
+  group_by(district_calc)%>%
+  dplyr::summarize(average=weighted.mean(avg_improv_quality_life, weights)) %>%
+  rename(District = district_calc,`Quality of Life improvement score`=average)
 
+combined_qual_life_district <- qual_life_district %>%
+  left_join(qual_life_score_district)
+#write.xlsx(combined_qual_life_district,"data/quality_life_district.xlsx")
 
 #-------------------------------------------------------------------------------
 reg_data <- mcf_data_l5_t %>%

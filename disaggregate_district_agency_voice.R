@@ -337,42 +337,39 @@ combined_qual_life_district <- qual_life_district %>%
 #write.xlsx(combined_qual_life_district,"data/quality_life_district.xlsx")
 
 #-------------------------------------------------------------------------------
-reg_data <- mcf_data_l5_t %>%
-  select(append(
-    grep(
-      "_access$",
-      var_df$variable,
-      value = TRUE,
-      ignore.case = T
-    ),
-    c("DFWIA1", "perc_quality_life", "uniqueid")
-  ))
+qual_life_DF<-mcf_data_l5_t%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_employed<-mcf_data_l5_t%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_combined <- rbind(qual_life_DF,qual_life_DF_employed)
+
+#------------------------------------------------------------------------------
+
+growth_DF<-combination5%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(growth, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Growth`=average)
+
+
+growth_DF_employed<-combination5%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(growth, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Growth`=average)
+
+
+growth_DF_combined <- rbind(growth_DF,growth_DF_employed)
 
 
 
-
-
-glm_r = glm(
-  formula = DFWIA1 ~ healthcare_access + clean_water_access + sanitation_access +
-    electricity_access + telephone_access + internet_access +
-    transport_access + food_access +
-    roads_access + loans_access + bank_account_access + nature_access,
-  data = reg_data,
-  family = "binomial"
-)
-sink("logistic regression access.txt")
-print(summary(glm_r))
-sink()
-closeAllConnections()
-
-lm_r1 = lm(
-  formula = perc_quality_life ~ healthcare_access + clean_water_access + sanitation_access +
-    electricity_access + telephone_access + internet_access +
-    transport_access + food_access +
-    roads_access + loans_access + bank_account_access + nature_access,
-  data = reg_data
-)
-sink("linear regression quality.txt")
-print(summary(lm_r1))
-sink()
-closeAllConnections()

@@ -477,29 +477,12 @@ ability_DF<-mcf_data%>%
 ability_DF_employed<-mcf_data%>%
   filter(stratum==1|stratum==2)%>%
   group_by(DFWIA1)%>%
-  dplyr::summarize(average=weighted.mean(ability_score, weights)) %>%
+  dplyr::summarize(average=weighted.mean(ability_score, weights,na.rm=TRUE)) %>%
   mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
   rename(`Dignified and Fulfilling Work` = DFWIA1,`Ability score`=average)
 
 ability_DF_combined <- rbind(ability_DF,ability_DF_employed)
-#write.xlsx(access_DF_combined,"data/access_DF_combined.xlsx")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#write.xlsx(ability_DF_combined,"data/ability_DF_combined.xlsx")
 
 #---------------------------------------------------------------------------------------------------------------------
 #L5.1.2c this is not a sector specific analysis-----------------
@@ -510,10 +493,27 @@ var_df_c <- as.data.frame(variables_for_l512_c)
 var_df_c <- var_df_c[1:4,]
 #filtering out unemployed and students
 mcf_data <- mcf_data%>%
-  dplyr::filter(stratum==1|stratum==2)%>%
+  #dplyr::filter(stratum==1|stratum==2)%>%
   dplyr::mutate(expectation_score = rowMeans(dplyr::select(.,all_of(var_df_c)),na.rm = TRUE),
                 exp_score_prop = ifelse(round(expectation_score)>=4,1,0))
 
+#-------------------------------------------------------------------------------------
+
+expectation_DF<-mcf_data%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(expectation_score, weights,na.rm=TRUE)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`expectation score`=average)
+
+expectation_DF_employed<-mcf_data%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(expectation_score, weights,na.rm=TRUE)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`expectation score`=average)
+
+ability_DF_combined <- rbind(ability_DF,ability_DF_employed)
+#write.xlsx(ability_DF_combined,"data/ability_DF_combined.xlsx")
 
 
 

@@ -99,13 +99,13 @@ mcf_data<-mcf_data%>%
 #L5.1.1 a----
 #Create four different data sets 
 data1<-as.data.frame(mcf_data)%>%
-  select(uniqueid,main_activity,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_1:youth_improv_work_1)) #add weights column 
+  select(uniqueid,main_activity,DFWIA1,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_1:youth_improv_work_1)) #add weights column 
 data2<-as.data.frame(mcf_data)%>%
-  select(uniqueid,main_activity,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_2:youth_improv_work_2))
+  select(uniqueid,main_activity,DFWIA1,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_2:youth_improv_work_2))
 data3<-as.data.frame(mcf_data)%>%
-  select(uniqueid,main_activity,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_3:youth_improv_work_3))
+  select(uniqueid,main_activity,DFWIA1,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_3:youth_improv_work_3))
 data4<-as.data.frame(mcf_data)%>%
-  select(uniqueid,main_activity,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_4:youth_improv_work_4))
+  select(uniqueid,main_activity,DFWIA1,district_calc,weights,gender, age_group, geo_entity,pwd,refuge,stratum, main_activity, sector_choices,c(sector_choices_name_4:youth_improv_work_4))
 
 #Match columns name for each dataset 
 colnames(data4)<-colnames(data1)
@@ -123,7 +123,7 @@ combination$sector_choices_name_1[combination$sector_choices_name_1=='Creative i
 
 #Overall access to employment ----
 combination2<-combination%>%
-  select(uniqueid,gender, main_activity,district_calc,geo_entity, refuge, pwd, age_group, stratum,ease_access_digni_1 ,employing_youth_1,
+  select(uniqueid,gender, main_activity,DFWIA1,district_calc,geo_entity, refuge, pwd, age_group, stratum,ease_access_digni_1 ,employing_youth_1,
          youth_country_lead_1,opp_start_business_1,employing_women_1,
          opp_lead_position_1,youth_advancement_1, weights)%>%
   # group_by(uniqueid,gender, geo_entity, refuge, pwd, age_group, stratum)%>%
@@ -184,7 +184,7 @@ combination5<-combination%>%
 #L.5.1.1b - new ----------------------------
 #Overall access to employment ---
 combination5<-combination%>%
-  select(uniqueid, district_calc,main_activity,gender, geo_entity, refuge, pwd, age_group, stratum,geo_entity, youth_contrib_econ_1,youth_contrib_innov_1,
+  select(uniqueid, district_calc,main_activity,DFWIA1,gender, geo_entity, refuge, pwd, age_group, stratum,geo_entity, youth_contrib_econ_1,youth_contrib_innov_1,
          youth_improv_envir_1,youth_particp_local_1, youth_gender_equity_1,youth_improv_work_1, weights)%>%
   rowwise()%>%
   mutate(growth=mean(youth_contrib_econ_1:youth_improv_work_1, na.rm=TRUE), 
@@ -208,7 +208,7 @@ growth_district_main <- characterize(combination5)%>%
 
 #L5.1.2a this is not a sector specific analysis-----------------
 combination4<-mcf_data%>%
-  select(gender, district_calc,main_activity,geo_entity, refuge, pwd, age_group, stratum, get_work,workplaces_val,
+  select(gender, district_calc,main_activity,DFWIA1,geo_entity, refuge, pwd, age_group, stratum, get_work,workplaces_val,
          work_rewards,workplace_equit, weights)%>%
   filter(!is.na(get_work))%>%
   rowwise()%>%
@@ -238,5 +238,130 @@ combo <- read.csv2("data/combined_district.csv")
 
 altogether <- combined_ddistrict %>%
   left_join(combo)
-
+#-----------------------------------------------------------------------------
 #write.xlsx(altogether,"data/combination_district_total.xlsx")
+mcf_data_l5_t <- mcf_data
+
+keyword_label <-
+  c("D14",
+    "D16",
+    "D18",
+    "D20",
+    "D22",
+    "D24",
+    "D26",
+    "D28",
+    "D30",
+    "D32",
+    "D34",
+    "D36")
+variables_for_l531_a <- mcf_data_l5_t %>% look_for(keyword_label)
+variables_for_l531_a <- variables_for_l531_a[, "variable"]
+var_df <- as.data.frame(variables_for_l531_a)
+
+for (i in 1:length(keyword_label)) {
+  mcf_data_l5_t[, var_df[i, ]][mcf_data_l5_t[, var_df[i, ]] == 1] <- 0
+  mcf_data_l5_t[, var_df[i, ]][mcf_data_l5_t[, var_df[i, ]] == 2] <- 1
+  mcf_data_l5_t[, var_df[i, ]][mcf_data_l5_t[, var_df[i, ]] == 3] <- 2
+  mcf_data_l5_t[, var_df[i, ]][mcf_data_l5_t[, var_df[i, ]] == 4] <- 3
+  mcf_data_l5_t[, var_df[i, ]][mcf_data_l5_t[, var_df[i, ]] == 5] <- 4
+}
+
+# change the values from 1-3 to 0-2
+keyword_label_b <-
+  c("D15",
+    "D17",
+    "D19",
+    "D21",
+    "D23",
+    "D25",
+    "D27",
+    "D29",
+    "D31",
+    "D33",
+    "D35",
+    "D37")
+variables_for_l531_b <- mcf_data_l5_t %>% look_for(keyword_label_b)
+variables_for_l531_b <- variables_for_l531_b[, "variable"]
+var_df_b <- as.data.frame(variables_for_l531_b)
+
+for (i in 1:length(keyword_label_b)) {
+  mcf_data_l5_t[, var_df_b[i, ]][mcf_data_l5_t[, var_df_b[i, ]] == 1] <-
+    0
+  mcf_data_l5_t[, var_df_b[i, ]][mcf_data_l5_t[, var_df_b[i, ]] == 2] <-
+    1
+  mcf_data_l5_t[, var_df_b[i, ]][mcf_data_l5_t[, var_df_b[i, ]] == 3] <-
+    2
+}
+
+# step 1: summing values from variables covering subquestion a and indicator l5.3.1
+#var_df_filter <- grep("_access$", var_df$variable,value=TRUE, ignore.case =T)
+mcf_data_l5_t <- mcf_data_l5_t %>%
+  mutate(sum_quality_life = rowSums(select(
+    .,
+    grep(
+      "_access$",
+      var_df$variable,
+      value = TRUE,
+      ignore.case = T
+    )
+  ), na.rm = TRUE))
+
+# step 2: averaging services improvement (subquestion b related)
+
+mcf_data_l5_t <- mcf_data_l5_t %>%
+  mutate(avg_improv_quality_life = rowMeans(select(., var_df_b$variable), na.rm = TRUE))
+
+#step 3: computing the product of step 1 and step 2
+
+mcf_data_l5_t <- mcf_data_l5_t %>%
+  mutate(prod_quality_life = avg_improv_quality_life * sum_quality_life)
+
+#step 4: adjusting the index to 100 from step 3
+
+mcf_data_l5_t <- mcf_data_l5_t %>%
+  mutate(perc_quality_life = (prod_quality_life * 100) / 96)
+
+
+
+
+#-------------------------------------------------------------------------------
+reg_data <- mcf_data_l5_t %>%
+  select(append(
+    grep(
+      "_access$",
+      var_df$variable,
+      value = TRUE,
+      ignore.case = T
+    ),
+    c("DFWIA1", "perc_quality_life", "uniqueid")
+  ))
+
+
+
+
+
+glm_r = glm(
+  formula = DFWIA1 ~ healthcare_access + clean_water_access + sanitation_access +
+    electricity_access + telephone_access + internet_access +
+    transport_access + food_access +
+    roads_access + loans_access + bank_account_access + nature_access,
+  data = reg_data,
+  family = "binomial"
+)
+sink("logistic regression access.txt")
+print(summary(glm_r))
+sink()
+closeAllConnections()
+
+lm_r1 = lm(
+  formula = perc_quality_life ~ healthcare_access + clean_water_access + sanitation_access +
+    electricity_access + telephone_access + internet_access +
+    transport_access + food_access +
+    roads_access + loans_access + bank_account_access + nature_access,
+  data = reg_data
+)
+sink("linear regression quality.txt")
+print(summary(lm_r1))
+sink()
+closeAllConnections()

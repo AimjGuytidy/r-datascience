@@ -371,5 +371,35 @@ growth_DF_employed<-combination5%>%
 
 growth_DF_combined <- rbind(growth_DF,growth_DF_employed)
 
+#------------------------------------------------------------------------------
 
+aspirations_DF<-combination4%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(aspirations, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Aspirations access`=average)
 
+aspirations_DF_employed<-combination4%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(aspirations, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Aspirations access`=average)
+
+aspirations_DF_combined <- rbind(aspirations_DF,aspirations_DF_employed)
+#------------------------------------------------------------------------------
+
+access_DF<-combination2%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(access, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Access to employment`=average)
+
+access_DF_employed<-combination2%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(access, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Access to employment`=average)
+
+access_DF_combined <- rbind(access_DF,access_DF_employed)

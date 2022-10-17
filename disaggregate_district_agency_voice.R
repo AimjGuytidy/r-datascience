@@ -512,8 +512,8 @@ expectation_DF_employed<-mcf_data%>%
   mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
   rename(`Dignified and Fulfilling Work` = DFWIA1,`expectation score`=average)
 
-ability_DF_combined <- rbind(ability_DF,ability_DF_employed)
-#write.xlsx(ability_DF_combined,"data/ability_DF_combined.xlsx")
+expectation_DF_combined <- rbind(expectation_DF,expectation_DF_employed)
+#write.xlsx(expectation_DF_combined,"data/expectation_DF_combined.xlsx")
 
 
 

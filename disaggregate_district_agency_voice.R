@@ -322,7 +322,10 @@ mcf_data_l5_t <- mcf_data_l5_t %>%
 mcf_data_l5_t <- mcf_data_l5_t %>%
   mutate(perc_quality_life = (prod_quality_life * 100) / 96)
 
-
+qual_life_district<-mcf_data_l5_t%>%
+  group_by(district_calc)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  rename(District = district_calc,`Quality of Life index`=average)
 
 
 #-------------------------------------------------------------------------------

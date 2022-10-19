@@ -620,4 +620,4 @@ qual_life_DF_avg_employed_gender<-characterize(mcf_data_l5_t)%>%
 qual_life_DF_avg_combined_gender <- rbind(qual_life_DF_avg_gender,qual_life_DF_avg_employed_gender)
 
 qual_life_DF_avg_combined_gender <- distinct(qual_life_DF_avg_combined_gender)
-
+#write.xlsx(qual_life_DF_avg_combined_gender,"data/qual_life_DF_avg_combined_gender.xlsx")

@@ -515,6 +515,109 @@ expectation_DF_employed<-mcf_data%>%
 expectation_DF_combined <- rbind(expectation_DF,expectation_DF_employed)
 #write.xlsx(expectation_DF_combined,"data/expectation_DF_combined.xlsx")
 
+#-------------------------------------------------------------------------------
+aspirations_DF_strat<-characterize(combination4)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(aspirations, weights)) %>%
+  filter(DFWIA1!=1)%>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Aspirations access`=average)
+
+write.xlsx(aspirations_DF_strat,"data/aspirations_DF_strat.xlsx")
+
+expectation_DF_strat<-characterize(mcf_data)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(expectation_score, weights,na.rm=TRUE)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`expectation score`=average)
+
+write.xlsx(expectation_DF_strat,"data/expectation_DF_strat.xlsx")
+
+qual_life_DF_strat<-characterize(mcf_data_l5_t)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+write.xlsx(qual_life_DF_strat,"data/qual_life_DF_strat.xlsx")
 
 
+
+ability_DF_strat<-characterize(mcf_data)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(ability_score, weights,na.rm=TRUE)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Ability score`=average)
+
+write.xlsx(ability_DF_strat,"data/ability_DF_strat.xlsx")
+
+
+access_DF_strat<-characterize(combination2)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(access, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Access to employment`=average)
+
+
+write.xlsx(access_DF_strat,"data/access_DF_strat.xlsx")
+
+
+growth_DF_strat<-characterize(combination5)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(growth, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Growth`=average)
+
+
+write.xlsx(growth_DF_strat,"data/growth_DF_strat.xlsx")
+
+
+
+
+
+qual_life_DF_strat_avg<-characterize(mcf_data_l5_t)%>%
+  group_by(DFWIA1,stratum)%>%
+  dplyr::summarize(average=weighted.mean(avg_improv_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+write.xlsx(qual_life_DF_strat_avg,"data/qual_life_DF_strat_avg.xlsx")
+
+
+
+qual_life_DF_avg<-characterize(mcf_data_l5_t)%>%
+group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(avg_improv_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_avg_employed<-mcf_data_l5_t%>%
+  filter(stratum==1|stratum==2)%>%
+  group_by(DFWIA1)%>%
+  dplyr::summarize(average=weighted.mean(avg_improv_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_avg_combined <- rbind(qual_life_DF_avg,qual_life_DF_avg_employed)
+
+#write.xlsx(qual_life_DF_avg_combined,"data/qual_life_DF_avg_combined.xlsx")
+
+#------------------------------------------------------------------------------
+
+qual_life_DF_avg_gender<-characterize(mcf_data_l5_t)%>%
+  group_by(DFWIA1,gender)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","not D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_avg_employed_gender<-characterize(mcf_data_l5_t)%>%
+  filter(stratum=="Wage employed"|stratum=="Self employed")%>%
+  group_by(DFWIA1,gender)%>%
+  dplyr::summarize(average=weighted.mean(perc_quality_life, weights)) %>%
+  mutate(DFWIA1=ifelse(DFWIA1==1,"Youth in D&F work","working youth not in D&F"))%>%
+  rename(`Dignified and Fulfilling Work` = DFWIA1,`Quality of Life index`=average)
+
+qual_life_DF_avg_combined_gender <- rbind(qual_life_DF_avg_gender,qual_life_DF_avg_employed_gender)
+
+qual_life_DF_avg_combined_gender <- distinct(qual_life_DF_avg_combined_gender)
 

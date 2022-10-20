@@ -96,13 +96,122 @@ mcf_data_l5_t %>%
 
 
 annotations <- data.frame(
-  x = c(round(min(mcf_data_l5_t$perc_quality_life), 2), round(mean(mcf_data_l5_t$perc_quality_life), 2), round(max(mcf_data_l5_t$perc_quality_life), 2)),
+  x = c(round(min(
+    mcf_data_l5_t$perc_quality_life
+  ), 2), round(
+    mean(mcf_data_l5_t$perc_quality_life), 2
+  ), round(max(
+    mcf_data_l5_t$perc_quality_life
+  ), 2)),
   y = c(0.0025, 0.0375, 0.0025),
   label = c("Min:", "Mean:", "Max:")
 )
 
 ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
-  geom_histogram(aes(y = ..density..), color = "#000000", fill = Dark_blue,binwidth = 2) +
-  geom_density(color = "#000000", fill = Light_grey, alpha = 0.6)+
-  geom_text(data = annotations, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold")
+  geom_histogram(
+    aes(y = ..density..),
+    color = "#000000",
+    fill = Dark_blue,
+    binwidth = 2
+  ) +
+  geom_density(color = "#000000",
+               fill = Light_grey,
+               alpha = 0.6) +
+  geom_text(
+    data = annotations,
+    aes(
+      x = x,
+      y = y,
+      label = paste(label, x)
+    ),
+    size = 2,
+    fontface = "bold"
+  )
 
+
+
+
+#------------------------------------------------------------------------------
+
+
+mcf_data_l5_t_male <- mcf_data_l5_t %>%
+  filter(gender == 1)
+
+male_wtmean <- mcf_data_l5_t_male %>%
+  group_by() %>%
+  summarise(meano = weighted.mean(perc_quality_life, weights, na.rm = TRUE))
+
+annotations <- data.frame(
+  x = c(round(min(
+    mcf_data_l5_t$perc_quality_life
+  ), 2), round(
+    mean(mcf_data_l5_t$perc_quality_life), 2
+  ), round(max(
+    mcf_data_l5_t$perc_quality_life
+  ), 2)),
+  y = c(0.0025, 0.0375, 0.0025),
+  label = c("Min:", "Mean:", "Max:")
+)
+
+ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
+  geom_histogram(
+    aes(y = ..density..),
+    color = "#000000",
+    fill = Dark_blue,
+    binwidth = 2
+  ) +
+  geom_density(color = "#000000",
+               fill = Light_grey,
+               alpha = 0.6) +
+  geom_text(
+    data = annotations,
+    aes(
+      x = x,
+      y = y,
+      label = paste(label, x)
+    ),
+    size = 2,
+    fontface = "bold"
+  )
+
+#------------------------------------------------------------------------------
+
+mcf_data_l5_t_female <- mcf_data_l5_t %>%
+  filter(gender == 2)
+
+female_wtmean <- mcf_data_l5_t_female %>%
+  group_by() %>%
+  summarise(meano = weighted.mean(perc_quality_life, weights, na.rm = TRUE))
+
+annotations <- data.frame(
+  x = c(round(min(
+    mcf_data_l5_t$perc_quality_life
+  ), 2), round(
+    mean(mcf_data_l5_t$perc_quality_life), 2
+  ), round(max(
+    mcf_data_l5_t$perc_quality_life
+  ), 2)),
+  y = c(0.0025, 0.0375, 0.0025),
+  label = c("Min:", "Mean:", "Max:")
+)
+
+ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
+  geom_histogram(
+    aes(y = ..density..),
+    color = "#000000",
+    fill = Dark_blue,
+    binwidth = 2
+  ) +
+  geom_density(color = "#000000",
+               fill = Light_grey,
+               alpha = 0.6) +
+  geom_text(
+    data = annotations,
+    aes(
+      x = x,
+      y = y,
+      label = paste(label, x)
+    ),
+    size = 2,
+    fontface = "bold"
+  )

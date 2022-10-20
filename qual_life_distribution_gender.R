@@ -154,7 +154,7 @@ annotations_male <- data.frame(
   label = c("Min:", "Mean:", "Max:")
 )
 
-ggplot(mcf_data_l5_t_male, aes(perc_quality_life)) +
+qol_male_density<- ggplot(mcf_data_l5_t_male, aes(perc_quality_life)) +
   geom_histogram(
     aes(y = ..density..),
     color = "#000000",
@@ -184,6 +184,33 @@ ggplot(mcf_data_l5_t_male, aes(perc_quality_life)) +
     panel.grid = element_blank()
   )
 
+qol_male_nodensity<- ggplot(mcf_data_l5_t_male, aes(perc_quality_life)) +
+  geom_histogram(
+    aes(y = ..density..),
+    color = "#000000",
+    fill = Light_blue,
+    binwidth = 2
+  ) +
+  geom_text(
+    data = annotations_male,
+    aes(
+      x = x,
+      y = y,
+      label = paste(label, x)
+    ),
+    size = 2,
+    fontface = "bold"
+  )+
+  xlab("Quality of life index") +
+  labs(title = "Distribution of quality of life amongst male youth") +
+  scale_y_continuous(labels = scales::label_percent( scale = 100))+
+  theme(plot.title = element_text(hjust = 0.2)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank()
+  )
+
 #------------------------------------------------------------------------------
 
 mcf_data_l5_t_female <- mcf_data_l5_t %>%
@@ -193,7 +220,7 @@ female_wtmean <- mcf_data_l5_t_female %>%
   group_by() %>%
   summarise(meano = weighted.mean(perc_quality_life, weights, na.rm = TRUE))
 
-annotations <- data.frame(
+annotations_female <- data.frame(
   x = c(round(min(
     mcf_data_l5_t$perc_quality_life
   ), 2), round(

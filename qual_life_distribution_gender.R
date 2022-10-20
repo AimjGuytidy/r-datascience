@@ -11,6 +11,7 @@ library(ggplot2)
 library(stringr)
 library(forcats)
 library(data.table)
+library(scales)
 Light_grey <- c("#F2F2F2") #Light grey for the background
 Blue <- c("#097ABC") #Blue
 Light_blue <- c("#9DC3E5") #Light blue
@@ -126,7 +127,7 @@ ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
     ),
     size = 2,
     fontface = "bold"
-  )
+  ) 
 
 
 
@@ -141,30 +142,30 @@ male_wtmean <- mcf_data_l5_t_male %>%
   group_by() %>%
   summarise(meano = weighted.mean(perc_quality_life, weights, na.rm = TRUE))
 
-annotations <- data.frame(
+annotations_male <- data.frame(
   x = c(round(min(
-    mcf_data_l5_t$perc_quality_life
+    mcf_data_l5_t_male$perc_quality_life
   ), 2), round(
-    mean(mcf_data_l5_t$perc_quality_life), 2
+    mean(male_wtmean$meano), 2
   ), round(max(
-    mcf_data_l5_t$perc_quality_life
+    mcf_data_l5_t_male$perc_quality_life
   ), 2)),
   y = c(0.0025, 0.0375, 0.0025),
   label = c("Min:", "Mean:", "Max:")
 )
 
-ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
+ggplot(mcf_data_l5_t_male, aes(perc_quality_life)) +
   geom_histogram(
     aes(y = ..density..),
     color = "#000000",
-    fill = Dark_blue,
+    fill = Light_blue,
     binwidth = 2
   ) +
   geom_density(color = "#000000",
                fill = Light_grey,
                alpha = 0.6) +
   geom_text(
-    data = annotations,
+    data = annotations_male,
     aes(
       x = x,
       y = y,
@@ -172,6 +173,15 @@ ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
     ),
     size = 2,
     fontface = "bold"
+  )+
+  xlab("Quality of life index") +
+  labs(title = "Distribution of quality of life amongst male youth") +
+  scale_y_continuous(labels = scales::label_percent( scale = 100))+
+  theme(plot.title = element_text(hjust = 0.2)) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank()
   )
 
 #------------------------------------------------------------------------------

@@ -68,3 +68,41 @@ mcf_data_l5_t<-mcf_data_l5_t%>%
 
 mcf_data_l5_t<-mcf_data_l5_t%>%
   mutate(perc_quality_life=(prod_quality_life*100)/96)
+
+
+# Quality of life distribution
+mcf_data_l5_t %>%
+  filter(gender==1) %>%
+    ggplot(aes(x=perc_quality_life)) +
+      stat_bin(binwidth = 1,aes(y=..count..*100/sum(..count..)),fill=Dark_blue,color = "#000000") +
+      ylim(c(0,20))+
+      stat_bin(geom="text", aes(label=round(..count..*100/sum(..count..),2)),
+               vjust=-.5,
+               size = 3.3)+
+      scale_y_continuous(breaks = seq(from = 0, to = 100, by = 10),limits = c(0,100))+
+      theme(plot.title = element_text(hjust = 0.5)) +
+      theme(
+        plot.background = element_rect(fill = c("#F2F2F2")),
+        panel.background = element_rect(fill = c("#F2F2F2")),
+        panel.grid = element_blank(),
+    #remove x axis ticks
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+    #remove y axis labels
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank()#remove y axis ticks
+      )
+
+
+
+annotations <- data.frame(
+  x = c(round(min(mcf_data_l5_t$perc_quality_life), 2), round(mean(mcf_data_l5_t$perc_quality_life), 2), round(max(mcf_data_l5_t$perc_quality_life), 2)),
+  y = c(0.0025, 0.0375, 0.0025),
+  label = c("Min:", "Mean:", "Max:")
+)
+
+ggplot(mcf_data_l5_t, aes(perc_quality_life)) +
+  geom_histogram(aes(y = ..density..), color = "#000000", fill = Dark_blue,binwidth = 2) +
+  geom_density(color = "#000000", fill = Light_grey, alpha = 0.6)+
+  geom_text(data = annotations, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold")
+

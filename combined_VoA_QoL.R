@@ -264,7 +264,7 @@ filtered_combined_agency_indic<-combined_agency_indic%>%
   dplyr::distinct()
 
 #write.xlsx(filtered_combined_agency_indic,"data/combined_VoA_QoL.xlsx")
-
+#exploring the cause of bad quality of life
 
 
 

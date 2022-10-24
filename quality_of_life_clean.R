@@ -112,6 +112,45 @@ quality_education<-characterize(mcf_data_l5_t)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(education_brkdwn,names_to = "name",values_to = "value")
 
+#disaggregating based on main sector
+quality_sector<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(main_sector)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(main_sector,names_to = "name",values_to = "value")
+ 
+#disaggregating based on underemployed
+quality_underemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_3)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  filter(refugee_brkdwn=="Refugee")%>%
+  pivot_longer(labor_force_status_3,names_to = "name",values_to = "value")
+
+#disaggregating based on fully employed
+quality_fullyemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_4)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(labor_force_status_4,names_to = "name",values_to = "value")
+
+#disaggregating based on unemployed
+quality_unemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_5)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(labor_force_status_5,names_to = "name",values_to = "value")
+
+#disaggregating based on Non-seeker
+quality_Non_seeker<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_6)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(labor_force_status_6,names_to = "name",values_to = "value")
+
+#disaggregating based on Labor force
+quality_Labor_force<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_7)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(labor_force_status_7,names_to = "name",values_to = "value")
+
+
+
 df_quality_life_demo <-rbind(quality_gender,quality_geo,quality_agegroup,quality_pwd)
 
 #Disaggregation by stratum

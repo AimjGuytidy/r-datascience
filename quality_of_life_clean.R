@@ -244,11 +244,11 @@ df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,
 x <- c("Overall" ,"Female","Male" ,"Refugee","PWD","Rural" ,"Urban" 
        ,"18-24" ,"25-29","30-35" ,"Fully employed","Self-employed",
        "Wage employed" ,"Non-employed","Student","Underemployed",
-       "Unemployed","Non-seeker","Labor force","Non-employed",
-       "0","1-20,000","20,000-40,000","40,000-60,000","60,000-80,000",
-       "80,000-100,000","Above 100,000","None","Primary","Secondary","TVET",
-       "Agriculture/agribusiness","Creative industries","Digital economy",
-       "Education sector","Tourism&Hospitality")
+       "Unemployed","Non-seeker","Labor force","0","1-20,000","20,000-40,000",
+       "40,000-60,000","60,000-80,000","80,000-100,000","Above 100,000","None",
+       "Primary","Secondary","TVET","University","Agriculture/agribusiness",
+       "Creative industries","Digital economy","Education sector",
+       "Tourism&Hospitality")
 
 df_quality_life_demo_seg_overall <- df_quality_life_demo_seg_overall%>%
   slice(match(x,`Disaggregation groups`))
@@ -650,17 +650,17 @@ df_improv_quality_life_overall <- rbind(df_improv_quality_life_life_demo,
   select(`Disaggregation groups`=value,name,`Quality of life improvement score` = average)
 
 
-x <- c("Overall" ,"Female","Male" ,"Refugee","PWD","Rural" ,"Urban" 
-       ,"18-24" ,"25-29","30-35" ,"Fully employed","Self-employed",
-       "Wage employed" ,"Non-employed","Student","Underemployed",
-       "Unemployed","Non-seeker","Labor force","Non-employed",
-       "0","1-20,000","20,000-40,000","40,000-60,000","60,000-80,000",
-       "80,000-100,000","Above 100,000","None","Primary","Secondary","TVET",
-       "Agriculture/agribusiness","Creative industries","Digital economy",
-       "Education sector","Tourism&Hospitality")
-
 df_improv_quality_life_overall <- df_improv_quality_life_overall%>%
   slice(match(x,`Disaggregation groups`))
+
+
+#combine the three results in one table
+combined_qual <- df_quality_life_demo_seg_overall %>%
+  full_join(df_improv_quality_life_overall) %>%
+  full_join(df_proportional_quality_life_demo) %>%
+  distinct()
+
+
 
 
 #########################

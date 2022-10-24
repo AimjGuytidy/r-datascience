@@ -271,6 +271,7 @@ prop_quality_stratum <- characterize(mcf_data_l5_t) %>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
   filter(prop_great==1)%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")%>%
   select(-c("n","prop_great"))
 #disaggregating based on geo entity
 prop_quality_geo<-characterize(mcf_data_l5_t)%>%
@@ -326,9 +327,138 @@ prop_quality_overall<-characterize(mcf_data_l5_t)%>%
   mutate(name="Overall",value="Overall")%>%
   select(-c("n","prop_great"))
 
+#disaggregating on income
+prop_quality_income <- characterize(mcf_data_l5_t) %>%
+  group_by(income_brkdwn, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1&income_brkdwn != "") %>%
+  pivot_longer(income_brkdwn, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+#disaggregating based on education
+prop_quality_education <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(education_brkdwn, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(education_brkdwn, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+
+#disaggregating based on underemployed
+prop_quality_underemployed <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(labor_force_status_3, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(labor_force_status_3, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0)
+  
+
+#disaggregating by on fully employed
+prop_quality_fullyemployed <- characterize(mcf_data_l5_t) %>%
+  group_by(labor_force_status_4, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(labor_force_status_4, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0)
+
+#disaggregating based on unemployed
+prop_quality_unemployed <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(labor_force_status_5, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(labor_force_status_5, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
+
+#disaggregating based on Non-seeker
+prop_quality_Non_seeker <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(labor_force_status_6, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(labor_force_status_6, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
+
+#disaggregating by on Labor force
+prop_quality_Labor_force <- characterize(mcf_data_l5_t) %>%
+  group_by(labor_force_status_7, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(labor_force_status_7, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
+
+#disaggregating based on Agriculture/agribusiness
+prop_quality_Agriculture <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(sector_choices_1, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(sector_choices_1, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+
+#disaggregating based on Tourism&Hospitality
+prop_quality_Tourism <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(sector_choices_2, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(sector_choices_2, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+
+#disaggregating based on Creative industries
+prop_quality__creativeindustry <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(sector_choices_2, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(sector_choices_2, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+#disaggregating based on Digital economy
+prop_quality_Dig_economy <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(sector_choices_4, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(sector_choices_4, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+#disaggregating based on Education sector
+prop_quality_Education_sector <- characterize(mcf_data_l5_t) %>%
+  dplyr::group_by(sector_choices_5, prop_great) %>%
+  dplyr::summarize(n = sum(weights)) %>%
+  mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
+  filter(prop_great == 1) %>%
+  pivot_longer(sector_choices_5, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))
+
+
 df_proportional_quality_life_demo <-rbind(prop_quality_overall,prop_quality_refuge,
                                           prop_quality_gender,prop_quality_geo,
-                                          prop_quality_agegroup,prop_quality_pwd)%>%
+                                          prop_quality_agegroup,prop_quality_pwd,
+                                          prop_quality_income,
+                                          prop_quality_education,
+                                          prop_quality_underemployed,
+                                          prop_quality_fullyemployed,
+                                          prop_quality_unemployed,
+                                          prop_quality_Non_seeker,
+                                          prop_quality_Labor_force,
+                                          prop_quality_Agriculture,
+                                          prop_quality_Tourism,
+                                          prop_quality__creativeindustry,
+                                          prop_quality_Dig_economy,
+                                          prop_quality_Education_sector)%>%
   select(-name,value,propotional_qual_life)
 
 

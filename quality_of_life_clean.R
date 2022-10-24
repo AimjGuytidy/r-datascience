@@ -171,6 +171,37 @@ quality_refuge<-characterize(mcf_data_l5_t)%>%
   mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
   pivot_longer(refuge,names_to = "name",values_to = "value")
 
+#disaggregating based on Agriculture/agribusiness
+quality_Agriculture<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_1)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  filter(refugee_brkdwn=="Refugee")%>%
+  pivot_longer(sector_choices_1,names_to = "name",values_to = "value")
+
+#disaggregating based on Tourism&Hospitality
+quality_Tourism<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_2)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(sector_choices_2,names_to = "name",values_to = "value")
+
+#disaggregating based on Creative industries
+quality_creativeindustry<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_3)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(sector_choices_3,names_to = "name",values_to = "value")
+
+#disaggregating based on Digital economy
+quality_Dig_economy<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_4)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(sector_choices_4,names_to = "name",values_to = "value")
+
+#disaggregating based on Education sector
+quality_Education_sector<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_5)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(sector_choices_5,names_to = "name",values_to = "value")
+
 
 
 df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum,quality_overall,quality_refuge)%>%

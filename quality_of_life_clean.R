@@ -176,6 +176,10 @@ df_quality_life_demo <-rbind(quality_gender,quality_geo,
 qual_life_stratum<-characterize(mcf_data_l5_t)%>%
   group_by(stratum)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  mutate(stratum=case_when(stratum=="Employed"~"Wage employed",
+                           stratum=="Self-employed"~"Self-employed",
+                           stratum=="Student"~"Student",
+                           stratum=="Non-employed"~"Non-employed"))%>%
   pivot_longer(stratum,names_to = "name",values_to = "value")
 #disaggregating based on total
 quality_overall<-characterize(mcf_data_l5_t)%>%
@@ -225,9 +229,31 @@ quality_Education_sector<-characterize(mcf_data_l5_t)%>%
 
 
 
-df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,qual_life_stratum,quality_overall,quality_refuge)%>%
-  select(value,average)%>%
-  rename(`Quality of life index` = average)
+df_quality_life_demo_seg_overall <- rbind(df_quality_life_demo,
+                                          qual_life_stratum,
+                                          quality_overall,
+                                          quality_Agriculture,
+                                          quality_Tourism,
+                                          quality_creativeindustry,
+                                          quality_Dig_economy,
+                                          quality_Education_sector)%>%
+  #select(value,average)%>%
+  select(`Disaggregation groups`=value,name,`Quality of life index` = average)
+
+
+x <- c("Overall" ,"Female","Male" ,"Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-29","30-35" ,"Fully employed","Self-employed",
+       "Wage employed" ,"Non-employed","Student","Underemployed",
+       "Unemployed","Non-seeker","Labor force","Non-employed",
+       "0","1-20,000","20,000-40,000","40,000-60,000","60,000-80,000",
+       "80,000-100,000","Above 100,000","None","Primary","Secondary","TVET",
+       "Agriculture/agribusiness","Creative industries","Digital economy",
+       "Education sector","Tourism&Hospitality")
+
+df_quality_life_demo_seg_overall <- df_quality_life_demo_seg_overall%>%
+  slice(match(x,`Disaggregation groups`))
+
+
 
 #ANALYSIS B: step 2: proportion of individuals who report an average of 2 ------
 
@@ -308,74 +334,184 @@ df_proportional_quality_life_demo <-rbind(prop_quality_overall,prop_quality_refu
 
 #quality of life improvement score-------------
 
-#disaggregating average quality of life improvement by demographics 
 
-avg_qual_life_improv_segments <- characterize(mcf_data_l5_t)%>%
-  group_by(stratum)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
-  pivot_longer(stratum,names_to = "name",values_to = "value")
 
 #disaggregating based on geo entity
-quality_improvement_geo<-characterize(mcf_data_l5_t)%>%
+improv_quality_life_geo<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(geo_entity)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(geo_entity,names_to = "name",values_to = "value")
 
 #disaggregating based on gender
-quality_improvement_gender<-characterize(mcf_data_l5_t)%>%
+improv_quality_life_gender<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(gender)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(gender,names_to = "name",values_to = "value")
-quality_improvement_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",quality_improvement_gender$value)
+improv_quality_life_gender$value<-gsub("^[a-zA-Z0-9]\\.\\s","",improv_quality_life_gender$value)
 #disaggregating based on age group
-quality_improvement_agegroup<-characterize(mcf_data_l5_t)%>%
-  dplyr::group_by(age_group)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
-  pivot_longer(age_group,names_to = "name",values_to = "value")
+improv_quality_life_agegroup<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(age_group_brkdwn)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(age_group_brkdwn,names_to = "name",values_to = "value")
 #disaggregating based on pwd
-quality_improvement_pwd<-characterize(mcf_data_l5_t)%>%
+improv_quality_life_pwd<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(pwd)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
   filter(pwd=="Yes")%>%
   mutate(pwd= ifelse(pwd=="Yes","PWD",NA))%>%
   pivot_longer(pwd,names_to = "name",values_to = "value")
-
 #disaggregating based on refugee
-quality_improvement_refuge<-characterize(mcf_data_l5_t)%>%
-  dplyr::group_by(refuge)%>%
-  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
-  filter(refuge=="b. Refugee")%>%
-  mutate(refuge= ifelse(refuge=="b. Refugee","IDP/ Refugee",NA))%>%
-  pivot_longer(refuge,names_to = "name",values_to = "value")
+improv_quality_life_refuge<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refugee_brkdwn)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  filter(refugee_brkdwn=="Refugee")%>%
+  pivot_longer(refugee_brkdwn,names_to = "name",values_to = "value")
 
+#disaggregating based on income
+improv_quality_life_income<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(income_brkdwn)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  dplyr::filter(income_brkdwn!="")%>%
+  pivot_longer(income_brkdwn,names_to = "name",values_to = "value")
+
+#disaggregating based on education
+improv_quality_life_education<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(education_brkdwn)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  pivot_longer(education_brkdwn,names_to = "name",values_to = "value")
+
+#disaggregating based on underemployed
+improv_quality_life_underemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_3)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_3=ifelse(labor_force_status_3==1,var_label(labor_force_status_3),0))%>%
+  filter(labor_force_status_3!=0) %>%
+  pivot_longer(labor_force_status_3,names_to = "name",values_to = "value")
+
+#disaggregating based on fully employed
+improv_quality_life_fullyemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_4)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_4=ifelse(labor_force_status_4==1,var_label(labor_force_status_4),0))%>%
+  filter(labor_force_status_4!=0) %>%
+  pivot_longer(labor_force_status_4,names_to = "name",values_to = "value")
+
+#disaggregating based on unemployed
+improv_quality_life_unemployed<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_5)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_5=ifelse(labor_force_status_5==1,var_label(labor_force_status_5),0))%>%
+  filter(labor_force_status_5!=0) %>%
+  pivot_longer(labor_force_status_5,names_to = "name",values_to = "value")
+
+#disaggregating based on Non-seeker
+improv_quality_life_Non_seeker<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_6)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_6=ifelse(labor_force_status_6==1,var_label(labor_force_status_6),0))%>%
+  filter(labor_force_status_6!=0) %>%
+  pivot_longer(labor_force_status_6,names_to = "name",values_to = "value")
+
+#disaggregating based on Labor force
+improv_quality_life_Labor_force<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_7)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_7=ifelse(labor_force_status_7==1,var_label(labor_force_status_7),0))%>%
+  filter(labor_force_status_7!=0) %>%
+  pivot_longer(labor_force_status_7,names_to = "name",values_to = "value")
+
+
+
+df_improv_quality_life_life_demo <-rbind(improv_quality_life_gender,improv_quality_life_geo,
+                                         improv_quality_life_agegroup,improv_quality_life_pwd,
+                                         improv_quality_life_refuge,
+                                         improv_quality_life_income,
+                                         improv_quality_life_education,
+                                         improv_quality_life_underemployed,
+                                         improv_quality_life_fullyemployed,
+                                         improv_quality_life_unemployed,
+                                         improv_quality_life_Non_seeker,
+                                         improv_quality_life_Labor_force)
+
+#Disaggregation by stratum
+improv_qual_life_stratum<-characterize(mcf_data_l5_t)%>%
+  group_by(stratum)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
+  mutate(stratum=case_when(stratum=="Employed"~"Wage employed",
+                           stratum=="Self-employed"~"Self-employed",
+                           stratum=="Student"~"Student",
+                           stratum=="Non-employed"~"Non-employed"))%>%
+  pivot_longer(stratum,names_to = "name",values_to = "value")
 #disaggregating based on total
-quality_improvement_overall<-characterize(mcf_data_l5_t)%>%
+improv_quality_life_overall<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by()%>%
   dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%
   mutate(name="Overall",value="Overall")
 
-df_quality_life_improvement_demo_segments <-rbind(quality_improvement_overall,
-                                                  quality_improvement_gender,quality_improvement_geo,
-                                                  quality_improvement_agegroup,quality_improvement_pwd,
-                                                  avg_qual_life_improv_segments,quality_improvement_refuge)%>%
-  select(value,average)%>%
-  rename(`Quality of life improvement score` = average)
+#disaggregating based on Agriculture/agribusiness
+improv_quality_life_Agriculture<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_1)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(sector_choices_1=ifelse(sector_choices_1==1,var_label(sector_choices_1),0))%>%
+  filter(sector_choices_1!=0) %>%
+  pivot_longer(sector_choices_1,names_to = "name",values_to = "value")
 
-# Join the quality of life index and improvement score
+#disaggregating based on Tourism&Hospitality
+improv_quality_life_Tourism<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_2)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(sector_choices_2=ifelse(sector_choices_2==1,var_label(sector_choices_2),0))%>%
+  filter(sector_choices_2!=0) %>%
+  pivot_longer(sector_choices_2,names_to = "name",values_to = "value")
 
-quality_life_index_improv <- df_quality_life_demo_seg_overall%>%
-  left_join(df_quality_life_improvement_demo_segments)
+#disaggregating based on Creative industries
+improv_quality_life_creativeindustry<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_3)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(sector_choices_3=ifelse(sector_choices_3==1,var_label(sector_choices_3),0))%>%
+  filter(sector_choices_3!=0) %>%
+  pivot_longer(sector_choices_3,names_to = "name",values_to = "value")
+
+#disaggregating based on Digital economy
+improv_quality_life_Dig_economy<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_4)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(sector_choices_4=ifelse(sector_choices_4==1,var_label(sector_choices_4),0))%>%
+  filter(sector_choices_4!=0) %>%
+  pivot_longer(sector_choices_4,names_to = "name",values_to = "value")
+
+#disaggregating based on Education sector
+improv_quality_life_Education_sector<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_5)%>%
+  dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(sector_choices_5=ifelse(sector_choices_5==1,var_label(sector_choices_5),0))%>%
+  filter(sector_choices_5!=0) %>%
+  pivot_longer(sector_choices_5,names_to = "name",values_to = "value")
 
 
+df_improv_quality_life_overall <- rbind(df_improv_quality_life_life_demo,
+                                        improv_qual_life_stratum,
+                                        improv_quality_life_overall,
+                                        improv_quality_life_Agriculture,
+                                        improv_quality_life_Tourism,
+                                        improv_quality_life_creativeindustry,
+                                        improv_quality_life_Dig_economy,
+                                        improv_quality_life_Education_sector)%>%
+  #select(value,average)%>%
+  select(`Disaggregation groups`=value,name,`Quality of life improvement score` = average)
 
 
-x <- c("Overall" ,"Female","Male" ,"IDP/ Refugee","PWD","Rural" ,"Urban" 
-       ,"18-24" ,"25-35" ,"Self employed","Wage employed" ," Unemployed/Non job-seekers","Students")
+x <- c("Overall" ,"Female","Male" ,"Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-29","30-35" ,"Fully employed","Self-employed",
+       "Wage employed" ,"Non-employed","Student","Underemployed",
+       "Unemployed","Non-seeker","Labor force","Non-employed",
+       "0","1-20,000","20,000-40,000","40,000-60,000","60,000-80,000",
+       "80,000-100,000","Above 100,000","None","Primary","Secondary","TVET",
+       "Agriculture/agribusiness","Creative industries","Digital economy",
+       "Education sector","Tourism&Hospitality")
 
-quality_life_index_improv <- quality_life_index_improv%>%
-  slice(match(x,value))
-
-var_label(quality_life_index_improv$value) <- NULL
+df_improv_quality_life_overall <- df_improv_quality_life_overall%>%
+  slice(match(x,`Disaggregation groups`))
 
 
 #########################

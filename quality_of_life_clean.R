@@ -271,6 +271,10 @@ prop_quality_stratum <- characterize(mcf_data_l5_t) %>%
   dplyr::summarize(n=sum(weights))%>%
   mutate(propotional_qual_life = round(n*100/sum(n),2))%>%
   filter(prop_great==1)%>%
+  mutate(stratum=case_when(stratum=="Employed"~"Wage employed",
+                           stratum=="Self-employed"~"Self-employed",
+                           stratum=="Student"~"Student",
+                           stratum=="Non-employed"~"Non-employed"))%>%
   pivot_longer(stratum,names_to = "name",values_to = "value")%>%
   select(-c("n","prop_great"))
 #disaggregating based on geo entity
@@ -407,7 +411,9 @@ prop_quality_Agriculture <- characterize(mcf_data_l5_t) %>%
   mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
   filter(prop_great == 1) %>%
   pivot_longer(sector_choices_1, names_to = "name", values_to = "value") %>%
-  select(-c("n", "prop_great"))
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
 
 #disaggregating based on Tourism&Hospitality
 prop_quality_Tourism <- characterize(mcf_data_l5_t) %>%
@@ -416,16 +422,21 @@ prop_quality_Tourism <- characterize(mcf_data_l5_t) %>%
   mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
   filter(prop_great == 1) %>%
   pivot_longer(sector_choices_2, names_to = "name", values_to = "value") %>%
-  select(-c("n", "prop_great"))
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
 
 #disaggregating based on Creative industries
 prop_quality__creativeindustry <- characterize(mcf_data_l5_t) %>%
-  dplyr::group_by(sector_choices_2, prop_great) %>%
+  dplyr::group_by(sector_choices_3, prop_great) %>%
   dplyr::summarize(n = sum(weights)) %>%
   mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
   filter(prop_great == 1) %>%
-  pivot_longer(sector_choices_2, names_to = "name", values_to = "value") %>%
-  select(-c("n", "prop_great"))
+  pivot_longer(sector_choices_3, names_to = "name", values_to = "value") %>%
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
+
 #disaggregating based on Digital economy
 prop_quality_Dig_economy <- characterize(mcf_data_l5_t) %>%
   dplyr::group_by(sector_choices_4, prop_great) %>%
@@ -433,7 +444,10 @@ prop_quality_Dig_economy <- characterize(mcf_data_l5_t) %>%
   mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
   filter(prop_great == 1) %>%
   pivot_longer(sector_choices_4, names_to = "name", values_to = "value") %>%
-  select(-c("n", "prop_great"))
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
+
 #disaggregating based on Education sector
 prop_quality_Education_sector <- characterize(mcf_data_l5_t) %>%
   dplyr::group_by(sector_choices_5, prop_great) %>%
@@ -441,12 +455,15 @@ prop_quality_Education_sector <- characterize(mcf_data_l5_t) %>%
   mutate(propotional_qual_life = round(n * 100 / sum(n), 2)) %>%
   filter(prop_great == 1) %>%
   pivot_longer(sector_choices_5, names_to = "name", values_to = "value") %>%
-  select(-c("n", "prop_great"))
+  select(-c("n", "prop_great"))%>%
+  mutate(value=ifelse(value==1,var_label(value),0))%>%
+  filter(value!=0&!is.na(value))
 
 
 df_proportional_quality_life_demo <-rbind(prop_quality_overall,prop_quality_refuge,
                                           prop_quality_gender,prop_quality_geo,
                                           prop_quality_agegroup,prop_quality_pwd,
+                                          prop_quality_stratum,
                                           prop_quality_income,
                                           prop_quality_education,
                                           prop_quality_underemployed,
@@ -459,8 +476,10 @@ df_proportional_quality_life_demo <-rbind(prop_quality_overall,prop_quality_refu
                                           prop_quality__creativeindustry,
                                           prop_quality_Dig_economy,
                                           prop_quality_Education_sector)%>%
-  select(-name,value,propotional_qual_life)
+  select(`Disaggregation groups`=value,name,propotional_qual_life)
 
+df_proportional_quality_life_demo <- df_proportional_quality_life_demo%>%
+  slice(match(x,`Disaggregation groups`))
 
 #quality of life improvement score-------------
 

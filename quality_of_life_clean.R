@@ -173,6 +173,9 @@ prop_great_stratum_calc_jb <- characterize(mcf_data_l5_t) %>%
   select(-c("n","prop_great"))
 
 #quality of life improvement score-------------
+
+#disaggregating average quality of life improvement by demographics 
+
 avg_qual_life_improv_segments <- characterize(mcf_data_l5_t)%>%
   group_by(stratum)%>%
   dplyr::summarize(average=round(weighted.mean(avg_improv_quality_life, weights,na.rm=TRUE),2))%>%

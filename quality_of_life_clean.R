@@ -104,6 +104,7 @@ quality_refuge<-characterize(mcf_data_l5_t)%>%
 quality_income<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(income_brkdwn)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  dplyr::filter(income_brkdwn!="")%>%
   pivot_longer(income_brkdwn,names_to = "name",values_to = "value")
 
 #disaggregating based on education
@@ -111,42 +112,51 @@ quality_education<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(education_brkdwn)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(education_brkdwn,names_to = "name",values_to = "value")
-
+#------------------------------------------------------------------------------
 #disaggregating based on main sector
 quality_sector<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(main_sector)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
   pivot_longer(main_sector,names_to = "name",values_to = "value")
- 
+#------------------------------------------------------------------------------ 
 #disaggregating based on underemployed
 quality_underemployed<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(labor_force_status_3)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
-  filter(refugee_brkdwn=="Refugee")%>%
+  mutate(labor_force_status_3=ifelse(labor_force_status_3==1,var_label(labor_force_status_3),0))%>%
+  filter(labor_force_status_3!=0) %>%
   pivot_longer(labor_force_status_3,names_to = "name",values_to = "value")
 
 #disaggregating based on fully employed
 quality_fullyemployed<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(labor_force_status_4)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_4=ifelse(labor_force_status_4==1,var_label(labor_force_status_4),0))%>%
+  filter(labor_force_status_4!=0) %>%
   pivot_longer(labor_force_status_4,names_to = "name",values_to = "value")
 
 #disaggregating based on unemployed
 quality_unemployed<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(labor_force_status_5)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_5=ifelse(labor_force_status_5==1,var_label(labor_force_status_5),0))%>%
+  filter(labor_force_status_5!=0) %>%
   pivot_longer(labor_force_status_5,names_to = "name",values_to = "value")
 
 #disaggregating based on Non-seeker
 quality_Non_seeker<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(labor_force_status_6)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_6=ifelse(labor_force_status_6==1,var_label(labor_force_status_6),0))%>%
+  filter(labor_force_status_6!=0) %>%
   pivot_longer(labor_force_status_6,names_to = "name",values_to = "value")
 
 #disaggregating based on Labor force
 quality_Labor_force<-characterize(mcf_data_l5_t)%>%
   dplyr::group_by(labor_force_status_7)%>%
   dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
+  mutate(labor_force_status_7=ifelse(labor_force_status_7==1,var_label(labor_force_status_7),0))%>%
+  filter(labor_force_status_7!=0) %>%
   pivot_longer(labor_force_status_7,names_to = "name",values_to = "value")
 
 

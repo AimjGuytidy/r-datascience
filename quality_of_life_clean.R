@@ -1,19 +1,19 @@
 library(dplyr)
 library(tidyr)
 library(readr)
-library(openxlsx)
 library(haven)
-library(foreign)
 library(labelled)
 library(rio)
 library(psych)
+library(writexl)
+
 data_directory <- "G:/Shared drives/MCF Baseline - external baseline/4. Baseline assessment/"
 
 
-data_path <- "4. QUANT/2. Data analysis/2. Primary data analysis/Databook/data/mcf_data_brkdwn.dta"
+data_path <- "4. QUANT/2. Data analysis/2. Primary data analysis/Databook/data/mcf_data_brkdwn.sav"
 
 mcf_data <-
-  read_dta(paste0(
+  haven::read_sav(paste0(
     data_directory,
     data_path
     ))
@@ -661,7 +661,8 @@ combined_qual <- df_quality_life_demo_seg_overall %>%
   distinct()
 
 
-
+#write.xlsx(combined_qual,"data/quality_life_combined.xlsx")
+#write_xlsx(combined_qual,)
 
 #########################
 qual_mean_w1 <- characterize(mcf_data_l5_t)%>%

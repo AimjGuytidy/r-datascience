@@ -793,21 +793,219 @@ overall2_qualindex_prop_isic <- prop_great_calc1%>%
 
 
 #disaggregating based on district----
-quality_district<-characterize(mcf_data_l5_t)%>%
+qual_mean_district <- characterize(mcf_data_l5_t)%>%
   dplyr::group_by(district_calc)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm=TRUE),2))%>%
+  ungroup()%>%
+  select(district_calc,Overall=average)
 
-#disaggregating based on district and main activity
-quality_main_district<-characterize(mcf_data_l5_t)%>%
-  dplyr::group_by(district_calc,main_activity)%>%
-  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,na.rm = TRUE),2))%>%
-  pivot_wider(names_from = "main_activity",values_from = "average")
+#disaggregating based on geo entity
+quality_geo_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(geo_entity,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights
+                                               ,na.rm=TRUE),2))%>%
+  pivot_wider(names_from = "geo_entity",values_from = "average")%>%
+  as.data.frame()
+#disaggregating based on gender
+quality_gender_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(gender,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm=TRUE),2))%>%
+  pivot_wider(names_from = "gender",values_from = "average")%>%
+  as.data.frame()
 
-#attach to combine
-combined_district <- combined_district %>%
-  left_join(quality_district)
+#disaggregating based on age group
+quality_agegroup_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(age_group_brkdwn,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm=TRUE),2))%>%
+  pivot_wider(names_from = "age_group_brkdwn",values_from = "average")%>%
+  as.data.frame()
 
-combined_district <- rename(combined_district,District = district_calc,
-                            `Ability score`=avg_ability_score,
-                            `Expectation score`=avg_exp_score,
-                            `Quality of Life index`=average)
+#disaggregating based on pwd
+quality_pwd_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(pwd,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm=TRUE),2))%>%
+  filter(pwd=="Yes")%>%
+  ungroup()%>%
+  select(-pwd,district_calc,PWD=average)
+
+#disaggregating based on refugee
+quality_refugee_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(refugee_brkdwn,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm=TRUE),2))%>%
+  dplyr::filter(refugee_brkdwn!="Non-refugee")%>%
+  ungroup()%>%
+  select(-refugee_brkdwn,district_calc,Refugee=average)
+
+#disaggregating based on income
+quality_income_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(income_brkdwn,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  dplyr::filter(income_brkdwn!="")%>%
+  pivot_wider(district_calc,names_from = "income_brkdwn",values_from = "average")
+
+#disaggregating based on education
+quality_education_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(education_brkdwn,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  pivot_wider(district_calc,names_from = "education_brkdwn",values_from = "average")
+
+
+#disaggregating based on underemployed
+quality_underemployed_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_3,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(labor_force_status_3!=0) %>%
+  mutate(labor_force_status_3=ifelse(labor_force_status_3==1,var_label(labor_force_status_3),"0"))%>%
+  pivot_wider(district_calc,names_from = "labor_force_status_3",values_from = "average")
+
+#disaggregating based on fully employed
+quality_fullyemployed_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_4,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(labor_force_status_4!=0) %>%
+  mutate(labor_force_status_4=ifelse(labor_force_status_4==1,
+                                     var_label(labor_force_status_4),0))%>%
+  pivot_wider(district_calc,names_from = "labor_force_status_4",
+              values_from = "average")
+
+
+#disaggregating based on unemployed
+quality_unemployed_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_5,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(labor_force_status_5!=0) %>%
+  mutate(labor_force_status_5=ifelse(labor_force_status_5==1,
+                                     var_label(labor_force_status_5),0))%>%
+  pivot_wider(district_calc,names_from = "labor_force_status_5",
+              values_from = "average")
+
+#disaggregating based on Non-seeker
+quality_Non_seeker_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_6,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(labor_force_status_6!=0) %>%
+  mutate(labor_force_status_6=ifelse(labor_force_status_6==1,
+                                     var_label(labor_force_status_6),0))%>%
+  pivot_wider(district_calc,names_from = "labor_force_status_6",
+              values_from = "average")
+
+#disaggregating based on Labor force
+quality_Labor_force_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(labor_force_status_7,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(labor_force_status_7!=0) %>%
+  mutate(labor_force_status_7=ifelse(labor_force_status_7==1,
+                                     var_label(labor_force_status_7),0))%>%
+  pivot_wider(district_calc,names_from = "labor_force_status_7",
+              values_from = "average")
+
+
+#disaggregating based on Agriculture/agribusiness
+quality_Agriculture_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_1,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(sector_choices_1!=0) %>%
+  mutate(sector_choices_1=ifelse(sector_choices_1==1,
+                                 var_label(sector_choices_1),0))%>%
+  pivot_wider(district_calc,names_from = "sector_choices_1",
+              values_from = "average")
+
+#disaggregating based on Tourism&Hospitality
+quality_Tourism_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_2,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(sector_choices_2!=0) %>%
+  mutate(sector_choices_2=ifelse(sector_choices_2==1,
+                                 var_label(sector_choices_2),0))%>%
+  pivot_wider(district_calc,names_from = "sector_choices_2",
+              values_from = "average")
+
+#disaggregating based on Creative industries
+quality_creativeindustry_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_3,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(sector_choices_3!=0) %>%
+  mutate(sector_choices_3=ifelse(sector_choices_3==1,
+                                 var_label(sector_choices_3),0))%>%
+  pivot_wider(district_calc,names_from = "sector_choices_3",
+              values_from = "average")
+
+#disaggregating based on Digital economy
+quality_Dig_economy_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_4,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(sector_choices_4!=0) %>%
+  mutate(sector_choices_4=ifelse(sector_choices_4==1,
+                                 var_label(sector_choices_4),0))%>%
+  pivot_wider(district_calc,names_from = "sector_choices_4",
+              values_from = "average")
+
+#disaggregating based on Education sector
+quality_Education_sector_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(sector_choices_5,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm = TRUE),2))%>%
+  filter(sector_choices_5!=0) %>%
+  mutate(sector_choices_5=ifelse(sector_choices_5==1,
+                                 var_label(sector_choices_5),0))%>%
+  pivot_wider(district_calc,names_from = "sector_choices_5",
+              values_from = "average")
+
+
+#disaggregating based on age group
+quality_stratum_district<-characterize(mcf_data_l5_t)%>%
+  dplyr::group_by(stratum,district_calc)%>%
+  dplyr::summarize(average=round(weighted.mean(perc_quality_life, weights,
+                                               na.rm=TRUE),2))%>%
+  pivot_wider(names_from = "stratum",values_from = "average")%>%
+  as.data.frame()
+
+
+
+
+x <- c("Overall" ,"Female","Male" ,"Refugee","PWD","Rural" ,"Urban" 
+       ,"18-24" ,"25-29","30-35" ,"Fully employed","Self-employed",
+       "Wage-employed" ,"Non-employed","Student","Underemployed",
+       "Unemployed","Non-seeker","Labor force","0","1-20,000","20,000-40,000",
+       "40,000-60,000","60,000-80,000","80,000-100,000","Above 100,000","None",
+       "Primary","Secondary","TVET","University","Agriculture/agribusiness",
+       "Creative industries","Digital economy","Education sector",
+       "Tourism&Hospitality")
+
+overall1_qualindex_district <- qual_mean_district%>%
+  left_join(quality_stratum_district)%>%
+  left_join(quality_geo_district)%>%
+  left_join(quality_gender_district)%>%
+  left_join(quality_agegroup_district)%>%
+  left_join(quality_pwd_district)%>%
+  left_join(quality_refugee_district)%>%
+  left_join(quality_income_district)%>%
+  left_join(quality_education_district)%>%
+  left_join(quality_underemployed_district)%>%
+  left_join(quality_fullyemployed_district)%>%
+  left_join(quality_unemployed_district)%>%
+  left_join(quality_Non_seeker_district)%>%
+  left_join(quality_Labor_force_district)%>%
+  left_join(quality_Agriculture_district)%>%
+  left_join(quality_Tourism_district)%>%
+  left_join(quality_creativeindustry_district)%>%
+  left_join(quality_Dig_economy_district)%>%
+  left_join(quality_Education_sector_district)%>%
+  as.data.frame()%>%
+  select(x)
+#write_xlsx(overall1_qualindex_district,"data/quality_life_district.xlsx")

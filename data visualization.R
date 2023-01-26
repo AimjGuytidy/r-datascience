@@ -14,7 +14,7 @@ ggplot(data = mpg)+
   geom_point(mapping = aes(x=displ,y=hwy))
 nrow(mtcars)
 ncol(mtcars)
-?geom_point
+# ?geom_point
 ggplot(data = mpg)+
   geom_point(mapping = aes(x=displ,y=hwy,color=displ<5))+
   facet_wrap(~trans,nrow = 2)

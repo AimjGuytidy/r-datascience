@@ -4,6 +4,7 @@ require(tidyverse)
 print(mpg)
 head(mpg,5)
 str(mpg)
+<<<<<<< HEAD
 colnames(mpg)
 dplyr::count(mpg[,c("class","displ")],class,sort=TRUE)%>%
   ggplot()+
@@ -42,10 +43,46 @@ ggplot(data = mpg)+
 ggplot(data = mpg)+
   geom_point(mapping = aes(x=displ,y=hwy),color="green")+
   facet_wrap(~class,nrow = 2)
+=======
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy,color=class,size=class,alpha=class,shape=class))
+# # ggplot(data = mpg)
+# nrow(mtcars)
+# ncol(mtcars)
+# ?geom_point
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy,color=displ<5))+
+#   facet_wrap(~trans,nrow = 2)
+# # vignette("ggplot2-specs")
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy))+
+#   facet_grid(drv ~ cyl)
+# 
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy))+
+#   facet_grid(.~ cyl)
+# 
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy))+
+#   facet_grid(drv ~ .)
+# 
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy,color=displ<5))+
+#   facet_wrap(~class,nrow = 2)
+# 
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy,color=displ<5))+
+#   facet_wrap(~class,ncol = 4)
+# 
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy),color="green")+
+#   facet_wrap(~class,nrow = 2)
+>>>>>>> origin/main
 
 
 # page 16
 #Geometric Objects
+<<<<<<< HEAD
 ggplot(data = mpg)+
   geom_point(mapping = aes(x=displ,y=hwy),color='blue')
 
@@ -203,6 +240,165 @@ r_rocks <- 2^3
 seq(1,10)
 x <- "hello world"
 (y <- seq(1,10,length.out=5))
+=======
+# ggplot(data = mpg)+
+#   geom_point(mapping = aes(x=displ,y=hwy),color='blue')
+# 
+# ggplot(data = mpg)+
+#   geom_smooth(mapping = aes(x=displ,y=hwy))
+# 
+# ggplot(data = mpg)+
+#   geom_smooth(mapping = aes(x=displ,y=hwy),color='orange')
+# 
+# ggplot(data = mpg)+
+#   geom_smooth(mapping = aes(x=displ,y=hwy,linetype=drv,color=drv))+
+#   geom_point(mapping = aes(x=displ,y=hwy,color=drv))
+# 
+# ggplot(data = mpg)+
+#   geom_smooth(mapping = aes(x=displ,y=hwy,group=drv),color='orange')
+# 
+# ggplot(data = mpg,mapping = aes(x=displ,y=hwy))+
+#   geom_smooth(mapping = aes(linetype=drv,color=drv))+
+#   geom_point(mapping = aes(color=drv))
+# 
+# ggplot(data = mpg,mapping = aes(x=displ,y=hwy))+
+#   geom_smooth(data = filter(mpg,class=='subcompact'))+
+#   geom_point(mapping = aes(color=class))
+# 
+# ggplot(data = mpg,mapping = aes(x=displ,y=hwy))+
+#   geom_smooth(data = filter(mpg,class=='subcompact'),se=FALSE)+
+#   geom_point(mapping = aes(color=class))
+# 
+# ggplot(data = mpg,mapping = aes(x=displ,y=hwy,color=drv))+
+#   geom_point()+
+#   geom_smooth(se=FALSE)
+# 
+# # Statistical transformations
+# 
+# head(diamonds,5)
+# view(diamonds)
+# #Bar chart
+# ggplot(data = diamonds,mapping = aes(x=cut))+
+#   geom_bar()
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut))+
+#   stat_count()
+# 
+# ?tribble
+# a <- 1:5
+# tibble(a,a^2)
+# trial <- tribble(
+#   ~a,    ~b,
+#   'bar1',25,
+#   'bar2',35,
+#   'bar3',75
+#   )
+# ggplot(data = trial,mapping = aes(x=a,y=b))+
+#   geom_bar(stat = 'identity')
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut))+
+#   geom_bar(mapping = aes(y=..prop..,group=1))
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut))+
+#   geom_bar(mapping = aes(y=..prop..,group=price))
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,y=depth))+
+#   stat_summary(fun.max = max,fun.min = min,fun = median)
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,y=price))+
+#   stat_summary(fun.max = max,fun.min = min,fun = mean)
+# ?stat_summary
+# #Position Adjustments
+# ggplot(data = mpg)+
+#   geom_bar(mapping = aes(x=hwy),color='blue')
+# 
+# ggplot(data = mpg)+
+#   geom_bar(mapping = aes(x=hwy,fill='yellow'))
+# 
+# ggplot(data = mpg)+
+#   geom_bar(mapping = aes(x=hwy,fill=drv))
+# 
+# ggplot(data = diamonds)+
+#   geom_bar(mapping = aes(x=cut,fill=cut))
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,color=cut))+
+#   geom_bar(fill=NA,position='identity')
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+#   geom_bar(position='dodge')
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+#   geom_bar(alpha=1/5,position='identity')
+# 
+# ggplot(data = diamonds,mapping = aes(x=cut,fill=clarity))+
+#   geom_bar(position='fill')
+# 
+# ggplot(data = mpg,mapping = aes(x=displ,y=hwy))+
+#   geom_point(position='jitter')
+# 
+# ?geom_count
+# ?geom_jitter
+# ?geom_boxplot
+# 
+# ggplot(data = mpg)+
+#   geom_boxplot(mapping = aes(x=hwy,y=drv))
+# 
+# #Coordinate Systems
+# 
+# ggplot(data = mpg)+
+#   geom_boxplot(mapping = aes(y=hwy,x=class))+
+#   coord_flip()
+# 
+# ggplot(data = diamonds)+
+#   geom_bar(mapping = aes(x=cut))+
+#   coord_flip()
+# 
+# rw<-map_data("nz")
+# ggplot(data=rw,mapping = aes(long,lat,group=group))+
+#   geom_polygon(fill='white',color='magenta')
+# 
+# ggplot(data=rw,mapping = aes(long,lat,group=group))+
+#   geom_polygon(fill='white',color='magenta')+
+#   coord_quickmap()
+# 
+# ?labs
+# 
+# bar<-ggplot(data = diamonds)+
+#   geom_bar(mapping = aes(x=cut,fill=cut))
+# 
+# bar + coord_flip()
+# bar+coord_polar()
+# 
+# # install.packages("mapproj")
+# require("mapproj")
+# require("maps")
+# mapy<-ggplot(data=rw,mapping = aes(long,lat,group=group))+
+#   geom_polygon(fill='white',color='magenta')
+#   
+# mapy+coord_map()
+# ?coord_fixed
+# ?geom_abline
+# 
+# 
+# ggplot(data = mpg,aes(x=cty,y=hwy))+
+#   geom_point()+
+#   geom_abline()+
+#   coord_fixed()
+# 
+# #The Layered Grammar of Graphics
+# #########################################
+# 
+# #####################
+# #2.Workflow:Basics###
+# #####################
+# # this_is_a_really_long_name <- 2.5
+# # this_is_a_really_long_name
+# # This_is_a_really_long_name
+# r_rocks <- 2^3
+# seq(1,10)
+# x <- "hello world"
+# (y <- seq(1,10,length.out=5))
+>>>>>>> origin/main
 
 
 ##################################
@@ -213,15 +409,23 @@ require(tidyverse)
 # install.packages("nycflights13")
 require(nycflights13)
 
+<<<<<<< HEAD
 head(flights,5)
 
 # view(flights)
 View(flights)
+=======
+# head(flights,5)
+# 
+# # view(flights)
+# View(flights)
+>>>>>>> origin/main
 
 # Filter()
 (jan1u <- flights%>%
   filter(day==22,month==10))
 jan1 <- filter(flights,month==1,day==1)
+<<<<<<< HEAD
 View(jan1)
 (dec25 <- filter(flights,month==12,day==25))
 # page 48
@@ -229,6 +433,15 @@ View(jan1)
 filter(flights,month ==10|month==5)
 octmay <- filter(flights,month %in% c(5,10))
 View(octmay)
+=======
+#View(jan1)
+(dec25 <- filter(flights,month==12,day==25))
+# page 48
+#View(jan1)
+filter(flights,month ==10|month==5)
+octmay <- filter(flights,month %in% c(5,10))
+#View(octmay)
+>>>>>>> origin/main
 sum(is.na(flights))
 df <- tibble(x=c(1,NA,3))
 filter(df,x>1)
@@ -332,6 +545,7 @@ View(transmute(flights_sml,
 
 #Useful creation Functions
 
+<<<<<<< HEAD
 View(transmute(flights,
                air_time,
                hours=air_time%/%60,
@@ -386,6 +600,62 @@ view(summarize(by_day,delay=mean(dep_delay,na.rm=TRUE)))
 
 View(group_by(flights,year,month,day)%>%
   summarize(delay=mean(dep_delay,na.rm=TRUE)))
+=======
+# View(transmute(flights,
+#                air_time,
+#                hours=air_time%/%60,
+#                mins=air_time%%60))
+# 
+# (x <- 1:10)
+# lag(x)
+# lead(x)
+# (x-lag(x))
+# (x-lead(x))
+# 
+# cumsum(x)
+# cummin(x)
+# cumprod(x)
+# cummean(x)
+# cummax(x)
+# y <- c(1,2,2,NA,3,4)
+# min_rank(y)
+# row_number(y)
+# 
+# View(transmute(flights,
+#           dep_time,
+#           sched_dep_time,
+#           depy = (dep_time%/%100)*60 + (dep_time%%100),
+#           sch_depy = (sched_dep_time%/%100)*60 + (sched_dep_time%%100)))
+# 
+# View(transmute(flights,
+#                air_time,
+#                dep_time,
+#                arr_time,
+#                diff = (arr_time-dep_time),
+#                compare_two = (diff != air_time)))
+# 
+# View(transmute(flights,
+#                air_time,
+#                dep_time,
+#                arr_time,
+#                depy = (dep_time%/%100)*60 + (dep_time%%100),
+#                arry = (arr_time%/%100)*60 + (arr_time%%100),
+#                diff = (arry-depy),
+#                compare_two = (diff != air_time)))
+# 
+# View(transmute(flights,dep_delay,ranky=min_rank(dep_delay)))
+# View(arrange(transmute(flights,dep_delay,ranky=row_number(dep_delay)),ranky))
+# 
+# #Grouped Summaries with summarize()
+# 
+# summarize(flights,delay=mean(dep_delay,na.rm=TRUE))
+# (by_day <- group_by(flights,year,month,day))
+# view(summarize(by_day,delay=mean(dep_delay,na.rm=TRUE)))
+# 
+# 
+# View(group_by(flights,year,month,day)%>%
+#   summarize(delay=mean(dep_delay,na.rm=TRUE)))
+>>>>>>> origin/main
 
 #Combining Multiple Operations with the Pipe
 
@@ -395,7 +665,11 @@ delay <- summarise(by_dest,
                    dist=mean(distance,na.rm=TRUE),
                    delay=mean(arr_delay,na.rm=TRUE))
 delay <- filter(delay,count>=20,dest != 'HNL')
+<<<<<<< HEAD
 View(delay)
+=======
+#View(delay)
+>>>>>>> origin/main
 
 ggplot(delay,mapping = aes(x=dist,y=delay))+
   geom_point(mapping = aes(size=count),alpha=1/3)+
@@ -409,6 +683,7 @@ delay <- flights%>%
             dist=mean(distance,na.rm=TRUE),
             delay=mean(arr_delay,na.rm=TRUE))%>%
   filter(count>=20,dest != 'HNL')
+<<<<<<< HEAD
 View(delay)
 
 View(flights%>%
@@ -418,6 +693,17 @@ View(flights%>%
 View(flights%>%
        group_by(year,month,day)%>%
        summarise(mean=mean(dep_delay,na.rm=TRUE)))
+=======
+# View(delay)
+# 
+# View(flights%>%
+#        group_by(year,month,day)%>%
+#        summarise(mean=mean(dep_delay)))
+# 
+# View(flights%>%
+#        group_by(year,month,day)%>%
+#        summarise(mean=mean(dep_delay,na.rm=TRUE)))
+>>>>>>> origin/main
 not_cancelled <- flights%>%
   filter(!is.na(dep_delay),!is.na(arr_delay))
 
@@ -425,15 +711,25 @@ not_cancelled%>%
   group_by(year,month,day)%>%
   summarise(mean=mean(dep_delay))
 
+<<<<<<< HEAD
 View(select(flights,tailnum,everything())%>%
        group_by(tailnum)%>%
        summarise(count=n()))
+=======
+#View(select(flights,tailnum,everything())%>%
+       # group_by(tailnum)%>%
+       # summarise(count=n()))
+>>>>>>> origin/main
 
 delays <- not_cancelled%>%
             group_by(tailnum)%>%
             summarise(delay=mean(arr_delay))
 
+<<<<<<< HEAD
 View(delays)
+=======
+#View(delays)
+>>>>>>> origin/main
 
 ggplot(data = delays)+
   geom_freqpoly(mapping = aes(x=delay),binwidth=10)
@@ -509,6 +805,7 @@ View(not_cancelled %>%
        summarise(first_dep=first(dep_time),
                  last_dep=last(dep_time)))
 
+<<<<<<< HEAD
 View(not_cancelled %>%
        group_by(year,month,day)%>%
        mutate(r=min_rank(desc(dep_time)))%>%
@@ -538,6 +835,37 @@ View(not_cancelled %>%
 View(not_cancelled %>%
        group_by(year,month,day)%>%
        summarise(hour_perc = mean(arr_delay>60)))
+=======
+# View(not_cancelled %>%
+#        group_by(year,month,day)%>%
+#        mutate(r=min_rank(desc(dep_time)))%>%
+#        filter(r %in% range(r)))
+# 
+# #counts
+# 
+# View(not_cancelled %>%
+#        group_by(dest)%>%
+#        summarise(carriers = n_distinct(carrier)) %>%
+#        arrange(desc(carriers)))
+# 
+# View(not_cancelled %>%
+#        count(dest))
+# view(not_cancelled %>%
+#   group_by(dest)%>%
+#   summarise(count = n())%>%
+#   arrange(desc(count)))
+# 
+# View(not_cancelled %>%
+#        count(tailnum,wt=distance))
+# 
+# View(not_cancelled %>%
+#        group_by(year,month,day)%>%
+#        summarise(n_early = sum(dep_time<500)))
+# 
+# View(not_cancelled %>%
+#        group_by(year,month,day)%>%
+#        summarise(hour_perc = mean(arr_delay>60)))
+>>>>>>> origin/main
 
 # Grouping by multiple values
 
@@ -550,6 +878,7 @@ daily <- group_by(flights,year,month,day)
 
 #Ungrouping
 
+<<<<<<< HEAD
 View(daily %>%
   ungroup() %>%
   summarise(flights=n()))
@@ -578,6 +907,36 @@ View(flights %>%
        group_by(year,month,day)%>%
        summarise(canc = mean((is.na(arr_delay)|is.na(dep_delay))),
                  counta = n()))
+=======
+# View(daily %>%
+#   ungroup() %>%
+#   summarise(flights=n()))
+# view(flights)
+# 
+# view(filter(flights,arr_delay == -15, dep_delay == -15))
+# 
+# View(flights %>%
+#        group_by(tailnum)%>%
+#        summarise(mean_arr = mean(!is.na(arr_delay[arr_delay == -15])))%>%
+#        filter(mean_arr==0.5))
+# 
+# View(not_cancelled%>%
+#        count(dest))
+# View(not_cancelled%>%
+#        group_by(dest)%>%
+#        summarise(count=n()))
+# 
+# View(not_cancelled%>%
+#        count(tailnum, wt=distance))
+# View(not_cancelled%>%
+#        group_by(tailnum)%>%
+#        summarise(distancy=sum(distance)))
+# 
+# View(flights %>%
+#        group_by(year,month,day)%>%
+#        summarise(canc = mean((is.na(arr_delay)|is.na(dep_delay))),
+#                  counta = n()))
+>>>>>>> origin/main
 
 flights %>%
   group_by(year,month,day)%>%
@@ -587,6 +946,7 @@ flights %>%
     geom_point()
 
 
+<<<<<<< HEAD
 View(
   cancel_grouped <-
   flights%>%
@@ -605,12 +965,33 @@ View(
                  avg_dep_del = mean(dep_delay,na.rm=TRUE),
                  avg_arr_del = mean(arr_delay,na.rm=TRUE))%>%
        ungroup())
+=======
+# View(
+#   cancel_grouped <-
+#   flights%>%
+#        mutate(cancelled = (is.na(arr_delay)|is.na(dep_delay)))%>%
+#        group_by(year,month,day)%>%
+#        summarise(canc_prop = mean(cancelled),
+#                  avg_dep_del = mean(dep_delay,na.rm=TRUE),
+#                  avg_arr_del = mean(arr_delay,na.rm=TRUE)))
+# 
+# View(
+#   cancel_ungrouped <- 
+#   flights%>%
+#        mutate(cancelled = (is.na(arr_delay)|is.na(dep_delay)))%>%
+#        group_by(year,month,day)%>%
+#        summarise(canc_prop = mean(cancelled),
+#                  avg_dep_del = mean(dep_delay,na.rm=TRUE),
+#                  avg_arr_del = mean(arr_delay,na.rm=TRUE))%>%
+#        ungroup())
+>>>>>>> origin/main
 
 cancel_ungrouped %>%
   ggplot(mapping = aes(x=avg_dep_del,y=canc_prop))+
     geom_point()
 
 
+<<<<<<< HEAD
 View(flights %>%
   filter(between(dep_delay,left = 0,right = 60))%>%
     group_by(tailnum)%>%
@@ -633,10 +1014,35 @@ View(flights_sml%>%
 View(popular_dest <- flights%>%
        group_by(dest)%>%
        filter(n()>365))
+=======
+# View(flights %>%
+#   filter(between(dep_delay,left = 0,right = 60))%>%
+#     group_by(tailnum)%>%
+#     count())
+# 
+# View(flights%>%
+#        group_by(carrier,dest)%>%
+#        summarise(n(),
+#                  max_delay = max(dep_delay,na.rm = TRUE),
+#                  delay_count = mean(dep_delay,na.rm=TRUE))%>%
+#        arrange(desc(delay_count)))
+# ?count
+
+# Grouped Mutates (and Filters)
+
+# View(flights_sml%>%
+#        group_by(year,month,day)%>%
+#        filter(rank(desc(arr_delay))<10))
+# 
+# View(popular_dest <- flights%>%
+#        group_by(dest)%>%
+#        filter(n()>365))
+>>>>>>> origin/main
 length(flights)
 nrow(flights)
 ncol(flights)
 #page 74
+<<<<<<< HEAD
 View(flights%>%
        group_by(year,month,day)%>%
        filter(rank(desc(dep_delay))<=5))
@@ -652,6 +1058,23 @@ View(flights%>%
        group_by(year,month,day,tailnum)%>%
        filter(rank(arr_delay)<=5)%>%
        select(year:day,tailnum,arr_delay))
+=======
+# View(flights%>%
+#        group_by(year,month,day)%>%
+#        filter(rank(desc(dep_delay))<=5))
+# 
+# View(popular_dest%>%
+#   filter(arr_delay > 0)%>%
+#   mutate(pop_del = arr_delay / sum(arr_delay))%>%
+#   select(year:day,dest,arr_delay,pop_del))
+# 
+# vignette('window-functions')
+# 
+# View(flights%>%
+#        group_by(year,month,day,tailnum)%>%
+#        filter(rank(arr_delay)<=5)%>%
+#        select(year:day,tailnum,arr_delay))
+>>>>>>> origin/main
 #dont skip the exercises!!
 
 
@@ -675,6 +1098,7 @@ ggplot(data=diamonds)+
   geom_histogram(mapping = aes(x=carat),binwidth = 0.5)+
   geom_freqpoly(mapping = aes(x=carat),color='blue')
 
+<<<<<<< HEAD
 View(diamonds %>%
   count(cut_width(carat,0.5)))
 
@@ -712,6 +1136,45 @@ View(faithful)
 ggplot(data = diamonds,mapping = aes(x=y))+
   geom_histogram(binwidth = 0.25)+
   coord_cartesian(ylim = c(0,50))
+=======
+# View(diamonds %>%
+#   count(cut_width(carat,0.5)))
+# 
+# View(diamonds %>%
+#        count(cut_width(carat,0.2)))
+# 
+# diamonds %>%
+#   filter(carat<3)%>%
+#   ggplot(mapping = aes(x=carat))+
+#     geom_histogram(binwidth = 0.1)
+# 
+# 
+# diamonds %>%
+#   filter(carat<3)%>%
+#   ggplot(mapping = aes(x=carat,color=cut))+
+#     geom_freqpoly(binwidth = 0.1)
+# 
+# diamonds %>%
+#   filter(carat<3)%>%
+#   ggplot(mapping = aes(x=carat))+
+#     geom_freqpoly(binwidth = 0.1)
+# 
+# diamonds %>%
+#   filter(carat<3)%>%
+#   ggplot(mapping = aes(x=carat))+
+#     geom_histogram(binwidth = 0.01)
+# 
+# diamonds %>%
+#   filter(carat<3)%>%
+#   ggplot(mapping = aes(x=carat,color=cut))+
+#     geom_histogram(binwidth = 0.01)
+# 
+# View(faithful)
+# 
+# ggplot(data = diamonds,mapping = aes(x=y))+
+#   geom_histogram(binwidth = 0.25)+
+#   coord_cartesian(ylim = c(0,50))
+>>>>>>> origin/main
 
 View(unusual <- diamonds%>%
                   filter(y<3|y>20)%>%
@@ -749,7 +1212,10 @@ diamonds2 <- diamonds%>%
   mutate(y=ifelse(y<3|y>20,NA,y))
 sum(is.na(diamonds2$y))
 sum(is.na(diamonds$y))
+<<<<<<< HEAD
 sum(is.na(diamonds2[y]))
+=======
+>>>>>>> origin/main
 ggplot(data = diamonds2)+
   geom_point(mapping = aes(x=x,y=y))
 
@@ -1047,15 +1513,26 @@ annoying$`1`
 ggplot(annoying)+
   geom_point(aes(`1`,`2`))
 annoying$`3` <- annoying$`2`/annoying$`1`
+<<<<<<< HEAD
 annoying<-annoying %>% select(-`\`3\``)
 annoying
 ?tibble
+=======
+#annoying<-annoying %>% select(-`\`3\``)
+annoying
+#?tibble
+>>>>>>> origin/main
 annoying<-annoying %>% rename(one="1",two="2",three="3")
 annoying
 
 #Chapter 8 Data Import with readr#
 ##################################page 151
+<<<<<<< HEAD
 
+=======
+# gh <- heights
+# write_csv(gh,"data/heights.csv")
+>>>>>>> origin/main
 heights0 <- read_csv("data/heights.csv")
 view(heights)
 read_csv("a,b,c
@@ -1278,3 +1755,548 @@ tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
 #Missing values#
 ###############
 
+<<<<<<< HEAD
+=======
+stocks <- tibble(
+  year = c(2015,2015,2015,2015,2016,2016,2016),
+  qtr = c(1,2,3,4,2,3,4),
+  return = c(1.88,0.59,0.35, NA,0.92,0.17,2.66)
+)
+stocks
+stocks %>% spread(key="year",value = "return")%>%
+  gather("2015","2016",key = "year",value = "return",na.rm = TRUE)
+?complete
+stocks%>%complete(year,qtr)
+treatment <- tribble(
+  ~person,   ~treatment, ~response,
+  "Derrick Whitmore", 1,7,
+  NA,   2,10,
+  NA,   3,9,
+  "Katherine Burke", 1,4
+)
+treatment
+?fill
+treatment %>% fill(person)
+
+#Exercises#
+##########
+
+treatment %>% fill(person,.direction="up")
+
+#case study#
+###########
+
+view(who)
+#start with gather by making columns values
+?gather
+who1 <- who %>% gather(new_sp_m014:newrel_f65,key = "key",value = "cases",na.rm = TRUE)
+view(who1)
+
+#we count the values of the column key to check the structure of the values
+require(stringr)
+who1 %>% count(key)
+who2<-who1 %>% mutate(key = str_replace(key,"newrel","new_rel"))
+view(who2 %>% separate(key,c("status","type","demographic"),sep = "_")%>%separate(demographic,into = c("gender","age group"),sep = 1))
+who3<-who2 %>% separate(key,c("status","type","demographic"),sep = "_")%>%separate(demographic,into = c("gender","age group"),sep = 1)
+who3%>%count(status)
+who4 <- who3%>%select(-status,-iso2,-iso3)
+who4
+
+#putting everything in a pipeline
+
+who %>%
+  gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
+  mutate(
+    code = str_replace(code, "newrel", "new_rel")
+  ) %>%
+  separate(code, c("new", "var", "sexage")) %>%
+  select(-new, -iso2, -iso3) %>%
+  separate(sexage, c("sex", "age"), sep = 1)
+#summarize by country
+who_count <- who4%>%group_by(country)%>%
+  summarise(value_sum = sum(cases))%>%
+  select(country,value_sum)
+who_count
+?geom_bar
+ggplot(who_count%>%filter(country%in%c("Rwanda","France","Kenya","United States of America","Canada")))+
+  geom_bar(aes(country,value_sum,fill=country),stat = "identity")+
+  coord_flip()+
+  theme(legend.position = "none")
+#page 168
+#summarize by year
+show_year <- who4%>%group_by(year,country,gender)%>%summarise(value_sum=sum(cases))%>%
+  select(country,year,gender,value_sum)
+who4
+show_year
+ggplot(show_year,aes(year,value_sum))+
+  geom_line(aes(group=country,color=gender))
+
+
+#summarize by sex
+show_gender <- who4%>%group_by(gender)%>%
+  summarise(value_sum=sum(cases))%>%
+  select(gender,value_sum)
+ggplot(show_gender,aes(gender,value_sum))+
+  geom_bar(stat="identity",aes(fill=gender))+
+  geom_text(aes(label=signif(value_sum)),vjust=-0.6)
+
+#Nontidy Data#
+#############
+
+#you might not use tidy data because some 
+#computations are more efficient if the data 
+#is in a different format. 
+
+
+#Chapter 10 Relational data with dplyr#
+######################################
+
+#mutating joins, filtering joins, set operations
+
+colnames(airlines)
+colnames(airports)
+colnames(planes)
+colnames(weather)
+colnames(flights)
+
+#keys: a variable or set of variables that uniquely identifies an observation.
+
+#primary keys and foreign keys
+
+planes%>%
+  count(tailnum)%>%
+  filter(n>1)
+
+airlines%>%
+  count(carrier)%>%
+  filter(n>1)
+#view(flights)
+flights%>%
+  count(flight)%>%
+  filter(n>1)
+
+airports%>%
+  count(faa)%>%
+  filter(n>1)
+
+weather%>%
+  count(year,month,day,hour,origin)%>%
+  filter(n>1)
+weather %>% 
+  filter(year==2013 & month == 11 & day == 3 & hour ==1)
+
+#surrogate key: an engineered key
+flights_test <- flights 
+flights_test$prim_key <- as.numeric(rownames(flights_test))
+flights_test <- flights_test%>%
+  select(prim_key,year:time_hour)
+flights_test %>%
+  count(prim_key)%>%
+  filter(n>1)
+
+
+# Mutating Joins
+airlines
+
+flights2<-flights%>%
+  select(year:day,hour,origin,dest,tailnum,carrier)
+flights2
+flights2 %>%
+  inner_join(airlines,by="carrier")
+
+flights2 %>%
+  left_join(airlines,by="carrier")
+
+flights2 %>%
+  select(-origin,-dest)%>%
+  inner_join(airlines,by="carrier")
+
+flights2 %>%
+  select(-origin,-dest)%>%
+  mutate(name=airlines$name[match(carrier,airlines$carrier)])
+
+#understanding joins
+x<-tibble(key=c(1,2,3),val_x=c("x1","x2","x3"))
+y <- tribble(~key,  ~val_y,
+             1,    "y1",
+             2,    "y2",
+             4,    "y3")
+x
+y
+#table(x$key)
+#?table
+x%>%mutate(matchy=y$val_y[match(key,x$key)])
+x%>%
+  left_join(y,by="key")#unmatched rows are included in the results and keeps all observations in x.
+
+x %>% 
+  inner_join(y,by="key")#unmatched rows are not included in the results
+
+x %>% 
+  right_join(y,by="key")#unmatched rows are included in the results and keep all the observations in y!!
+
+x %>% 
+  full_join(y,by="key")#unmatched rows are included in the results and keep all observations in x and y
+
+#Duplicate keys#
+###############
+
+x<-tibble(key=c(1,2,2,1),val_x=c("x1","x2","x3","x4"))
+y <- tribble(~key,  ~val_y,
+             1,    "y1",
+             2,    "y2"
+             )
+x
+y
+x %>%
+  inner_join(y,by="key")
+x%>%
+  left_join(y,by="key")
+
+
+x <- tribble(
+  ~key, ~val_x,
+  1, "x1",
+  2, "x2",
+  2, "x3",
+  3, "x4"
+)
+y <- tribble(
+  ~key, ~val_y,
+  1, "y1",
+  2, "y2",
+  2, "y3",
+  3, "y4"
+)
+
+x %>%
+  left_join(y,by="key")
+
+
+#Defining the Key columns
+
+view(flights2 %>%
+  left_join(weather))
+
+view(flights2 %>%
+       left_join(planes,by="tailnum"))
+
+flights2 %>%
+  left_join(airports,c("dest"="faa")) # the keys to match are  specified and the x key will be the one to be shown
+
+flights2 %>%
+  left_join(airports,c("origin"="faa")) # the keys to match are  specified and the x key will be the one to be shown
+colnames(flights2)
+colnames(flights)
+fli1 <- flights%>%
+  group_by(dest)%>%
+  summarise(avg_delay=mean(dep_delay,na.rm=TRUE),
+            avg_arr_delay=mean(arr_delay,na.rm=TRUE))
+fli1
+(delays <- airports %>%
+            inner_join(fli1,by=c("faa"="dest")))%>%
+   # drop_na(avg_arr_delay)%>%
+                  ggplot(aes(lon,lat))+
+                  borders("state")+
+                  geom_point(aes(color=avg_arr_delay))+
+                  coord_quickmap()
+view(delays)
+#page 213 
+colnames(flights2)
+colnames(airports)
+view(flights %>%
+  inner_join(airports,by=c("dest"="faa"))%>%
+  inner_join(airports,by=c("origin"="faa")))
+
+flights %>%
+  select(flight_year=year,tailnum,arr_delay)%>%
+  inner_join(planes,by="tailnum")%>%
+  mutate(age=flight_year-year)%>%
+  group_by(age)%>%
+  summarise(avg_delay=mean(arr_delay,na.rm=TRUE))%>%
+  ggplot(aes(age,avg_delay))+
+  geom_point()+
+  geom_line()
+colnames(weather)
+
+flights %>%
+  left_join(weather,by=c("year","month","day","hour","origin"))%>%
+    select(hour,temp,dewp,humid,wind_dir,wind_speed,wind_gust,precip,pressure,visib)%>%
+  group_by(hour)%>%
+    summarise(mean(temp,na.rm=TRUE),mean(dewp,na.rm=TRUE),mean(humid,na.rm=TRUE),mean(wind_dir,na.rm=TRUE))
+
+flights %>%
+  filter(year==2013,month==6,day==13)%>%
+  group_by(dest)%>%
+  summarise(delaysa=mean(arr_delay,na.rm=TRUE))%>%
+  left_join(airports,by=c("dest"="faa"))%>%
+  ggplot(aes(lon,lat))+
+  borders("state")+
+  geom_point(aes(size=delaysa,color=delaysa))+
+  coord_quickmap()+
+  scale_color_viridis_b()
+
+
+#Filter joins: these affect the observations not variables
+
+#semi_join: keeps all observations in x that have a match in y
+#anti_join: drops all observations in x that have a match in y
+
+top_destinations <- flights%>%
+  count(dest,sort = TRUE)%>%
+  head(10)
+top_destinations
+
+flights %>%
+  filter(dest %in% top_destinations$dest)
+
+flights %>%
+  semi_join(top_destinations,by="dest")
+
+unmatched_planes<-flights %>%
+  anti_join(planes,by="tailnum")%>%
+  count(tailnum,sort = TRUE)
+
+#exercises#
+##########
+
+view(flights %>%
+  filter(tailnum %in% unmatched_planes$tailnum))
+
+sum(unmatched_planes$n)
+view(flights %>%
+  filter(tailnum %in% unmatched_planes$tailnum) %>%
+  select(carrier,tailnum)%>%
+  count(tailnum)%>%
+  mutate(propo=n*100/sum(n)))
+
+view(flights %>%
+  left_join(planes)%>%
+  select(dep_time,tailnum)%>%
+  count(tailnum)%>%
+  filter(n>=100)%>%
+  inner_join(planes,by="tailnum"))
+
+#install.packages("fueleconomy")
+
+require(fueleconomy)
+
+colnames(vehicles)
+colnames(common)
+view(vehicles %>%
+  semi_join(common,by=c("make","model")))
+view(vehicles)
+worse_hour<-flights %>%
+  group_by(year,month,day,hour)%>%
+  summarise(delay_sum=sum(arr_delay))%>%
+  drop_na(delay_sum)%>%
+  arrange(delay_sum)%>%
+  tail(48)%>%
+  left_join(weather)# this is not correct
+
+anti_join(flights,airports,by=c("dest"="faa"))
+anti_join(airports,flights,by=c("faa"="dest"))
+planes %>%
+  anti_join(airlines)
+colnames(airlines)
+colnames(planes)
+flights %>%
+  inner_join(planes,by="tailnum")%>%
+  inner_join(airlines)
+
+#reject the hypothesis
+
+worst_hour <- flights %>%
+  mutate(hour_delay=dep_delay%/%100)%>%
+  group_by(origin,month,day,hour)%>%
+  summarise(avg_delay=mean(dep_delay,na.rm=TRUE))%>%
+  ungroup()%>%
+  arrange(desc(avg_delay))%>%
+  slice(1:48)#very interesting
+
+# Join Problems
+
+#Set Operations#
+###############
+
+#intersect(x,y)
+#union(x,y)
+#setdiff(x,y)
+
+
+#Chapter 11: Strings with stringr#
+#################################
+
+library(stringr)
+
+x <- c("\"","\\")
+x
+writeLines(x)
+"\u00b5"
+#String Length
+str_length(c("a","R for data science",NA))
+str_c("x","y")
+str_c("x","y",sep = ",")
+x<-c("abc",NA)
+str_c("|-",x,"-|")
+str_c("|-",str_replace_na(x),"-|")
+str_c("prefix",c("a","b","c"),"suffix")
+name<- "Parfait"
+time_of_day <- "afternoon"
+birthday<-FALSE
+str_c(
+  "Good ", time_of_day," ",name,
+  if (birthday) " and HAPPY BIRTHDAY",
+  "."
+)
+
+str_c(c("x","y","z"),collapse = ",")
+
+#Subsetting strings
+
+x <- c("Apple","Banana","Pear")
+str_sub(x,1,3)
+str_sub(x,1,1) <- str_to_lower(str_sub(x,1,1))
+x
+
+#Locales
+
+str_to_upper(c("i","l"))
+str_to_upper(c("i","l"),locale = "tr")
+sort(x)
+str_sort(x)
+str_sort(x,locale="haw")
+
+#Exercises#
+##########
+
+?paste
+paste(c("abantu ","batatu ", "beza"))
+paste0(c("abantu ","batatu ", "beza"))
+?paste0
+acc <- 564
+paste("the number that I wrote is ",acc)
+paste0("the number that he wrote is ",acc)
+str_c("the number that he wrote is ",acc)
+stringle <- function(l){
+  if ((str_length(l) %/% 2) == 0 ){
+    print(str_sub(l,str_length(l)/2,str_length(l)/2))
+  }else{
+    print(str_sub(l,(str_length(l) + 1)/2,(str_length(l) + 1)/2))
+  }
+}
+
+funky <- function(c){
+  return(c^2)
+}
+trial0 <- function(a,b,c) {
+  result <- a * b + c
+  print(result)
+}
+
+?str_wrap
+?str_trim
+str_wrap(c("in this world there is no free lunch","the field is looking somehow messy"))
+str_trim(" in the car\t")
+str_squish(" in the car ")
+str_pad(" in this car ",6)
+str_pad(c("a","b","c"))
+
+#return after covering the function sections#
+############################################
+
+#Matching patterns with regular expressions#
+###########################################
+
+library("htmlwidgets")
+
+x <- c("apple","banana","pear")
+
+str_view(x,"an")
+
+str_view(x,".a.")
+dot <- "\\."
+writeLines(dot)
+str_view(c("abc","a.c","bef"),"a\\.c")
+x <- "a\\b"
+writeLines(x)
+str_view("a\\b","\\\\")
+x<-"\"\'\\"
+writeLines(x)
+str_view(x,"\\\"\\'\\\\")
+x <- "\\..\\..\\.."
+library(foreign)
+writeLines(x)
+str_view(x,"\\\\..\\\\..\\\\..")
+
+#Anchors#
+########
+
+x <- c("apple","banana","pear")
+
+str_view(x,"^a") #view the start
+str_view(x,"a$")#view the end
+
+x <- c("apple pie", "apple", "apple cake")
+str_view(x,"apple")
+str_view(x,"^apple$")
+
+#use \b for boundary
+
+#exercises#
+##########
+
+x <- "$^$"
+writeLines(x)
+str_view(x,"\\$\\^\\$")
+
+
+words
+str_view_all(words,"^y",match = TRUE)
+str_view(words,"x$",match = TRUE)
+str_view(words,"^...$",match=TRUE)
+str_view(words,".......",match=TRUE)
+
+# Character classes and Alternatives#
+####################################
+
+str_view(c("grey", "gray"), "gr(e|a)y")
+
+str_view(c("grey", "gray"), "[^a]",match = TRUE)
+
+str_view(words,"^(a|e|u|i|o)",match = TRUE)
+
+str_view(words,"^(a|e|u|i|o)",match = FALSE)
+str_view(words,"[^e]ed$",match = TRUE)
+
+str_view(words,"(ing|ize)$",match = TRUE)
+trialy <- c("1.5ha","0,002","3.5","9","1000hector")
+trialy
+str_view(trialy,"([0-9][.,])?[0-9]+",match = TRUE)
+kk <- str_remove(trialy,"[^([0-9][.,])?[0-9]+]")
+as_tibble(str_remove(kk,"[^([0-9][.,])?[0-9]+]"))
+str_remove_all(trialy,"[^([0-9][.,])?[0-9]+]")
+
+?str_remove_all
+kukii<- as_tibble(str_remove_all(trialy,"[^([0-9][.,])?[0-9]+]"))
+kukii%>%parse_number(as.character(kukii$value),locale = locale(decimal_mark = ","))
+#if ()
+is_character(1.324)
+for (i in kukii$value){
+  if(is_character(i)){
+    print(parse_number(i))
+  }
+  else{
+    print("nothing to show here")
+  }
+}
+
+for (i in kukii$value){
+  if(is_character(i)){
+    print(parse_number(i))
+  }
+  else{
+    print("nothing to show here")
+  }
+}
+>>>>>>> origin/main

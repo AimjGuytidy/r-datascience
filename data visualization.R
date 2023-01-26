@@ -426,7 +426,30 @@ head(flights,5)
 
 # view(flights)
 View(flights)
-   
+flights%>%
+  arrange(dep_time)
+flights%>%
+  filter(month==1,day==1)
+flights%>%
+  filter(month %in% c(11,10))
+tribble(
+  ~x,
+  1,
+  NA,
+  4
+)
+tibble(x = c(1,NA,4))
+
+flights%>%
+  filter(arr_delay>=2)%>%
+  select(flight,dep_time,dep_delay,arr_delay,arr_time)
+
+flights%>%
+  filter(between(dep_time,000,600))%>%
+  arrange(desc(dep_time))%>%
+  select(flight,dep_time,dep_delay,arr_delay,arr_time)
+
+
 # head(flights,5)
 # 
 # # view(flights)

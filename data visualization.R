@@ -4,9 +4,14 @@ require(tidyverse)
 print(mpg)
 head(mpg,5)
 str(mpg)
+colnames(mpg)
+dplyr::count(mpg[,c("class","displ")],class,sort=TRUE)%>%
+  ggplot()+
+  geom_bar(mapping = aes(x=class,y=n,fill=class),stat = "identity")
 ggplot(data = mpg)+
   geom_point(mapping = aes(x=displ,y=hwy,color=class,size=class,alpha=class,shape=class))
-# ggplot(data = mpg)
+ggplot(data = mpg)+
+  geom_point(mapping = aes(x=displ,y=hwy))
 nrow(mtcars)
 ncol(mtcars)
 ?geom_point

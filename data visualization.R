@@ -548,11 +548,11 @@ View(select(flights,air_time,dep_time,air_time))
 
 # ?select
 
-vars <- c(
+vari <- c(
   "year", "month", "day", "dep_delay", "arr_delay"
 )
 
-View(select(flights,one_of(vars)))
+View(select(flights,one_of(vari)))
 
 View(select(flights,contains('TIME')))
 
@@ -601,6 +601,51 @@ y <- c(1,2,2,NA,3,4)
 min_rank(y)
 row_number(y)
 
+####exercises####
+
+converter <- function(x,vectory){
+  for(i in vectory){
+  x<-x%>%mutate("{i}_minute":=(((get(i)%/%100)*60)+(get(i) - (get(i)%/%100)*100))%%1440)
+  }
+  return(x)
+}
+
+# converter2 <- function(x,vectory){
+#   for (i in vectory){
+#   x%>%mutate("{{i}}_minutes"=(({{i}}%/%100)*60)+({{i}} - ({{i}}%/%100)*100))
+#   }
+# }
+
+# converter <- function(x,i){
+# 
+#     x%>%mutate("{i}_minutes":=((get(i)%/%100)*60)+(get(i) - (get(i)%/%100)*100))
+# }
+
+temp1 <- converter(flights,"sched_dep_time")
+colnames(temp1)
+
+df <- flights
+temp1 <- converter(df,c("sched_dep_time","dep_time"))
+colnames(temp1)
+
+transmute(df,air_time = air_time,
+          air_time_diff = arr_time-dep_time)
+df <- converter(df,c("arr_time","sched_dep_time","dep_time"))
+transmute(df,air_time = air_time,
+          air_time_diff = arr_time_minute-dep_time_minute)
+
+df%>%
+  mutate(air_time_diff = air_time - arr_time_minute+dep_time_minute)%>%
+  ggplot(aes(air_time_diff))+
+    geom_histogram(binwidth = 1)
+
+View(df%>%
+  arrange(desc(dep_delay))%>%
+    mutate(rank = rank(desc(dep_delay),ties.method = "max")))
+
+
+
+######
 View(transmute(flights,
           dep_time,
           sched_dep_time,

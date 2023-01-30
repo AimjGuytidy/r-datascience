@@ -1278,6 +1278,9 @@ diamonds%>%
   count(cut,color)%>%
   ggplot(aes(x=cut,y=color))+
   geom_tile(aes(fill=n))
+#install.packages("heatmaply")
+require(heatmaply)
+#page 103
 
 ################
 

@@ -1183,8 +1183,7 @@ view(flights%>%
   filter(rank_delay<=10))
 
 view(flights%>%
-       mutate(rank_delay = min_rank(desc(arr_delay)))%>%
-       filter(rank_delay<=10))
+       unite("carrier_flight",carrier:flight,sep = "",remove = FALSE))
 
 flights %>%
   filter(!is.na(arr_delay),arr_delay!=0) %>%
@@ -1193,7 +1192,17 @@ flights %>%
   filter(n >= 20) %>%
   filter(min_rank(desc(arr_delay)) == 1)
 
-
+flights%>%
+  arrange(origin,month,day,dep_time)%>%
+  group_by(origin)%>%
+  mutate(dep_delay_lag = lag(dep_delay))%>%
+  filter(!is.na(dep_delay),!is.na(dep_delay_lag))%>%
+  group_by(origin,dep_delay_lag)%>%
+  summarize(dep_delay_mean = mean(dep_delay))%>%
+  ggplot()+
+  geom_point(aes(x=dep_delay_mean,y=dep_delay_lag))+
+  facet_wrap(~origin,ncol=1)
+  scale_x_continuous(breaks = seq(0,1500,by=120))
 
 # Exploratory Data Analysis
 

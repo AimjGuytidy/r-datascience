@@ -643,8 +643,6 @@ View(df%>%
   arrange(desc(dep_delay))%>%
     mutate(rank = rank(desc(dep_delay),ties.method = "max")))
 
-
-
 ######
 View(transmute(flights,
           dep_time,
@@ -670,8 +668,8 @@ View(transmute(flights,
 
 View(transmute(flights,dep_delay,ranky=min_rank(dep_delay)))
 View(arrange(transmute(flights,dep_delay,ranky=row_number(dep_delay)),ranky))
-
-#Grouped Summaries with summarize()
+#####
+#Grouped Summaries with summarize()####
 
 summarize(flights,delay=mean(dep_delay,na.rm=TRUE))
 (by_day <- group_by(flights,year,month,day))
@@ -828,9 +826,28 @@ delays%>%
   filter(count>25)%>%
   ggplot(mapping = aes(x=count,y=delay))+
     geom_point(alpha=1/10)
+#####
+#exercises####
+flights%>%
+  group_by(dest)%>%
+  summarize(count = n(),
+            dist = mean(distance,na.rm = TRUE),
+            delay = mean(arr_delay,na.rm = TRUE))%>%
+  filter(count>20,dest!="HNL")%>%
+  ggplot(mapping=aes(y=delay,x=dist))+
+  geom_point(aes(size=count))+
+  geom_smooth(se=FALSE)
 
-# install.packages("Lahman")
-
+flights%>%
+  filter(!is.na(dep_delay),!is.na(arr_delay))%>%
+  group_by(tailnum)%>%
+  summarize(delay = mean(arr_delay,na.rm = TRUE),
+            n = n())%>%
+  filter(n>25)%>%
+  ggplot(aes(x = n, y=delay))+
+  geom_point(alpha=1/10)
+#####
+require(tidyverse)
 require(Lahman)
 ?as_tibble
 view(Batting)
@@ -1156,6 +1173,25 @@ View(flights%>%
 #        select(year:day,tailnum,arr_delay))
    
 #dont skip the exercises!!
+
+view(flights%>%
+  filter(!is.na(arr_delay))%>%
+  group_by(tailnum)%>%
+  summarise(count_delay=n(),arr_delay_mean=mean(arr_delay))%>%
+  filter(count_delay>=20)%>%
+  mutate(rank_delay = min_rank(desc(arr_delay_mean)))%>%
+  filter(rank_delay<=10))
+
+view(flights%>%
+       mutate(rank_delay = min_rank(desc(arr_delay)))%>%
+       filter(rank_delay<=10))
+
+flights %>%
+  filter(!is.na(arr_delay),arr_delay!=0) %>%
+  group_by(tailnum) %>%
+  summarise(arr_delay = mean(arr_delay), n = n()) %>%
+  filter(n >= 20) %>%
+  filter(min_rank(desc(arr_delay)) == 1)
 
 
 

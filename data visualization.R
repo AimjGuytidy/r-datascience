@@ -1217,22 +1217,37 @@ diamonds%>%
   ggplot(aes(x=cutted,y=n))+
   geom_histogram()
   
-view(diamonds%>%
-  mutate(cutter=cut_width(price,1500)))%>%
+diamonds%>%
+  mutate(cutter=cut_width(price,1500))%>%
   count(cutter)%>%
   ggplot(aes(x=cutter,y=n))+
   geom_bar(stat = "identity")+
   theme(axis.text=element_text(size=6))
   
   
+diamonds%>%
+  mutate(cutter=cut_width(price,1500))%>%
+  ggplot(aes(x=cutter))+
+  geom_histogram(stat = "count")+
+  theme(axis.text=element_text(size=6))  
   
+diamonds%>%
+  mutate(cutter=cut_width(price,1500))%>%
+  ggplot(aes(x=carat,color=cutter))+
+  geom_freqpoly(binwidth=.1)+
+  theme(axis.text=element_text(size=6))   
+
+#exercises
+diamonds%>%
+  ggplot(aes(x=x))+
+  geom_histogram()
   
+diamonds%>%
+  ggplot(aes(x=z,y=x))+
+  geom_point()  
   
-  
-  
-  
-  
-  
+view(diamonds%>%
+  select(carat,price,x,y,z))
   
   
   

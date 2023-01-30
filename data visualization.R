@@ -1295,6 +1295,14 @@ ggplot(data = diamonds)+
 ggplot(data = diamonds, mapping = aes(x = carat, y = price))+
   geom_boxplot(mapping = aes(group = cut_width(carat, 0.2)))+
   coord_cartesian(xlim = c(0,3))
+
+require(modelr)
+modeller <- lm(log(price)~log(carat),data = diamonds)
+diamonds2 <- diamonds %>%
+  add_residuals(modeller)%>%
+  mutate(resid = exp(resid))%>%
+  ggplot(aes(x = cut, y = resid))+
+  geom_boxplot()
 ################
 
 

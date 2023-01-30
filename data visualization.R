@@ -1205,6 +1205,55 @@ flights%>%
   scale_x_continuous(breaks = seq(0,1500,by=120))
 
 # Exploratory Data Analysis
+ggplot(data=diamonds)+
+  geom_bar(mapping = aes(x=cut))
+  
+ggplot(data = diamonds)+
+  geom_histogram(aes(x=price))
+  
+diamonds%>%
+  count(cut_width(price,1500))%>%
+  select(cutted=`cut_width(price,1500)`,n)%>%
+  ggplot(aes(x=cutted,y=n))+
+  geom_histogram()
+  
+view(diamonds%>%
+  mutate(cutter=cut_width(price,1500)))%>%
+  count(cutter)%>%
+  ggplot(aes(x=cutter,y=n))+
+  geom_bar(stat = "identity")+
+  theme(axis.text=element_text(size=6))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+################
+
+
+
+
 
 ggplot(data = diamonds)+
   geom_bar(mapping = aes(x=cut))

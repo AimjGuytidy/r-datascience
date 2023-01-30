@@ -1233,7 +1233,7 @@ diamonds%>%
   
 diamonds%>%
   mutate(cutter=cut_width(price,1500))%>%
-  ggplot(aes(x=carat,color=cutter))+
+  ggplot(aes(x=carat,y=..density..,color=cutter))+
   geom_freqpoly(binwidth=.1)+
   theme(axis.text=element_text(size=6))   
 
@@ -1249,20 +1249,35 @@ diamonds%>%
 view(diamonds%>%
   select(carat,price,x,y,z))
   
+mpg%>%
+  ggplot(aes(x = reorder(class,hwy,FUN = median),
+         y = hwy))+
+  geom_boxplot()+
+  coord_flip()
   
   
+corrplot::corrplot(cor(select_if(diamonds,is.numeric)))  
   
+diamonds%>%
+  ggplot(aes(x=reorder(cut,carat,FUN = median),y=carat))+
+  geom_boxplot()
   
-  
-  
-  
-  
-  
-  
-  
+require(ggstance)  
+diamonds%>%
+  ggplot(aes(y=reorder(cut,carat,FUN = median),x=carat))+
+  geom_boxploth()  
+require(lvplot)  
+diamonds%>%
+  ggplot(aes(x=reorder(cut,carat,FUN = median),y=carat))+
+  geom_lv()  
 
-
-
+diamonds%>%
+  ggplot(aes(x=cut,y=color))+
+  geom_count()
+diamonds%>%
+  count(cut,color)%>%
+  ggplot(aes(x=cut,y=color))+
+  geom_tile(aes(fill=n))
 
 ################
 

@@ -1776,6 +1776,8 @@ heights%>%
   geom_point()+
   facet_wrap( ~ sex)
 
+read_delim("x,y,\n1,'a,b'",quote = "\'")
+
 read_csv("a,b,c
          1,2,3
          4,5,6")
@@ -1793,10 +1795,13 @@ read_csv("a,b,c\n1,2,.",na=".")
 read_delim("x,y\n1,'a,b'",delim = ",",quote = "")
 read_csv("a,b,c\n1,2\n1,2,3,4")
 read_csv("a,b\n1,2\na,b")
+read_delim("a;b\n1;3",delim=";")
 str(parse_logical(c("TRUE","FALSE","NA")))
 parse_double("1.32")
 parse_double("1,32")
 parse_double("1,32",locale = locale(decimal_mark = ","))
+parse_factor(c("King","Queen","Bishop","Knight"))
+parse_number("1,233,423.3",locale = locale(decimal_mark = ".",grouping_mark = ","))
 #page 137
 guess_parser("2010-10-01")
 guess_parser("15:01")

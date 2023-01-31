@@ -1312,21 +1312,9 @@ diamonds2 <- diamonds %>%
 #   ggplot(aes(x=cut,y=resid))+
 #   geom_boxplot()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ggplot(data = diamonds, aes(x=price))+
+  geom_freqpoly(aes(group=cut_number(carat,5),color = cut_number(carat,5)))+
+  labs(color = "Carat")
 
 
 ggplot(data = diamonds)+
@@ -1756,7 +1744,7 @@ annoying <- tibble(
   `1` = 1:10,
   `2` = `1` * 2 + rnorm(length(`1`))
 )
-# ?tibble::enframe()
+# ?tibble::enframe() is the same as to_frame() used by pandas
 annoying$`1`
 ggplot(annoying)+
   geom_point(aes(`1`,`2`))
@@ -1783,6 +1771,11 @@ annoying
    
 heights0 <- read_csv("data/heights.csv")
 view(heights)
+heights%>%
+  ggplot(aes(weight,income))+
+  geom_point()+
+  facet_wrap( ~ sex)
+
 read_csv("a,b,c
          1,2,3
          4,5,6")

@@ -1305,6 +1305,26 @@ diamonds2 <- diamonds %>%
   geom_boxplot()
 ################
 
+# modely <- lm(log(price)~log(carat),data = diamonds)
+# diamoo <- diamonds%>%
+#   add_residuals(model = modely)%>%
+#   mutate(resid=exp(resid))%>%
+#   ggplot(aes(x=cut,y=resid))+
+#   geom_boxplot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

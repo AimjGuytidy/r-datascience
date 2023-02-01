@@ -1832,7 +1832,7 @@ parse_date("January 1, 2010","%B %d, %Y",locale=locale())
 parse_date(c("August 19 (2015)", "July 1 (2015)"),"%B %d (%Y)")
 parse_date("(2010)","%AD",locale=locale())
 
-
+charToRaw("Parfait")
 #Parsing a file#
 ###############
 read_csv(readr_example("challenge.csv"))
@@ -1864,12 +1864,15 @@ read_rds("chally1.rds")
 library(feather)
 write_feather(chall3,"chally2.feather")
 read_feather("chally2.feather")
-
-
+read_csv("data/heights.csv",col_types = cols(
+  `Height(Inches)`=col_double(),
+  `Weight(Pounds)` = col_double()
+))
 #chap 9 Tidy data with tidyr#
 ############################
 
-table1
+table1%>%
+  pivot_wider(names_from = country,values_from = cases)
 view(table2)
 view(table4a)
 table3
@@ -1904,6 +1907,10 @@ tab_cas_pop <- tibble("country" = tab_cas$country,
                          "cases" = tab_cas$cases,
                          "population" = tab_pop$population)
 view(tab_cas_pop)
+
+tab_wider <- table2%>%
+  select(country:count)%>%
+  pivot_wider(names_from = type,values_from = count)
 #bind_rows(table2,tab_cas_pop)
 view(table2)
 view(table1)

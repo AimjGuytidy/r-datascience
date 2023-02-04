@@ -1910,7 +1910,8 @@ view(tab_cas_pop)
 
 tab_wider <- table2%>%
   select(country:count)%>%
-  pivot_wider(names_from = type,values_from = count)
+  pivot_wider(names_from = type,values_from = count)%>%
+  mutate(rate = cases/population)
 #bind_rows(table2,tab_cas_pop)
 view(table2)
 view(table1)
@@ -2057,7 +2058,7 @@ who4
 
 #putting everything in a pipeline
 
-who %>%
+who77<-who %>%
   gather(code, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
   mutate(
     code = str_replace(code, "newrel", "new_rel")
@@ -2065,6 +2066,28 @@ who %>%
   separate(code, c("new", "var", "sexage")) %>%
   select(-new, -iso2, -iso3) %>%
   separate(sexage, c("sex", "age"), sep = 1)
+
+who44<-who%>%
+       pivot_longer(cols = new_sp_m014:newrel_f65,names_to = "cases",
+                        values_drop_na =TRUE)%>%
+       select(-c("iso2","iso3"))%>%
+       pivot_wider(names_from = country)%>%
+       mutate(cases = str_replace(cases,"newrel","new_rel"))%>%
+       separate(cases,into = c("new","type","sexage"),sep = "_")%>%
+       separate(sexage,into = c("sex","age"),sep = 1)
+who77%>%
+  group_by(country)%>%
+  summarise(Tot_number = sum(value))%>%
+  ggplot(aes(y = reorder(country,Tot_number,sum),x = Tot_number))+
+  geom_barh(aes(fill=country),stat = "identity",show.legend = FALSE)
+
+who77%>%
+  group_by(year)%>%
+  summarise(Tot_number = sum(value))
+who77%>%
+  group_by(sex)%>%
+  summarise(Tot_number = sum(value))
+
 #summarize by country
 who_count <- who4%>%group_by(country)%>%
   summarise(value_sum = sum(cases))%>%

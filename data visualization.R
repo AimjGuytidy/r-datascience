@@ -2576,3 +2576,6 @@ for (i in kukii$value){
   }
 }
    
+
+#CHAPTER 12: Factors with forcats####
+#####################################

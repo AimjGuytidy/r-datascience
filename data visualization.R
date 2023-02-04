@@ -2579,3 +2579,8 @@ for (i in kukii$value){
 
 #CHAPTER 12: Factors with forcats####
 #####################################
+data_forcats <- gss_cat
+data_forcats%>%
+  ggplot(aes(reorder(rincome,rincome,
+                     function(x)-length(x))))+
+  geom_bar(aes(fill=rincome))

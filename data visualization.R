@@ -2419,7 +2419,7 @@ str_c("|-",str_replace_na(x),"-|")
 str_c("prefix",c("a","b","c"),"suffix")
 name<- "Parfait"
 time_of_day <- "afternoon"
-birthday<-FALSE
+birthday<-TRUE
 str_c(
   "Good ", time_of_day," ",name,
   if (birthday) " and HAPPY BIRTHDAY",
@@ -2436,12 +2436,12 @@ str_sub(x,1,1) <- str_to_lower(str_sub(x,1,1))
 x
 
 #Locales
-
+X <- str_replace(x,"Pear","Eggplant")
 str_to_upper(c("i","l"))
 str_to_upper(c("i","l"),locale = "tr")
 sort(x)
 str_sort(x)
-str_sort(x,locale="haw")
+str_sort(X,locale="haw")
 
 #Exercises#
 ##########

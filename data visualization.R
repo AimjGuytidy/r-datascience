@@ -2576,7 +2576,7 @@ for (i in kukii$value){
   }
 }
    
-
+writeLines("\\..\\..\\..")
 #CHAPTER 12: Factors with forcats####
 #####################################
 data_forcats <- gss_cat

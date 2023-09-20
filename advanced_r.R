@@ -66,3 +66,24 @@ obj_addr(y)
 y[3] <- 2
 obj_addr(y) # copy-on-modify in action: now y has been appended to a new object with 
             # this new address, this means that R objects are immutable!!!
+
+# 2.3.1 tracemem() #
+####################
+
+cat(tracemem(X),"\n")
+y <- X
+y[[3]] <- 2
+untracemem(y)
+
+# 2.3.2 FUNCTION CALLS #
+########################
+
+f <- function(a) {
+  a
+}
+
+x <- c(1,3,4)
+cat(tracemem(x),"\n")
+z <- f(x) # there is no copy!!!
+
+untracemem(x)

@@ -208,3 +208,10 @@ obj_size(a,b)
 
 # 2.5 Modify-in-place #
 #######################
+
+v <- c(1,2,3)
+tracemem(v)
+v[[3]] <- 4
+# here the modification happens in place because we are modifying an object with one 
+# single name bound to it, so instead of creating a copy, it bind the name to a 
+# new object and discard the old object!

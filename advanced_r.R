@@ -48,3 +48,21 @@ obj_addr(match.fun("mean"))
 # make check.names param FALSE
 # 4
 ?make.names
+
+# The character "X" is prepended if necessary. 
+# All invalid characters are translated to ".". 
+# A missing value is translated to "NA". 
+# Names which match R keywords have a dot appended to them. 
+# Duplicated values are altered by make.unique.
+
+
+# 2.3 COPY-ON-MODIFY#
+#####################
+
+X <- c(1,3,4)
+obj_addr(X)
+y <- X  
+obj_addr(y)
+y[3] <- 2
+obj_addr(y) # copy-on-modify in action: now y has been appended to a new object with 
+            # this new address, this means that R objects are immutable!!!

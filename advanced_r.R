@@ -87,3 +87,14 @@ cat(tracemem(x),"\n")
 z <- f(x) # there is no copy!!!
 
 untracemem(x)
+
+# 2.3.3 Lists #
+###############
+
+l1 <- list(1,2,3)
+cat(tracemem(l1),"\n")
+l2 <- l1
+l2[[3]] <- 8
+
+ref(l2,l1)
+untracemem(l1)

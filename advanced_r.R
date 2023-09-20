@@ -98,3 +98,14 @@ l2[[3]] <- 8
 
 ref(l2,l1)
 untracemem(l1)
+
+# 2.3.4 Data frames #
+#####################
+
+# a data frame is a list of vectors!!! so when you change an element in one column
+# that specific column get copied but if you change a row then all columns get 
+# copied!!
+
+# 2.3.5 Character vectors #
+###########################
+

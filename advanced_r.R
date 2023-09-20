@@ -151,3 +151,43 @@ ref(x,x)
 
 obj_size(letters)
 obj_size((ggplot2::diamonds))
+
+x <- runif(1e6)
+obj_size(x)
+y <- list(x,x,x)
+obj_size(y)
+obj_size(list(NULL,NULL,NULL))
+
+banana <- "bananas bananas bananas"
+obj_size(banana)
+obj_size(rep(banana,1000))
+
+obj_size(x,y)
+
+# every sequence no matter how large is the same size since r only store the first 
+# and the last numbers of the sequences, this is known as alternative representation
+
+obj_size(1:3)
+obj_size(1:1e6)
+
+# 2.4.1 Exercises #
+###################
+
+# 1 
+?object.size
+?obj_size
+y<-rep(list(runif(1e4)),100)
+object.size(y) # this works well with atomic vectors!!!
+obj_size(y)
+
+# 2
+funs <- list(mean,sd,var)
+obj_size(funs)
+obj_size(mean,sd,var)
+obj_size(mean)
+obj_size(sd)
+obj_size(var)
+# the size for each individual fun when added up together it doesn't match with
+# the size provided by obj_size, this size understate the real size.
+
+# 3

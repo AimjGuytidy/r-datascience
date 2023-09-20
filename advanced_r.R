@@ -191,3 +191,20 @@ obj_size(var)
 # the size provided by obj_size, this size understate the real size.
 
 # 3
+a <- runif(1e6)
+obj_size(a)
+
+b <- list(a,a)
+obj_size(b)
+obj_size(a,b)
+
+b[[1]][[1]] <- 10
+obj_size(b)
+obj_size(a,b)
+
+b[[2]][[1]] <- 10
+obj_size(b)
+obj_size(a,b)
+
+# 2.5 Modify-in-place #
+#######################

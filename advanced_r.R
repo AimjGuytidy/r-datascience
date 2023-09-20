@@ -109,3 +109,45 @@ untracemem(l1)
 # 2.3.5 Character vectors #
 ###########################
 
+# for character vectors there comes a new concept of global string pool, which is 
+# close to self explanatory.
+
+c1 <- c("a","a","jf","k")
+ref(c1,character = TRUE)
+n1<-c(1,1,3,4)
+ref(n1)
+obj_size(c1)
+obj_size(n1)
+
+# 2.3.6 Exercises #
+
+# 1
+# tracemem(1:10) is not useful because the object is not bound to a name hence 
+# there won't be consequences when the vector is modified!
+
+# 2
+x <- c(1L,2L,3L)
+tracemem(x)
+x[[3]] <- 4 # here we have directly modified the object that was bound to the name
+            # x, hence we get a different object bound to x
+
+# 3
+a <- 1:10
+b <- list(a,a)
+c <- list(b,a,1:10)
+ref(b,a)
+ref(a,b)
+ref(a,c)
+# the relationship will follow the logic that we have 2 different objects: lists 
+# and vectors, hence we should be mindfull of that!
+
+# 4
+x <- list(1:10)
+x[[2]] <- x
+ref(x,x)
+
+# 2.4 Object size #
+###################
+
+obj_size(letters)
+obj_size((ggplot2::diamonds))

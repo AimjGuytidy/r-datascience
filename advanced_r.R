@@ -215,3 +215,25 @@ v[[3]] <- 4
 # here the modification happens in place because we are modifying an object with one 
 # single name bound to it, so instead of creating a copy, it bind the name to a 
 # new object and discard the old object!
+
+x <- data.frame(matrix(runif(5*1e4),ncol=4))
+medians <- vapply(x,median,numeric(1))
+for (i in seq(ncol(x))) {
+  x[[i]]<-x[[i]] - medians[[i]]
+}
+
+# for (i in seq_along(medians)) {
+#   x[[i]]<-x[[i]] - medians[[i]]
+# }
+# 
+# for (i in seq_along(medians)) {
+#   print(i)
+# }
+# for (i in seq(ncol(x))) {
+#   print(i)
+# }
+
+cat(tracemem(x),"\n")
+for (i in seq_along(medians)) {
+  x[[i]] <- x[[i]] - medians[[i]]
+}

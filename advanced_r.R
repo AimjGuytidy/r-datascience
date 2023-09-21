@@ -303,3 +303,13 @@ gc()
 lobstr::mem_used()
 # use gcinfo() if you want R to print info everytime garbage collector is in action
 
+# 3. VECTORS #
+##############
+
+# We have 2 types of data types: Nodes and Vectors !!!
+
+# We have 2 types of vectors: atomic vectors and lists (generic vectors)!!
+# atomic vectors ==> all elements must have the same type.
+# generic vectors (lists) ==> elements can have different types.
+
+# vectors have attributes

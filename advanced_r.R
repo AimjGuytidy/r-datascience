@@ -291,3 +291,15 @@ bench_time(fun1(y))
 # 3 
 # using tracemem() on environment yields an error specifying that it can not be 
 # applyed on environment and promise
+
+# 2.6 Unbinding and the garbage collector #
+###########################################
+x <- 1:4
+cat(tracemem(x),"\n")
+x <- 3:6
+tracemem(x)
+rm(x)
+gc()
+lobstr::mem_used()
+# use gcinfo() if you want R to print info everytime garbage collector is in action
+

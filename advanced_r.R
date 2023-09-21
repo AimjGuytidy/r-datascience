@@ -237,3 +237,29 @@ cat(tracemem(x),"\n")
 for (i in seq_along(medians)) {
   x[[i]] <- x[[i]] - medians[[i]]
 }
+untracemem(x)
+
+y <- as.list(x)
+cat(tracemem(y),"\n")
+for (i in seq_along(medians)) {
+  y[[i]] <- y[[i]] - medians[[i]]
+}
+
+# 2.5.2 Environments #
+######################
+# environments are always modified in place (reference semantics)
+
+e1 <- rlang::env(a = 1, b = 2, c = 3)
+#cat(tracemem(e1),"\n") this is not useful for promise and environment objects
+e2 <- e1
+
+e2$b <- 1
+e1$b
+
+# environments can contain themselves!
+
+e <- rlang::env()
+e$self <- e
+ref(e)
+
+# 2.5.3 Exercises

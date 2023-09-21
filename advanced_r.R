@@ -1,4 +1,5 @@
-
+# install.packages("bench")
+library(bench)
 library(lobstr)
 set.seed(42)
 df <- data.frame(runif(3), runif(3))
@@ -262,4 +263,31 @@ e <- rlang::env()
 e$self <- e
 ref(e)
 
-# 2.5.3 Exercises
+# 2.5.3 Exercises#
+
+# 1
+x <- list()
+cat(tracemem(x),"\n")
+x[[1]] <- x # this is not circular because we initially had an empty list object
+            # now we have added an element that was bounded to a list object
+
+# 2
+fun1 <- function(a) {
+  for (i in seq_along(medians)) {
+    a[[i]] <- a[[i]] - medians[[i]]
+  }
+}
+
+fun2 <- function(a) {
+  a1 <- as.list(a)
+  for (i in seq_along(medians)) {
+    a1[[i]] <- a1[[i]] - medians[[i]]
+  }
+}
+
+bench::bench_time(fun1(x))
+bench_time(fun1(y))
+
+# 3 
+# using tracemem() on environment yields an error specifying that it can not be 
+# applyed on environment and promise

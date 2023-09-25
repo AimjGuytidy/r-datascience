@@ -313,3 +313,6 @@ lobstr::mem_used()
 # generic vectors (lists) ==> elements can have different types.
 
 # vectors have attributes
+
+# 3.2 Atomic vectors #
+######################

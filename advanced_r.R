@@ -316,3 +316,5 @@ lobstr::mem_used()
 
 # 3.2 Atomic vectors #
 ######################
+# There are 4 primary types of atomic vector: logical, integer, double and character
+# the 2 rare atomic vectors: complex and raw.

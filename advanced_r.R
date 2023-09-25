@@ -318,3 +318,7 @@ lobstr::mem_used()
 ######################
 # There are 4 primary types of atomic vector: logical, integer, double and character
 # the 2 rare atomic vectors: complex and raw.
+
+# 3.2.1 Scalars #
+#################
+# this is a special syntax used to create an individual value ( scalar)

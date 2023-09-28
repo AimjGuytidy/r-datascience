@@ -235,7 +235,7 @@ twomeans(m1 = baseline_mean, m2 = smaller_treated_mean, sd = baseline_sd, nratio
 # Say X is 4:
 # 
 
-new_sample <- 4 * (142)
+new_sample <- 4 * (sample_n)
 new_mde <- (t_power + t_alpha) * sqrt(1 /(p*(1-p))) * sqrt(1 / new_sample) * baseline_sd
 new_mde / mde
 

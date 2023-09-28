@@ -242,9 +242,9 @@ new_mde / mde
 ## The minimum detectable effect size decreases by half. 
 ## Similarly, what happens when the standard deviation increases? How does the sample size changes? How does the MDE change?
 ## Check by manually changing the values
-
-
-
+new_baseline_sd <- 4*baseline_sd
+mde_sd <- (t_power+t_alpha)*(sqrt(1/(p*(1-p)))*sqrt(1/sample_n)*new_baseline_sd)
+mde_sd/mde # if we increase the standard deviation by a factor x, then the mde will increase by the same factor x!!
 ################ 3. Parametric Power calculations with controls ##################
 
 # Now, say we plan to control for baseline covariates in our main specification.  

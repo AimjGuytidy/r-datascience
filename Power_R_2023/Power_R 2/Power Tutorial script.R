@@ -290,6 +290,7 @@ cat("We need a minimum treatment size of",cov_model$n2,
 #   
 # 3.1. What percent of the variance of study period test scores is explained by 
 #       the covariates, pre_verb and pre_math? (Hint: Look at the R^2 statistic of the regression.)
+# 86.04% of the variance is explained by the introduced covariates.
 # 3.2. How does this affect our sample size (compared to not including controls)?
 # 3.3. How about our MDE?
 

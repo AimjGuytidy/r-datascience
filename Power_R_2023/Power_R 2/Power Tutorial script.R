@@ -399,7 +399,7 @@ p <- .5
 
 # Now, we have Duflo et al.'s power adjustment:
 mde <- t_stat * sqrt(1 / (p * (1 - p) * total_clusters)) * sqrt(rho + (1 - rho) / cluster_size) * baseline_sd
-
+mde_check <- t_stat * sqrt(1/(p*(1-p)))*sqrt(1/(total_clusters*cluster_size*(1+(rho*(cluster_size-1)))))
 # And lastly, the total sample size of our study and the number who are treated, respectively:
 n <- total_clusters * cluster_size
 treated <- n * p

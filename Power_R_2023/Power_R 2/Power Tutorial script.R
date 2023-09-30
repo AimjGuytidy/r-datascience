@@ -52,6 +52,7 @@ devtools::install_github('vikjam/pwrcalc')
 # 
 # Once you installed the packages, load them to get started:
 # 
+#install.packages("multiwayvcov")
 library(haven)
 library(ICC)
 library(randomizr)
@@ -378,6 +379,7 @@ rho
 #### Part 1: Calculating MDE ####
 
 # Now, let's specify the number of individuals in each cluster:
+dplyr::count(balsakhi,divid)
 cluster_size <- 53
 
 # and the number of clusters (as documented in the Balsakhi experiment):

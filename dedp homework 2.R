@@ -27,3 +27,13 @@ p_star <- sqrt(1/(p*(1-p)))
 denom <- sqrt(1/sample_sizer) * baseline_sd
 mde_school <- t_to * p_star * denom
 factor_mde <- baseline_sd/mde_school
+
+
+takeup_tr <- 0.5
+takeup_cont <- 0
+eff_tu <- takeup_tr - takeup_cont
+eff_tu_final <- (baseline_sd*(1/15)) * eff_tu
+tr_eff_tu <- baseline_mean + eff_tu_final
+eff_tu_mde <- twomeans(m1 = baseline_mean, m2 = tr_eff_tu, nratio = nratio,
+                       power = power, sig.level = alpha, sd = baseline_sd)
+eff_tu_mde

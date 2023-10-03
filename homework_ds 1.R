@@ -79,5 +79,7 @@ ggplot(histdata_twoyears, aes(x=FertilityRate, group = Year, color = Year,
   geom_density(data = subset(histdata_twoyears, Year == "X1960"), color = "darkred",
                fill = "red", alpha = 0.2, bw = 5) +
   geom_density(data = subset(histdata_twoyears, Year == "X2000"), color = "darkblue",
-               fill = "blue", alpha = 0.2, bw = 5)
+               fill = "blue", alpha = 0.2, bw = 10,kernel="rectangular")
+
+ggsave("visuals/hist_density_ds.png")
   

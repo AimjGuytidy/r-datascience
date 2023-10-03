@@ -57,3 +57,9 @@ ggplot(plotdata_bygroupyear, aes(x=Year, y = FertilityRate, group = Country.Code
   geom_line()+
   labs(title="Fertility Rate by Country-Income-Level over Time")
 
+# Histogram Analysis
+histdata_twoyears <- select(teenager_fr, Country.Name, Country.Code, 
+                            Indicator.Name, Indicator.Code, X1960, X2000)
+histdata_twoyears <- pivot_longer(histdata_twoyears,cols = c("X1960","X2000"),
+                                  names_to = "Year", values_to = "FertilityRate")%>%
+  select(Year, Country.Name, Country.Code, FertilityRate)

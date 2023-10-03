@@ -15,3 +15,11 @@ view(head(gender_data,3))
 teenager_fr <- filter(gender_data, Indicator.Code=="SP.ADO.TFRT") # we can use subset too!
 
 rm(gender_data) # we no longer need the entire dataset
+
+mean(teenager_fr$X1975, na.rm = TRUE)
+
+mean(teenager_fr$X1960,na.rm = TRUE)
+sd(teenager_fr$X1960,na.rm = TRUE)
+
+mean(teenager_fr$X2000,na.rm = TRUE)
+sd(teenager_fr$X2000,na.rm = TRUE)

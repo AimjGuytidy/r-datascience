@@ -46,4 +46,14 @@ plotdata_byyear1 <- select(plotdata_bygroupyear1,Country.Code, Year,
 
 ggplot(plotdata_bygroupyear, aes(x=Year, y = FertilityRate, group = Country.Code,
                                  color=Country.Code)) +
-  geom_line()
+  geom_line()+
+  labs(title="Fertility Rate by Country-Income-Level over Time")
+plotdata_bygroupyear <- mutate(plotdata_bygroupyear,Year=as.numeric(str_sub(Year,-4)))
+plotdata_bygroupyear1 <- mutate(plotdata_bygroupyear1,
+                                Year=as.numeric(str_replace(Year,"X","")))
+
+ggplot(plotdata_bygroupyear, aes(x=Year, y = FertilityRate, group = Country.Code,
+                                 color=Country.Code)) +
+  geom_line()+
+  labs(title="Fertility Rate by Country-Income-Level over Time")
+

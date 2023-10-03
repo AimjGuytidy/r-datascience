@@ -63,3 +63,21 @@ histdata_twoyears <- select(teenager_fr, Country.Name, Country.Code,
 histdata_twoyears <- pivot_longer(histdata_twoyears,cols = c("X1960","X2000"),
                                   names_to = "Year", values_to = "FertilityRate")%>%
   select(Year, Country.Name, Country.Code, FertilityRate)
+histdata_twoyears <- filter(histdata_twoyears, !is.na(FertilityRate))
+
+ggplot(histdata_twoyears, aes(x=FertilityRate)) +
+  geom_histogram(data = subset(histdata_twoyears, Year=="X1960"),color="darkred",
+                 fill="red", alpha = 0.2) +
+  geom_histogram(data = subset(histdata_twoyears, Year == "X2000"), color = "darkblue",
+                 fill = "blue", alpha = 0.2)
+ggsave("visuals/hist_ds.png")
+
+# Adding kernels to  the histogram
+ggplot(histdata_twoyears, aes(x=FertilityRate, group = Year, color = Year,
+                              alpha = 0.2)) + 
+  geom_histogram(aes(y=..density..)) + # use after_stat(density) !!!!
+  geom_density(data = subset(histdata_twoyears, Year == "X1960"), color = "darkred",
+               fill = "red", alpha = 0.2, bw = 5) +
+  geom_density(data = subset(histdata_twoyears, Year == "X2000"), color = "darkblue",
+               fill = "blue", alpha = 0.2, bw = 5)
+  

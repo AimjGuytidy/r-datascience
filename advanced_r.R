@@ -461,3 +461,13 @@ unclass(as.Date("1908-11-11"))
 
 # 3.4.3 Date-times #
 ####################
+# POSIXct is appropriate for data frames !!!
+(now_ct <- as.POSIXct("2023-10-12 15:44", tz="UTC"))
+typeof(now_ct)
+attributes(now_ct)
+
+structure(now_ct, tzone = "Asia/Tokyo")
+structure(now_ct, tzone = "Europe/Paris")
+
+# 3.4.4 Durations #
+###################

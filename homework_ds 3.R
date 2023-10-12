@@ -27,7 +27,7 @@ while (prob>.1) {
 
 # poisson distribution
 x <- 0
-expy <- function(lambda) exp(-lambda) + lambda * exp(-lambda) + (lambda**2 * exp(-lambda))/factorial(2)
+expy <- function(lambda) exp(-lambda) + lambda * exp(-lambda) 
 trial <- expy(x)
 while (trial > 0.01) {
   x <- x + .1

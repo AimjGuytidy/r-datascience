@@ -322,3 +322,12 @@ lobstr::mem_used()
 # 3.2.1 Scalars #
 #################
 # this is a special syntax used to create an individual value ( scalar)
+
+# 3.2.2 Making longer vectors with c() #
+########################################
+lgl_var <- c(TRUE,FALSE) # c stands for combine
+int_var <- c(1L, 6L, 10L)
+dbl_var <- c(1, 2.5, 4.5)
+chr_var <- c("these are", "some strings")
+
+c(c(1, 2), c(3, 4)) # this will be flattened since all are atomic vectors

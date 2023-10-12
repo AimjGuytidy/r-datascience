@@ -24,3 +24,12 @@ while (prob>.1) {
   k <- k + 1
   prob <- phyper(x,m,n,k)
 }
+
+# poisson distribution
+x <- 0
+expy <- function(lambda) exp(-lambda) + lambda * exp(-lambda) + (lambda**2 * exp(-lambda))/factorial(2)
+trial <- expy(x)
+while (trial > 0.01) {
+  x <- x + .1
+  trial <- expy(x)
+}

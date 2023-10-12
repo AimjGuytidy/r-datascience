@@ -368,3 +368,27 @@ c(TRUE, 1L) #==>
 
 # 3.3 Attributes #
 ##################
+
+# 3.3.1 Getting and setting #
+#############################
+a <- 1:3
+attr(a,"x") <- "abc"
+str(a)
+attr(a,"x")
+attr(a,"y") <- 4:5
+str(a)
+b <- structure(1:3,
+               x = "abc",
+               y = 4:5)
+str(b)
+str(attributes(b))
+
+# attributes should be thought as ephemeral (momentary/transitory)
+attributes(a[1])
+attributes((sum(a)))
+names(a) <- c("one","two","three")
+attributes(a[1])
+a
+
+# 3.3.2 Names #
+###############

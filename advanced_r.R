@@ -351,3 +351,20 @@ mean(c(FALSE, FALSE, TRUE))
 
 # 3.2.5 Exercises #
 ###################
+
+# creating raw and complex scalars
+?raw
+?complex
+complex(real = 12, imaginary = 3)
+raw(12)
+raw(2)
+charToRaw("A test")
+as.raw(12)
+c(1,FALSE) #==> logical(false) turn into double
+c("a", 1) #==> character
+c(TRUE, 1L) #==> 
+
+1 == "1" # this is true due to coercion, whereby 1 is turned into a character
+
+# 3.3 Attributes #
+##################

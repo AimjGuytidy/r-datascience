@@ -343,3 +343,11 @@ NA > 4
 !NA
 NA**0 # exception!
 
+# 3.2.4 Testing and coercion #
+##############################
+
+sum(c(FALSE, FALSE, TRUE))
+mean(c(FALSE, FALSE, TRUE))
+
+# 3.2.5 Exercises #
+###################

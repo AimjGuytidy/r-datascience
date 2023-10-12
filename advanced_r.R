@@ -430,3 +430,16 @@ dim(x1)
 ?structure
 (structure(1:5, comment = "kkk")) # comment is a keyword!!!!
 (structure(1:3, parfait = "awesome"))
+
+# 3.4 S3 atomic vectors #
+#########################
+# 3.4.1 Factors #
+#################
+(x <- factor(c("a","a","b","a","b")))
+attributes(x)
+typeof(x)
+
+sex_char <- c("m","m","m")
+sex_factor <- factor(c("m","m","m"),levels = c("m","f"))
+table(sex_char) # this shows only "m"
+table(sex_factor) # this shows all available choices as described in levels param

@@ -392,3 +392,10 @@ a
 
 # 3.3.2 Names #
 ###############
+x <- c(a=1,b=2,c=3) # name while the creation
+x
+x <- 1:3
+names(x) <- c("a","b","c") # naming using the names() function
+x
+x <- setNames(1:3,c("a","b","c")) # inline naming with setNames
+x

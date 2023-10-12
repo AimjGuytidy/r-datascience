@@ -421,3 +421,12 @@ dim(1:3) # this returns null for vectors, since they are 1-dim
 NROW(1:3) # this returns 3 since we have a 3-rows vector
 NCOL(1:3) # this returns 1 since we have a 1-col vector
 nrow(1:3) # this returns Null since we have 1-dim vector (same with ncol)
+(x1 <- array(1:5,c(1,1,5))) # this is a tensor!
+dim(x1)
+(x2 <- array(1:5,c(1,5,1))) # similar to having one matrix with 5 cols
+
+(x3 <- array(1:5, c(5,1,1))) # similar to a matrix with 5 rows and 1 col
+
+?structure
+(structure(1:5, comment = "kkk")) # comment is a keyword!!!!
+(structure(1:3, parfait = "awesome"))

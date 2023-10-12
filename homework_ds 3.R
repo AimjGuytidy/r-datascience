@@ -33,3 +33,24 @@ while (trial > 0.01) {
   x <- x + .1
   trial <- expy(x)
 }
+
+# simulations and estimators
+n_obs <- 100
+n_samples <- 1000
+theta <- 5
+theta_mean <- c()
+theta_med <- c()
+# simulating the 1000 samples and producing their means
+for (samp in seq(1,n_samples)) {
+  n_vec <- runif(n_obs,min = 0,max = theta)
+  theta_mean <- append(theta_mean,mean(n_vec,na.rm=TRUE))
+  theta_med <- append(theta_med, median(n_vec,na.rm = TRUE))
+}
+
+# Plotting the distribution
+theta_mean <- as.data.frame(theta_mean)
+theta_med <- as.data.frame(theta_med)
+
+ggplot() +
+  geom_histogram(data = theta_mean,mapping = aes())+
+  geom_histogram(data = theta_med, mapping = aes())

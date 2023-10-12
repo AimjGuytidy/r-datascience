@@ -331,3 +331,15 @@ dbl_var <- c(1, 2.5, 4.5)
 chr_var <- c("these are", "some strings")
 
 c(c(1, 2), c(3, 4)) # this will be flattened since all are atomic vectors
+
+typeof(lgl_var) # typeof helps us determine the type of a vector (atomic)
+length(lgl_var)
+
+# 3.2.3 Missing values #
+########################
+# NA ==> Not Applicable
+NA > 4
+10 * NA
+!NA
+NA**0 # exception!
+

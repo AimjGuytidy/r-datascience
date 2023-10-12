@@ -399,3 +399,25 @@ names(x) <- c("a","b","c") # naming using the names() function
 x
 x <- setNames(1:3,c("a","b","c")) # inline naming with setNames
 x
+
+# avoid using attributes when naming instead use names() and 
+# when trying to unname use names(x) <- NULL
+
+# 3.3.3 Dims #
+##############
+# Matrices and arrays are statistical tools and no programming tools
+(a <- matrix(1:6, nrow = 2, ncol = 3))
+
+(b <- array(1:12, c(2,3,2))) # this is equivalent to numpy array or tensors used in tensorflow and pytorch
+str(1:3)
+str(matrix(1:3,ncol = 1))
+str(matrix(1:3, nrow = 1))
+str(array(1:3,3))
+
+# 3.3.4 Exercises #
+###################
+dim(1:3) # this returns null for vectors, since they are 1-dim
+?NROW
+NROW(1:3) # this returns 3 since we have a 3-rows vector
+NCOL(1:3) # this returns 1 since we have a 1-col vector
+nrow(1:3) # this returns Null since we have 1-dim vector (same with ncol)

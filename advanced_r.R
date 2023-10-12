@@ -443,3 +443,21 @@ sex_char <- c("m","m","m")
 sex_factor <- factor(c("m","m","m"),levels = c("m","f"))
 table(sex_char) # this shows only "m"
 table(sex_factor) # this shows all available choices as described in levels param
+
+# then there is ordered factors, with this the order of the levels matters!!!
+(grade <- ordered(c("b", "b", "c", "a"), levels = c("c","b","a")))
+# when using read.csv() and data.frame() remember to set stringAsFactors = False!!
+
+# 3.4.2 Dates #
+###############
+# Date vectors have class "Date" and no other attributes.
+today <- Sys.Date()
+typeof(today)
+attributes(today)
+unclass(today)
+date <- as.Date("2023-11-21")
+unclass(date)
+unclass(as.Date("1908-11-11"))
+
+# 3.4.3 Date-times #
+####################

@@ -471,3 +471,15 @@ structure(now_ct, tzone = "Europe/Paris")
 
 # 3.4.4 Durations #
 ###################
+(one_week_1 <- as.difftime(1,units = "weeks"))
+attributes(one_week_1)
+typeof(one_week_1)
+
+# 3.4.5 Exercises #
+###################
+typeof(table(sex_char)) # table's type is integer
+table(b) # the table flatten a matrix
+table(tibble(x=1:3,y=3:5)) # the table does a cross product of data frame
+table(tibble(x=1:4,y=8:11,z=20:23)) # as variables increase table returns an array
+attributes(table(tibble(x=1:4,y=8:11,z=20:23))) # table has dim, dimnames and class as attributes
+

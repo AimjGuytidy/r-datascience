@@ -52,5 +52,18 @@ theta_mean <- as.data.frame(theta_mean)
 theta_med <- as.data.frame(theta_med)
 
 ggplot() +
-  geom_histogram(data = theta_mean,mapping = aes())+
-  geom_histogram(data = theta_med, mapping = aes())
+  geom_histogram(data = theta_mean,
+                 mapping = aes(x = theta_mean,y=..density..),color = "darkblue",
+                 fill = "green",alpha=.4)+
+  geom_histogram(data = theta_med, 
+                 mapping = aes(x=theta_med,y=..density..), color = "darkblue",
+                 fill = "yellow", alpha=.2)
+
+
+ggplot() +
+  geom_histogram(data = theta_mean,
+                 mapping = aes(x = theta_mean*2,y=..density..),color = "darkblue",
+                 fill = "maroon",alpha=.4)+
+  geom_histogram(data = theta_med, 
+                 mapping = aes(x=theta_med*2,y=..density..), color = "darkblue",
+                 fill = "orange", alpha=.2)

@@ -515,3 +515,46 @@ str(l3 <- list(list(list(1))))
 
 str(l4 <- list(list(1,2), c(3,4)))
 str(l5 <- c(list(1,2), c(3,4)))
+
+# 3.5.2 Testing and coercion #
+##############################
+list(1:3)
+as.list(1:3) # looks like it turns each element into list individually
+
+# 3.5.3 Matrices and arrays #
+#############################
+x<-c(1:4)
+dim(x) <- c(2,2)
+x
+l <- list(1:3, "a", T, 1.0)
+dim(l) <- c(2, 2)
+l
+l[[1,1]]
+
+# 3.5.4 Exercises #
+###################
+as.vector(list(c(1,2,3),
+               "a",
+               c(T,F,F),
+               c(2.3,4.5),
+               list(1,2,"3")))
+
+is.vector(list(c(1,2,3),
+               "a",
+               c(T,F,F),
+               c(2.3,4.5),
+               list(1,2,"3")))
+# as.vector doesn't work because a list is already a vector hence the transformation is of no effect
+unlist(list(c(1,2,3),
+               "a",
+               c(T,F,F),
+               c(2.3,4.5),
+               list(1,2,"3")))
+c(as.Date("2022-01-03"),as.POSIXct("2022-01-03 15:44", tz="UTC"))
+unlist(list(as.Date("2022-01-03"),as.POSIXct("2022-01-03 15:44", tz="UTC")))
+# unlist convert the entries into numbers while the c() funct turns them into Dates
+str(c(as.Date("2022-01-03"),as.POSIXct("2022-01-03 15:44", tz="UTC")))
+str(unlist(list(as.Date("2022-01-03"),as.POSIXct("2022-01-03 15:44", tz="UTC"))))
+
+# 3.6 Data frames and tibbles #
+###############################

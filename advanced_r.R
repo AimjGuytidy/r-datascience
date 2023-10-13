@@ -595,3 +595,12 @@ tibble(
 ))
 rownames(df3)
 df3["Eric",]
+# transpose of a data frame is not a data frame!!
+t(df3)
+str(t(df3))
+
+df3[c(1, 1, 1), ] # bootstraping with row names is erronous!
+as_tibble(df3, rownames = "name")
+
+# 3.6.3 Printing #
+##################

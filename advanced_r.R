@@ -558,3 +558,24 @@ str(unlist(list(as.Date("2022-01-03"),as.POSIXct("2022-01-03 15:44", tz="UTC")))
 
 # 3.6 Data frames and tibbles #
 ###############################
+
+# data frames and tibbles are built on top of lists
+typeof(df1 <- data.frame(x = 1:3, y = letters[1:3]))
+
+attributes(df1)
+# use row.names() instead of rownames()!
+
+
+library(tibble)
+typeof(df2 <- tibble(x = 1:3, y = letters[1:3]))
+attributes(df2) # tibbles  have 2 more classes than data.frame ==> tbl_df and tbl
+
+# 3.6.1 Creating #
+##################
+str(df <- data.frame(x = 1:3, y = c("a","b","c"))) # remember to make sure stringsAsFactors = FALSE
+names(data.frame(`1`=1))
+names(tibble(`1`=1))
+
+# recycling
+data.frame(x = 1:4, y = 1:2)
+#data.frame(x = 1:4, y = 1:3) ==> this yields an error

@@ -483,3 +483,35 @@ table(tibble(x=1:3,y=3:5)) # the table does a cross product of data frame
 table(tibble(x=1:4,y=8:11,z=20:23)) # as variables increase table returns an array
 attributes(table(tibble(x=1:4,y=8:11,z=20:23))) # table has dim, dimnames and class as attributes
 
+(f1 <- factor(letters))
+levels(f1) <- rev(levels(f1))
+#f1 when you change the order of the levels even the factor values change accordingly
+
+(f2 <- rev(factor(letters))) # we have reversed values
+(f3 <- factor(letters, levels = rev(letters))) # we have reversed levels
+
+# 3.5 Lists #
+#############
+str(c(1,2,3))
+str(c(1,2,"3"))
+str(list(1,2,"3"))
+l1 <- list(c(1,2,3),
+           "a",
+           c(T,F,F),
+           c(2.3,4.5),
+           c(1,2,"3"))
+typeof(l1)
+str(l1)
+
+str(list(c(1,2,3),
+         "a",
+         c(T,F,F),
+         c(2.3,4.5),
+         list(1,2,"3")))
+obj_size(mtcars)
+obj_size(l2<-list(mtcars,mtcars,mtcars,mtcars)) # list is a reference
+# lists are recursive vectors ==> can contain other lists within
+str(l3 <- list(list(list(1))))
+
+str(l4 <- list(list(1,2), c(3,4)))
+str(l5 <- c(list(1,2), c(3,4)))

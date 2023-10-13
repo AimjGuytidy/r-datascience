@@ -579,3 +579,12 @@ names(tibble(`1`=1))
 # recycling
 data.frame(x = 1:4, y = 1:2)
 #data.frame(x = 1:4, y = 1:3) ==> this yields an error
+tibble(x = 1:4, y = 1)
+#tibble(x = 1:4, y = 1:2) ==> this yields an error 
+tibble(
+  x = 1:5,
+  y = x ^ 3
+)
+
+# 3.6.2 Row names #
+###################

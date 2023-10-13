@@ -588,3 +588,10 @@ tibble(
 
 # 3.6.2 Row names #
 ###################
+(df3 <- data.frame(
+  age = c(32,23,44),
+  hair = c("blonde","brunette", "black"),
+  row.names = c("Kanyana", "Eric", "Sebeza")
+))
+rownames(df3)
+df3["Eric",]

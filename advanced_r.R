@@ -604,3 +604,34 @@ as_tibble(df3, rownames = "name")
 
 # 3.6.3 Printing #
 ##################
+dplyr::starwars
+df3
+
+# 3.6.4 Subsetting #
+####################
+df1 <- data.frame(xyz = "a")
+df2 <- tibble(xyz = "a")
+
+str(df1$x)
+str(df2$x) # gives a warning!
+
+# 3.6.5 Testing and coercing #
+##############################
+is.data.frame(df1)
+is.data.frame(df2)
+
+is_tibble(df1)
+is_tibble(df2)
+
+# 3.6.6 List columns #
+######################
+df <- data.frame(x = 1:3)
+(df$y <- list(1:2, 1:3, 1:4))
+df
+(data.frame(x = 1:3,
+            y = I(list(1:2, 1:3, 1:4)))) # I() instructs to leave as it is!
+(tibble(x = 1:3,
+        y = list(1:2, 1:3, 1:4)))
+
+# 3.6.7 Matrix and data frame columns #
+#######################################

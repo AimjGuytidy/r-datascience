@@ -20,42 +20,46 @@ whitish <- c("#F9F9F9")
 merged_scores <- read_dta("03_clean/merged_scores_b1.dta")
 districts <- unique(merged_scores$district)
 
-ggplot(data = merged_scores[merged_scores$district=="Kayonza",])+
-  geom_line(aes(x = seq(1,nrow(merged_scores[merged_scores$district=="Kayonza",])),
-                y=teacher_score,group=1,colour="HeadTeacher Score"),linewidth = 1.2,alpha=.6)+
-  geom_point(aes(x = seq(1,nrow(merged_scores[merged_scores$district=="Kayonza",])),
-             y=teacher_score,group=1,color=Dark_blue))+
-  geom_line(aes(x = seq(1,nrow(merged_scores[merged_scores$district=="Kayonza",])),
-                y=imihigo_score,group=1,colour="Imihigo Score"),linewidth = 1.2,alpha=.6)+
-  geom_point(aes(x = seq(1,nrow(merged_scores[merged_scores$district=="Kayonza",])),
-             y=imihigo_score,group=1,color=Dark_blue))+
-  scale_color_manual(name = "Kayonza district", values = c("HeadTeacher Score" = Green,
-                                                           "Imihigo Score" = Blue)) + 
-  #ylab("Total marks submitted")+
-  #ggtitle(title_prep)+
-  theme(plot.title = element_text(hjust = 0.5)) +
-  theme(
-    plot.background = element_rect(fill = c(whitish)),
-    panel.background = element_rect(fill = c(whitish)),
-    #remove y axis labels
-    axis.ticks.y = element_blank(),
-    axis.ticks.x = element_blank(),#remove y axis ticks
-    # remove the vertical grid lines
-    panel.grid.major.x = element_blank() ,
-    # explicitly set the horizontal lines (or they will disappear too)
-    panel.grid.major.y = element_line( size=.1, color=Light_blue ) 
-  ) +
+for (i in districts){
+  ggplot(data = merged_scores[merged_scores$district==i,])+
+    geom_line(aes(x = seq(1,nrow(merged_scores[merged_scores$district==i,])),
+                  y=teacher_score,group=1,colour="HeadTeacher Score"),linewidth = 1.2,alpha=.6)+
+    geom_point(aes(x = seq(1,nrow(merged_scores[merged_scores$district==i,])),
+                   y=teacher_score,group=1,color=Dark_blue))+
+    geom_line(aes(x = seq(1,nrow(merged_scores[merged_scores$district==i,])),
+                  y=imihigo_score,group=1,colour="Imihigo Score"),linewidth = 1.2,alpha=.6)+
+    geom_point(aes(x = seq(1,nrow(merged_scores[merged_scores$district==i,])),
+                   y=imihigo_score,group=1,color=Dark_blue))+
+    scale_color_manual(name = paste0(i,"District"), values = c("HeadTeacher Score" = Green,
+                                                             "Imihigo Score" = Blue)) + 
+    #ylab("Total marks submitted")+
+    #ggtitle(title_prep)+
+    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(
+      plot.background = element_rect(fill = c(whitish)),
+      panel.background = element_rect(fill = c(whitish)),
+      #remove y axis labels
+      axis.ticks.y = element_blank(),
+      axis.ticks.x = element_blank(),#remove y axis ticks
+      # remove the vertical grid lines
+      panel.grid.major.x = element_blank() ,
+      # explicitly set the horizontal lines (or they will disappear too)
+      panel.grid.major.y = element_line( size=.1, color=Light_blue ) 
+    ) +
+    
+    theme(axis.text.x = element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank())+ 
+    theme(strip.text.y = element_text(size = 11, hjust = 0.5,
+                                      vjust = 0.5, face = 'bold'))+
+    theme(axis.text.y = element_text(colour = 'black', size = 10),
+          axis.title.y = element_blank())
   
-  theme(axis.text.x = element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank())+ 
-  theme(strip.text.y = element_text(size = 11, hjust = 0.5,
-                                    vjust = 0.5, face = 'bold'))+
-  theme(axis.text.y = element_text(colour = 'black', size = 10),
-        axis.title.y = element_blank())
   
+  ggplot(data = merged_scores)+
+    geom_point(aes(x = imihigo_score,y=teacher_score))
+  
+  ggsave(paste("04_output/",i,".png",sep = ""),width = 2500,height = 2500,units=c("px"))
+  
+}
 
-ggplot(data = merged_scores)+
-  geom_point(aes(x = imihigo_score,y=teacher_score))
-
-ggsave("04_output/Kayonza.png",width = 2500,height = 2500,units=c("px"))

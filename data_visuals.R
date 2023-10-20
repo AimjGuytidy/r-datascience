@@ -30,8 +30,9 @@ for (i in districts){
                   y=imihigo_score,group=1,colour="Imihigo Score"),linewidth = 1.2,alpha=.6)+
     geom_point(aes(x = seq(1,nrow(merged_scores[merged_scores$district==i,])),
                    y=imihigo_score,group=1,color=Dark_blue))+
-    scale_color_manual(name = paste0(i,"District"), values = c("HeadTeacher Score" = Green,
+    scale_color_manual(name = paste(i,"District"), values = c("HeadTeacher Score" = Green,
                                                              "Imihigo Score" = Blue)) + 
+    ylim(60,100)+
     #ylab("Total marks submitted")+
     #ggtitle(title_prep)+
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -56,10 +57,11 @@ for (i in districts){
           axis.title.y = element_blank())
   
   
-  ggplot(data = merged_scores)+
-    geom_point(aes(x = imihigo_score,y=teacher_score))
+
   
   ggsave(paste("04_output/",i,".png",sep = ""),width = 2500,height = 2500,units=c("px"))
   
 }
 
+ggplot(data = merged_scores)+
+  geom_point(aes(x = imihigo_score,y=teacher_score))

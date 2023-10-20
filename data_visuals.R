@@ -18,6 +18,7 @@ dark_greenish <- c("#164B60")
 whitish <- c("#F9F9F9")
 
 merged_scores <- read_dta("03_clean/merged_scores_b1.dta")
+districts <- unique(merged_scores$district)
 
 ggplot(data = merged_scores[merged_scores$district=="Kayonza",])+
   geom_line(aes(x = seq(1,nrow(merged_scores[merged_scores$district=="Kayonza",])),

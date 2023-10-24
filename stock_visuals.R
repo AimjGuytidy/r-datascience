@@ -45,7 +45,17 @@ ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) +
   scale_x_bd(business.dates=nyse, labels=date_format('%Y-%m-%d'), max.major.breaks=10,
              max.minor.breaks = 10)
 
-ggplot(data = df, aes(x = observation_date)) + 
-  geom_line(aes(y = scaled_oil_price), color = Blue)+
-  geom_line(aes(y = scaled_breakeven_rates), color = red)+
-  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10)
+
+
+ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) + 
+  geom_line(aes(y = DCOILWTICO), color = Blue,linewidth = 1)+
+  #scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
+  geom_line(aes(y = T5YIE*46.28), color = red,linewidth = 1)+ 
+  scale_y_continuous(
+    "Oil Prices", 
+    sec.axis = sec_axis(~ .*46.28, name = "Breakeven rates",
+                        labels = function(x) {
+                          paste0(round(x/4628,2), "%")})
+  ) +
+  scale_x_bd(business.dates=nyse, labels=date_format('%Y-%m-%d'), max.major.breaks=10,
+             max.minor.breaks = 10)

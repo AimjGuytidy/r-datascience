@@ -10,6 +10,7 @@ library("readr")
 library("openxlsx")
 library("readxl")
 library("haven")
+library("scales")
 setwd("C:/Users/HP/source/repos/r-datascience")
 
 
@@ -32,14 +33,5 @@ df <- read_excel("data/fredgraph.xls",skip = 11)
 df$observation_date <- as.Date.POSIXct(df$observation_date)
 ggplot(data = df, aes(x = observation_date)) + 
   geom_line(aes(y = DCOILWTICO, color = Blue)) +
-  scale_x_date(date_breaks  ="5 days")+
-  coord_flip()
+  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10)
 
-
-plot(df$observation_date, df$DCOILWTICO, xaxt = "n", type = "l", xlab = "Date", ylab = "y")
-axis.POSIXct(1, at = seq(min(df$observation_date), max(df$observation_date), by = "week"), format="%b %d")
-
-
-library(ggvis)
-
-ggvis(df, ~observation_date, ~DCOILWTICO) %>% layer_lines()

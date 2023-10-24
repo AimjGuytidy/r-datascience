@@ -32,6 +32,12 @@ maroon <- c("#3D0C11")
 df <- read_excel("data/fredgraph.xls",skip = 11)
 df$observation_date <- as.Date.POSIXct(df$observation_date)
 ggplot(data = df, aes(x = observation_date)) + 
-  geom_line(aes(y = DCOILWTICO, color = Blue)) +
+  geom_line(aes(y = DCOILWTICO/46.28), color = Blue)+
+  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
+  geom_line(aes(y = T5YIE), color = red)+ 
+  scale_y_continuous(
+    "Oil Prices", 
+    sec.axis = sec_axis(~ ./46.28, name = "Breakeven rates")
+  ) +
   scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10)
 

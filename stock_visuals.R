@@ -33,7 +33,8 @@ df <- read_excel("data/fredgraph.xls",skip = 11)
 df$observation_date <- as.Date.POSIXct(df$observation_date)
 df <- df |>
   mutate(scaled_oil_price = (DCOILWTICO-mean(DCOILWTICO,na.rm = T))/sd(DCOILWTICO,na.rm=T),
-         scaled_breakeven_rates = (T5YIE-mean(T5YIE,na.rm = T)/sd(T5YIE,na.rm = T)))
+         scaled_breakeven_rates = (T5YIE-mean(T5YIE,na.rm = T)/sd(T5YIE,na.rm = T)),
+         breakeven_rates_scaledup = T5YIE * max(DCOILWTICO)/max(T5YIE))
 ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) + 
   geom_line(aes(y = DCOILWTICO/46.28), color = Blue,linewidth = 1)+
   #scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
@@ -59,3 +60,11 @@ ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) +
   ) +
   scale_x_bd(business.dates=nyse, labels=date_format('%Y-%m-%d'), max.major.breaks=10,
              max.minor.breaks = 10)
+
+
+ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) + 
+  geom_line(aes(y = DCOILWTICO), color = Blue,linewidth = 1)+
+  #scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
+  geom_line(aes(y = breakeven_rates_scaledup), color = red,linewidth = 1)+
+  scale_x_bd(business.dates=nyse, labels=date_format('%Y-%m-%d'), max.major.breaks=20,
+             max.minor.breaks = 20)

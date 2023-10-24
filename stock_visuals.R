@@ -31,13 +31,21 @@ maroon <- c("#3D0C11")
 
 df <- read_excel("data/fredgraph.xls",skip = 11)
 df$observation_date <- as.Date.POSIXct(df$observation_date)
-ggplot(data = df, aes(x = observation_date)) + 
-  geom_line(aes(y = DCOILWTICO/46.28), color = Blue)+
-  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
-  geom_line(aes(y = T5YIE), color = red)+ 
+df <- df |>
+  mutate(scaled_oil_price = (DCOILWTICO-mean(DCOILWTICO,na.rm = T))/sd(DCOILWTICO,na.rm=T),
+         scaled_breakeven_rates = (T5YIE-mean(T5YIE,na.rm = T)/sd(T5YIE,na.rm = T)))
+ggplot(data = filter(df,T5YIE!=0), aes(x = observation_date)) + 
+  geom_line(aes(y = DCOILWTICO/46.28), color = Blue,linewidth = 1)+
+  #scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10) +
+  geom_line(aes(y = T5YIE), color = red,linewidth = 1)+ 
   scale_y_continuous(
     "Oil Prices", 
     sec.axis = sec_axis(~ ./46.28, name = "Breakeven rates")
   ) +
-  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10)
+  scale_x_bd(business.dates=nyse, labels=date_format('%Y-%m-%d'), max.major.breaks=10,
+             max.minor.breaks = 10)
 
+ggplot(data = df, aes(x = observation_date)) + 
+  geom_line(aes(y = scaled_oil_price), color = Blue)+
+  geom_line(aes(y = scaled_breakeven_rates), color = red)+
+  scale_x_bd(business.dates=nyse, labels=date_format('%d%b'), max.major.breaks=10)

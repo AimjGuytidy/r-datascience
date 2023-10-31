@@ -47,6 +47,10 @@ ggplot(data = df_camis_long)+
   xlab("Challenges")+
   ggtitle("Challenges in entering CAMIS data (among treatment and control teachers)")+
   ylim(0,80)+
-  geom_text(aes(label=count(challenge)), vjust=-0.5, color="darkblue",
+  geom_text(aes(y = count(challenge), x = challenge,label=count(challenge)), vjust=-0.5, color="darkblue",
             position = position_dodge(0), size=3.5, fontface = "bold")
 ggsave("camis_plot.png",units = "px",width = 1062,height = 633)
+
+df_camis_text <- df_camis_long |>
+  group_by(challenge)|>
+  summarise(total = sum(status))

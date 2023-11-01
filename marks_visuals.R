@@ -1,0 +1,23 @@
+rm(list = ls()) # removing all objects to start with a clean slate
+library(foreign)
+library(haven)
+library(tidyverse)
+library(VIM)
+library(outliers)
+library(ggplot2)
+library(scales) 
+library(grid)
+library(RColorBrewer)
+library(psych)
+#install.packages("sjlabelled")
+library(testit)
+library(matrixStats)
+library(rio)
+library(labelled)
+library(openxlsx)
+library(data.table)
+library(sjlabelled)
+
+
+setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/30_endof_ term3_Marks/04_output")
+df <- read_dta("Histo_mean_marks.dta")

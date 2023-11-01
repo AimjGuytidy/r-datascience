@@ -63,5 +63,6 @@ ggplot(data = df_camis_text,aes(x = challenge, y = total))+
   xlab("Challenges")+
   ggtitle("Challenges in entering CAMIS data (among treatment and control teachers)")+
   ylim(0,80)+
-  geom_text(aes(label=total), hjust= -0.1, vjust = 0.3, color="darkgrey",
+  geom_text(aes(label=total), hjust= -0.1, vjust = 0.3, color="#45474B",
             position = position_dodge(0), size=3.5, fontface = "bold")
+ggsave("camis_text.png",units = "px",width = 1062,height = 633)

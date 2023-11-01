@@ -57,8 +57,17 @@ ggplot()+
 
 ggplot()+
   geom_histogram(data = df[df$course_name=="English",],
-                 aes(x = mean_grade_course_sect),fill = "#379237",alpha = .9)+
+                 aes(x = mean_grade_course_sect,
+                     fill = "English"),alpha = .9)+
   geom_histogram(data = df[df$course_name=="Kinyarwanda",],
-                 aes(x = mean_grade_course_sect),fill = "#F875AA",alpha = .9)+
+                 aes(x = mean_grade_course_sect,
+                     fill = "Kinyarwanda"),alpha = .9)+
   geom_histogram(data = df[df$course_name=="Mathematics",],
-                 aes(x = mean_grade_course_sect),fill = "#00A9FF",alpha = .9)
+                 aes(x = mean_grade_course_sect,
+                     fill = "Mathematics"),alpha = .9)+
+  scale_fill_manual(name = "Subjects", values = c("English" = "#379237",
+                                                  "Kinyarwanda" = "#F875AA",
+                                                  "Mathematics" = "#00A9FF"))+
+  ylab("Percent of teachers agreeing")+
+  xlab("Challenges")+
+  ggtitle("Challenges in entering CAMIS data (among treatment and control teachers)")

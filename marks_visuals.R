@@ -68,6 +68,16 @@ ggplot()+
   scale_fill_manual(name = "Subjects", values = c("English" = "#379237",
                                                   "Kinyarwanda" = "#F875AA",
                                                   "Mathematics" = "#00A9FF"))+
-  ylab("Percent of teachers agreeing")+
-  xlab("Challenges")+
-  ggtitle("Challenges in entering CAMIS data (among treatment and control teachers)")
+  ylab("Count")+
+  xlab("Marks")+
+  ggtitle("Distribution of Marks, by subject")+
+  theme_light()
+
+# The correct distribution histogram
+ggplot(data = filter(df,course_name%in%c("Mathematics","Kinyarwanda","English")))+
+  geom_histogram(aes(x = mean_grade_course_sect,
+                     fill = course_name),position = "stack",alpha = .7)+
+  ylab("Count")+
+  xlab("Marks")+
+  ggtitle("Distribution of Marks, by subject")+
+  theme_light()

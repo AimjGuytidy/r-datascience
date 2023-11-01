@@ -21,3 +21,21 @@ library(sjlabelled)
 
 setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/30_endof_ term3_Marks/04_output")
 df <- read_dta("Histo_mean_marks.dta")
+df_grouped <- df |>
+  select(-c(student_obtained_marks,mean_school,mean_sect))|>
+  group_by(sector_name,district_code,school_name,grade_name,course_name)|>
+  summarise(mean_marks = max(mean_grade_course_sect))
+ggplot(data = df_grouped,aes(x = mean_marks, y = sector_name, fill = course_name))+
+  geom_bar(position="stack", stat="identity")+
+  geom_text(aes(label = mean_marks), size = 3, hjust = 0.5, 
+            vjust = 3, position = "stack")+
+  facet_wrap(~grade_name)
+
+
+df_grouped_grade <- df |>
+  select(-c(student_obtained_marks,mean_school,mean_sect,district_code,
+            school_name,grade_name))|>
+  group_by(sector_name,course_name)|>
+  summarise(mean_marks_grade = mean(mean_grade_course_sect,na.rm = T))|>
+  ungroup()|>
+  filter(course_name%in%c("Mathematics","Kinyarwanda","English"))

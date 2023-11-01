@@ -52,3 +52,13 @@ ggplot()+
                  aes(x = mean_marks),fill = "#F875AA",alpha = .6)+
   geom_histogram(data = df_grouped[df_grouped$course_name=="Mathematics",],
                  aes(x = mean_marks),fill = "#00A9FF",alpha = .6)
+
+
+
+ggplot()+
+  geom_histogram(data = df[df$course_name=="English",],
+                 aes(x = mean_grade_course_sect),fill = "#379237",alpha = .9)+
+  geom_histogram(data = df[df$course_name=="Kinyarwanda",],
+                 aes(x = mean_grade_course_sect),fill = "#F875AA",alpha = .9)+
+  geom_histogram(data = df[df$course_name=="Mathematics",],
+                 aes(x = mean_grade_course_sect),fill = "#00A9FF",alpha = .9)

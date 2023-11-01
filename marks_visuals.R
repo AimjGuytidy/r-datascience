@@ -39,3 +39,16 @@ df_grouped_grade <- df |>
   summarise(mean_marks_grade = mean(mean_grade_course_sect,na.rm = T))|>
   ungroup()|>
   filter(course_name%in%c("Mathematics","Kinyarwanda","English"))
+
+
+ggplot(data = df_grouped_grade,aes(x = mean_marks_grade, y = sector_name, fill = course_name))+
+  geom_bar(position="stack", stat="identity")+
+  geom_text(aes(label = round(mean_marks_grade)), size = 3.8, hjust = 8, 
+            vjust = -0, position = "stack")
+ggplot()+
+  geom_histogram(data = df_grouped[df_grouped$course_name=="English",],
+                 aes(x = mean_marks),fill = "#379237",alpha = .6)+
+  geom_histogram(data = df_grouped[df_grouped$course_name=="Kinyarwanda",],
+                 aes(x = mean_marks),fill = "#F875AA",alpha = .6)+
+  geom_histogram(data = df_grouped[df_grouped$course_name=="Mathematics",],
+                 aes(x = mean_marks),fill = "#00A9FF",alpha = .6)

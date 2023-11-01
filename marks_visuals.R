@@ -81,3 +81,11 @@ ggplot(data = filter(df,course_name%in%c("Mathematics","Kinyarwanda","English"))
   xlab("Marks")+
   ggtitle("Distribution of Marks, by subject")+
   theme_light()
+# instead of count we use proportions
+ggplot(data = filter(df,course_name%in%c("Mathematics","Kinyarwanda","English")))+
+  geom_histogram(aes(x = mean_grade_course_sect,y = after_stat(density),
+                     fill = course_name),position = "stack",alpha = .7)+
+  ylab("Count")+
+  xlab("Marks")+
+  ggtitle("Distribution of Marks, by subject")+
+  theme_light()

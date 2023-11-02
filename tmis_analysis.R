@@ -40,9 +40,14 @@ df_filter <- df|>
                         if_else(age >= 26, "26-30",
                         if_else(age >= 21, "21-25",
                                 "17-20")))))))))))
-
+# Duplicates check
+View(df_filter %>%
+       group_by(employeeid) %>%               ## grouped by staff_id
+       mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+       filter(dup>0)) # there are no duplicates based on the employeeid
 
 # let's look at the maximum age of the teachers
 max(df_filter$age,na.rm = T) # the maximum age is 68
 sum(is.na(df_filter$age)) # 6 teachers have missing age values
 
+# visualizing Age Distribution of Teaching Staff in Rwanda

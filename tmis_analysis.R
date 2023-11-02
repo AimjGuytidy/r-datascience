@@ -31,3 +31,12 @@ df_filter$age <- as.integer(format(Sys.Date(), "%Y")) - as.integer(df_filter$yea
 
 # let's look at the maximum age of the teachers
 max(df_filter$age,na.rm = T) # the maximum age is 68
+sum(is.na(df_filter$age))
+# grouping by age and counting teachers above the age of 65 and above
+df_filter <- df_filter |>
+  mutate(age_brackets = if_else(age>= 65, "65 and above",
+                                if_else(age>=60, "60-64",
+                                        if_else(age >= 55, "55-59",
+                                                if_else(age >= 50, "50-54",
+                                                        "below 50")))))
+table(df_filter$age_brackets)

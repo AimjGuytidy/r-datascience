@@ -53,7 +53,7 @@ sum(is.na(df_filter$age)) # 6 teachers have missing age values
 # visualizing Age Distribution of Teaching Staff in Rwanda
 brks <- c(seq(-15000, 15000, by = 500))
 lbls = c(seq(15, 0, -5), seq(5, 15, 5))
-p <- df_filter |>
+(p <- df_filter |>
   group_by(age_brackets,gender) |>
   mutate(age_count = n()) |>
   ungroup() |>
@@ -84,7 +84,9 @@ p <- df_filter |>
     axis.title.y = element_blank(),
     #remove x axis labels
     axis.ticks.x = element_blank(),  #remove x axis ticks
-    axis.text.y = element_text(size=10, face="bold", colour = "black")
-  )
+    axis.text.y = element_text(size=10, face="bold", colour = "black"),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  ))
 
-ggplotly(p)
+#ggplotly(p)

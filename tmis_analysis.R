@@ -90,13 +90,35 @@ lbls = c(seq(15, 0, -5), seq(5, 15, 5))
   ))
 setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
 # total teachers by gender
-teacher_count <- dplyr::count(df_filter,gender) |>
+teacher_count <- dplyr::count(dplyr::filter(df_filter,!is.na(age)),gender) |>
   rename(Total = n)
 write.xlsx(teacher_count,"01_tables//teacher_count.xlsx",asTable = T)
 
 # Mean, max and min age of teachers by gender
 teacher_age <- df_filter |>
+  #dplyr::filter(!is.na(age)) |>
   group_by(gender) |>
   summarise(Mean = round(mean(age,na.rm = T)),Min = min(age,na.rm = T),
             Max = max(age, na.rm = T))
 write.xlsx(teacher_age,"01_tables//teacher_age.xlsx",asTable = T)
+
+# Age and gender by education level
+teacher_educ0 <- df_filter |>
+  #dplyr::filter(!is.na(age)) |>
+  group_by(teachingCategoryName,gender) |>
+  summarise(count = n()) |>
+  ungroup() |>
+  pivot_wider(id_cols = teachingCategoryName,
+              names_from = gender, values_from = count)
+
+teacher_educ1 <- df_filter |>
+  group_by(teachingCategoryName) |>
+  summarise(`Average age` = round(mean(age, na.rm = T)))
+
+teacher_educ <- teacher_educ1 |>
+  left_join(teacher_educ0,by="teachingCategoryName") |>
+  mutate(Total = Female + Male) 
+teacher_educ[nrow(teacher_educ)+1,"teachingCategoryName"] <- "Total"
+teacher_educ[nrow(teacher_educ),"Female"] <- sum(teacher_educ[,"Female"],na.rm = T)
+teacher_educ[nrow(teacher_educ),"Male"] <- sum(teacher_educ[,"Male"],na.rm = T)
+teacher_educ[nrow(teacher_educ),"Total"] <- sum(teacher_educ[,"Total"],na.rm = T)

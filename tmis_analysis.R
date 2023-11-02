@@ -89,4 +89,6 @@ lbls = c(seq(15, 0, -5), seq(5, 15, 5))
     legend.position = "bottom"
   ))
 
-#ggplotly(p)
+# total teachers by gender
+teacher_count <- dplyr::count(df_filter,gender) |>
+  rename(Total = n)

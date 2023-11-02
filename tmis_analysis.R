@@ -88,7 +88,15 @@ lbls = c(seq(15, 0, -5), seq(5, 15, 5))
     legend.box = "horizontal",
     legend.position = "bottom"
   ))
-
+setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
 # total teachers by gender
 teacher_count <- dplyr::count(df_filter,gender) |>
   rename(Total = n)
+write.xlsx(teacher_count,"01_tables//teacher_count.xlsx",asTable = T)
+
+# Mean, max and min age of teachers by gender
+teacher_age <- df_filter |>
+  group_by(gender) |>
+  summarise(Mean = round(mean(age,na.rm = T)),Min = min(age,na.rm = T),
+            Max = max(age, na.rm = T))
+write.xlsx(teacher_age,"01_tables//teacher_age.xlsx",asTable = T)

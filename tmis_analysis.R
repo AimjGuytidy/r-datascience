@@ -51,3 +51,40 @@ max(df_filter$age,na.rm = T) # the maximum age is 68
 sum(is.na(df_filter$age)) # 6 teachers have missing age values
 
 # visualizing Age Distribution of Teaching Staff in Rwanda
+brks <- c(seq(-15000, 15000, by = 500))
+lbls = c(seq(15, 0, -5), seq(5, 15, 5))
+p <- df_filter |>
+  group_by(age_brackets,gender) |>
+  mutate(age_count = n()) |>
+  ungroup() |>
+  select(age_brackets,age_count,gender) |>
+  group_by(age_brackets,gender,age_count) |>
+  mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+  filter(dup==1,!is.na(age_brackets))|>
+  ungroup() |>
+  select(-dup) |>
+  mutate(age_count = if_else(gender=="Female",-age_count,age_count)) |>
+  ggplot(aes(x = age_brackets, y = age_count, fill = gender)) +
+  geom_bar(stat = "identity", width = .98) +
+  scale_y_continuous(breaks = waiver(), labels = waiver()) +
+  coord_flip() +
+  #theme_gray() +
+  labs(title="Teacher Population October 2023") +
+  scale_fill_manual(name = NULL, values = c("Female" = "#FF9130",
+                                                  "Male" = "#3876BF"))+
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank())+
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),  #remove x axis ticks
+    axis.text.y = element_text(size=10, face="bold", colour = "black")
+  )
+
+ggplotly(p)

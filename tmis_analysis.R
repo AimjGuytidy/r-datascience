@@ -17,26 +17,32 @@ library(testit)
 library(matrixStats)
 library(rio)
 library(labelled)
-library(openxlsx)
+library(readxl)
 library(data.table)
 library(sjlabelled)
+library(plotly)
 
-df <- readxl::read_excel("data/tmis_data_october_2023.xlsx")
-df1 <- read.xlsx("data/tmis_data_october_2023.xlsx")
+df <- read_xlsx("data/tmis_data_october_2023.xlsx")
 
 df_filter <- df|>
-  select(employeeid,gender,civilStatus,year_birth,position,qualificationLevel,
-         role,schoolName:specialization)
-df_filter$age <- as.integer(format(Sys.Date(), "%Y")) - as.integer(df_filter$year_birth)
+  select(employeeid,lastName,firstName,gender,civilStatus,year_birth,position,qualificationLevel,
+         role,schoolName:districtName)|>
+  unite("Name",lastName:firstName,sep = " ") |>
+  mutate(age = as.integer(format(Sys.Date(), "%Y")) - as.integer(year_birth),
+         age_brackets = if_else(age >= 66, "66 and above",
+                        if_else(age >= 61, "61-65",
+                        if_else(age >= 56, "56-60",
+                        if_else(age >= 51, "51-55",
+                        if_else(age >= 46, "46-50",
+                        if_else(age >= 41, "41-45",
+                        if_else(age >= 36, "36-40",
+                        if_else(age >= 31, "31-35",
+                        if_else(age >= 26, "26-30",
+                        if_else(age >= 21, "21-25",
+                                "17-20")))))))))))
+
 
 # let's look at the maximum age of the teachers
 max(df_filter$age,na.rm = T) # the maximum age is 68
-sum(is.na(df_filter$age))
-# grouping by age and counting teachers above the age of 65 and above
-df_filter <- df_filter |>
-  mutate(age_brackets = if_else(age>= 65, "65 and above",
-                                if_else(age>=60, "60-64",
-                                        if_else(age >= 55, "55-59",
-                                                if_else(age >= 50, "50-54",
-                                                        "below 50")))))
-table(df_filter$age_brackets)
+sum(is.na(df_filter$age)) # 6 teachers have missing age values
+

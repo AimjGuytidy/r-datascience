@@ -126,11 +126,29 @@ write.xlsx(teacher_educ,"01_tables//teacher_educ.xlsx",asTable = T)
 
 # Teachers' retirement by education level
 df_age <- df_filter |>
-  select(Name,gender,year_birth,age) 
+  select(Name,gender,teachingCategoryName,year_birth,age) 
 
 for (years in 2024:2030){
-  varname <- paste0("age_", years)
+  varname <- as.character(years)
   df_age <- df_age |>
     dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
 }
 
+df_age_long <- df_age |>
+  rename(`2023` = age) |>
+  pivot_longer(cols = -c(Name:year_birth),names_to = "Year", values_to = "Age")
+df_retirement <- dplyr::filter(df_age_long,Age >= 65)
+
+retirement <- dplyr::count(df_retirement,Year,teachingCategoryName)|>
+  ungroup() |>
+  mutate(Year = as.integer(Year))
+
+resolution(retirement$n)
+
+ggplot(data = retirement,aes(x = Year,y=n)) +
+  geom_bar(aes(x = Year,y=n,fill = teachingCategoryName), 
+           stat="identity", position = "dodge")+
+  geom_text(aes(label=n,group = teachingCategoryName),
+            position = position_dodge(1))
+
+  

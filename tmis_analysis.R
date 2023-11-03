@@ -122,3 +122,15 @@ teacher_educ[nrow(teacher_educ)+1,"teachingCategoryName"] <- "Total"
 teacher_educ[nrow(teacher_educ),"Female"] <- sum(teacher_educ[,"Female"],na.rm = T)
 teacher_educ[nrow(teacher_educ),"Male"] <- sum(teacher_educ[,"Male"],na.rm = T)
 teacher_educ[nrow(teacher_educ),"Total"] <- sum(teacher_educ[,"Total"],na.rm = T)
+write.xlsx(teacher_educ,"01_tables//teacher_educ.xlsx",asTable = T)
+
+# Teachers' retirement by education level
+df_age <- df_filter |>
+  select(Name,gender,year_birth,age) 
+
+for (years in 2024:2030){
+  varname <- paste0("age_", years)
+  df_age <- df_age |>
+    dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
+}
+

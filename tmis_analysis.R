@@ -141,7 +141,22 @@ df_retirement <- dplyr::filter(df_age_long,Age >= 65)
 
 retirement <- dplyr::count(df_retirement,Year,teachingCategoryName)|>
   ungroup() |>
-  mutate(Year = as.integer(Year))
+  mutate(Year = as.integer(Year)) 
+retirement_bind <- retirement |>
+  group_by(Year) |>
+  mutate(Total = sum(n,na.rm = T))|>
+  select(Year,Total) |>
+  rename(n=Total) |>
+  group_by(Year) |>
+  mutate(count = n(),dup = ifelse(count==1,1,row_number())) |>
+  filter(dup == 1) |>
+  mutate(dup = NULL,count = NULL)
+
+ret_binded <- rbind(retirement,retirement_bind) |>
+  mutate(teachingCategoryName = if_else(is.na(teachingCategoryName),"Total",
+                                        teachingCategoryName),
+         Total = NULL) |>
+  rename(Total = n)
 
 resolution(retirement$n)
 
@@ -149,6 +164,26 @@ ggplot(data = retirement,aes(x = Year,y=n)) +
   geom_bar(aes(x = Year,y=n,fill = teachingCategoryName), 
            stat="identity", position = "dodge")+
   geom_text(aes(label=n,group = teachingCategoryName),
-            position = position_dodge(1))
+            position = position_dodge(1))+
+  scale_fill_manual(name = NULL, values = c("PRE_PRIMARY" = "#FF9130",
+                                            "PRIMARY" = "#3876BF",
+                                            "SECONDARY" = "black"))+
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank())+
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),  #remove x axis ticks
+    axis.text.y = element_text(size=10, face="bold", colour = "black"),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  ) + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 2000)) 
 
   

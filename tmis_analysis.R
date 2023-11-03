@@ -21,6 +21,7 @@ library(readxl)
 library(data.table)
 library(sjlabelled)
 library(plotly)
+library(openxlsx)
 
 df <- read_xlsx("data/tmis_data_october_2023.xlsx")
 
@@ -229,3 +230,6 @@ ggplot(data = ret_binded,aes(x = Year,y=Total)) +
   scale_x_continuous(name = NULL, labels = as.character(Year), breaks = Year)+ 
   geom_abline(slope = 318.369,intercept = -644273.750,col="#4F709C") 
 
+ret_arranged<-ret_binded |>
+       arrange(Year)
+write.xlsx(ret_arranged,"01_tables//retirement_trend.xlsx",asTable = T)

@@ -142,6 +142,38 @@ df_retirement <- dplyr::filter(df_age_long,Age >= 65)
 retirement <- dplyr::count(df_retirement,Year,teachingCategoryName)|>
   ungroup() |>
   mutate(Year = as.integer(Year)) 
+
+resolution(retirement$n)
+
+ggplot(data = retirement,aes(x = Year,y=n)) +
+  geom_bar(aes(x = Year,y=n,fill = teachingCategoryName), 
+           stat="identity", position = "dodge")+
+  geom_text(aes(label=n,group = teachingCategoryName),
+            position = position_dodge(1))+
+  scale_fill_manual(name = NULL, values = c("PRE_PRIMARY" = "#FF9130",
+                                            "PRIMARY" = "#3876BF",
+                                            "SECONDARY" = "black"))+
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank())+
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),  #remove x axis ticks
+    axis.text.y = element_text(size=10, face="bold", colour = "black"),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  ) + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 2000)) 
+
+
+
+
 retirement_bind <- retirement |>
   group_by(Year) |>
   mutate(Total = sum(n,na.rm = T))|>
@@ -158,16 +190,18 @@ ret_binded <- rbind(retirement,retirement_bind) |>
          Total = NULL) |>
   rename(Total = n)
 
-resolution(retirement$n)
+resolution(ret_binded$Total)
 
-ggplot(data = retirement,aes(x = Year,y=n)) +
-  geom_bar(aes(x = Year,y=n,fill = teachingCategoryName), 
+ggplot(data = ret_binded,aes(x = Year,y=Total)) +
+  geom_bar(aes(x = Year,y=Total,fill = teachingCategoryName), 
            stat="identity", position = "dodge")+
-  geom_text(aes(label=n,group = teachingCategoryName),
-            position = position_dodge(1))+
+  geom_text(aes(label=Total,group = teachingCategoryName),
+            position = position_dodge(.9), size = 3, hjust = .6, 
+            vjust = -0)+
   scale_fill_manual(name = NULL, values = c("PRE_PRIMARY" = "#FF9130",
                                             "PRIMARY" = "#3876BF",
-                                            "SECONDARY" = "black"))+
+                                            "SECONDARY" = "maroon",
+                                            "Total" = "green"))+
   theme(plot.title = element_text(hjust = .5),
         axis.ticks = element_blank())+
   theme(

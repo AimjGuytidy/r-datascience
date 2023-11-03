@@ -190,18 +190,25 @@ ret_binded <- rbind(retirement,retirement_bind) |>
          Total = NULL) |>
   rename(Total = n)
 
+x <- 2023:2030
+y <- ret_binded[ret_binded$teachingCategoryName=="Total","Total"]$Total 
+mod <- lm(y~x)
+coef(mod)
+
 resolution(ret_binded$Total)
+Year <- 2023:2030
 
 ggplot(data = ret_binded,aes(x = Year,y=Total)) +
   geom_bar(aes(x = Year,y=Total,fill = teachingCategoryName), 
            stat="identity", position = "dodge")+
   geom_text(aes(label=Total,group = teachingCategoryName),
             position = position_dodge(.9), size = 3, hjust = .6, 
-            vjust = -0)+
-  scale_fill_manual(name = NULL, values = c("PRE_PRIMARY" = "#FF9130",
-                                            "PRIMARY" = "#3876BF",
-                                            "SECONDARY" = "maroon",
-                                            "Total" = "green"))+
+            vjust = -.3,fontface="bold",color="#232D3F")+
+  ggtitle("Projected Retirement 2023-2030")+
+  scale_fill_manual(name = NULL, values = c("PRE_PRIMARY" = "#5272F2",
+                                            "PRIMARY" = "#B4B4B3",
+                                            "SECONDARY" = "#0174BE",
+                                            "Total" = "#4F709C"))+
   theme(plot.title = element_text(hjust = .5),
         axis.ticks = element_blank())+
   theme(
@@ -214,10 +221,11 @@ ggplot(data = ret_binded,aes(x = Year,y=Total)) +
     axis.title.y = element_blank(),
     #remove x axis labels
     axis.ticks.x = element_blank(),  #remove x axis ticks
-    axis.text.y = element_text(size=10, face="bold", colour = "black"),
+    axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom"
   ) + 
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 2000)) 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 2500))  +
+  scale_x_continuous(name = NULL, labels = as.character(Year), breaks = Year)+ 
+  geom_abline(slope = 318.369,intercept = -644273.750,col="#4F709C") 
 
-  

@@ -35,3 +35,6 @@ unstd.posterior <- likelihood * prior
 # standardize the posterior
 
 posterior <- unstd.posterior/sum(unstd.posterior) 
+
+# let's visualize this 
+plot(p_grid,posterior,type = "o")

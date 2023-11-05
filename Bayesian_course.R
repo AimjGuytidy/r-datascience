@@ -37,6 +37,24 @@ unstd.posterior <- likelihood * prior
 posterior <- unstd.posterior/sum(unstd.posterior) 
 
 # let's visualize this 
+# 1st case
 plot(p_grid,posterior,type = "b",xlab = "Probability of water",
+     ylab = "Posterior Probability")
+mtext("20 points")
+
+# 2nd case
+prior2 <- ifelse(p_grid < .5, 0, 1)
+unstd.posterior2 <- likelihood * prior2
+posterior2 <- unstd.posterior2/sum(unstd.posterior2)
+plot(p_grid,posterior2,type = "b",xlab = "Probability of water",
+     ylab = "Posterior Probability")
+mtext("20 points")
+
+# 3rd case
+
+prior3 <- exp(-5 * abs(p_grid -.5))
+unstd.posterior3 <- likelihood * prior3
+posterior3 <- unstd.posterior3/sum(unstd.posterior3)
+plot(p_grid,posterior3,type = "b",xlab = "Probability of water",
      ylab = "Posterior Probability")
 mtext("20 points")

@@ -7,3 +7,6 @@ devtools::install_github("rmcelreath/rethinking")
 
 ways <- c( 0, 3, 8, 9, 0 )
 priors <- ways/sum(ways)
+
+# binomial distribution
+dbinom(6, size = 9, prob = 0.5) #prob to get 6 waters if prob of water is 0.5

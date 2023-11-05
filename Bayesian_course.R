@@ -37,4 +37,6 @@ unstd.posterior <- likelihood * prior
 posterior <- unstd.posterior/sum(unstd.posterior) 
 
 # let's visualize this 
-plot(p_grid,posterior,type = "o")
+plot(p_grid,posterior,type = "b",xlab = "Probability of water",
+     ylab = "Posterior Probability")
+mtext("20 points")

@@ -305,25 +305,13 @@ write.xlsx(df_age_bracket_long,
 
 # adding age brackets
 
-df_age_filter <- df |>
-  mutate(
-    Age_brackets = if_else(Age >= 66, "66 and above",
-                           if_else(
-                             Age >= 61, "61-65",
-                             if_else(Age >= 56, "56-60",
-                                     if_else(
-                                       Age >= 51, "51-55",
-                                       if_else(Age >= 46, "46-50",
-                                               if_else(
-                                                 Age >= 41, "41-45",
-                                                 if_else(Age >= 36, "36-40",
-                                                         if_else(
-                                                           Age >= 31, "31-35",
-                                                           if_else(Age >= 26, "26-30",
-                                                                   if_else(Age >= 21, "21-25",
-                                                                           "17-20"))
-                                                         ))
-                                               ))
-                                     ))
-                           ))
-  )
+df_age_filter <- df_age_bracket_long |>
+  mutate(Age_brackets = if_else(Age >= 70, "70 and above",
+                                if_else(
+                                  Age >= 65, "65-70",
+                                  if_else(Age >= 60, "60-64",
+                                          if_else(
+                                            Age >= 56, "56-59",
+                                            if_else(Age >= 50, "50-55", "Below 50")
+                                          ))
+                                )))

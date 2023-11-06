@@ -273,3 +273,42 @@ ggplot(data = ret_qual,aes(x = qualificationLevel,y=Total)) +
     legend.box = "horizontal",
     legend.position = "bottom"
   ) 
+
+# New age brackets
+
+df_filter <- df |>
+  select(
+    employeeid,
+    lastName,
+    firstName,
+    gender,
+    civilStatus,
+    year_birth,
+    position,
+    qualificationLevel,
+    role,
+    schoolName:districtName
+  ) |>
+  unite("Name", lastName:firstName, sep = " ") |>
+  mutate(
+    age = as.integer(format(Sys.Date(), "%Y")) - as.integer(year_birth),
+    age_brackets = if_else(age >= 66, "66 and above",
+                           if_else(
+                             age >= 61, "61-65",
+                             if_else(age >= 56, "56-60",
+                                     if_else(
+                                       age >= 51, "51-55",
+                                       if_else(age >= 46, "46-50",
+                                               if_else(
+                                                 age >= 41, "41-45",
+                                                 if_else(age >= 36, "36-40",
+                                                         if_else(
+                                                           age >= 31, "31-35",
+                                                           if_else(age >= 26, "26-30",
+                                                                   if_else(age >= 21, "21-25",
+                                                                           "17-20"))
+                                                         ))
+                                               ))
+                                     ))
+                           ))
+  )

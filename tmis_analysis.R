@@ -315,3 +315,14 @@ df_age_filter <- df_age_bracket_long |>
                                             if_else(Age >= 50, "50-55", "Below 50")
                                           ))
                                 )))
+
+# Aggregation based on age
+
+df_age_2023 <- dplyr::count(dplyr::filter(df_age_filter,Age>=50,Year == 2023),
+             teachingCategoryName, Age_brackets) |>
+  pivot_wider(id_cols = teachingCategoryName, names_from = Age_brackets,
+              values_from = n)
+
+write.xlsx(df_age_bracket_long,
+           "01_tables//retirement_prediction.xlsx",
+           asTable = T)

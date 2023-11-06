@@ -274,9 +274,12 @@ ggplot(data = ret_qual,aes(x = qualificationLevel,y=Total)) +
     legend.position = "bottom"
   ) 
 
-# New age brackets
+# New age brackets####
+######################
 
-df_filter <- df |>
+setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
+
+df_age_bracket <- df |>
   select(
     employeeid,
     lastName,
@@ -312,3 +315,17 @@ df_filter <- df |>
                                      ))
                            ))
   )
+
+df_age <- df_filter |>
+  select(Name,gender,teachingCategoryName,year_birth,age) 
+
+for (years in 2024:2030){
+  varname <- as.character(years)
+  df_age <- df_age |>
+    dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
+}
+
+df_age_long <- df_age |>
+  rename(`2023` = age) |>
+  pivot_longer(cols = -c(Name:year_birth),names_to = "Year", values_to = "Age")
+df_retirement <- dplyr::filter(df_age_long,Age >= 65)

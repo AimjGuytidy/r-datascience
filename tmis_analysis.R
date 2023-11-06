@@ -323,6 +323,14 @@ df_age_2023 <- dplyr::count(dplyr::filter(df_age_filter,Age>=50,Year == 2023),
   pivot_wider(id_cols = teachingCategoryName, names_from = Age_brackets,
               values_from = n)
 
-write.xlsx(df_age_bracket_long,
-           "01_tables//retirement_prediction.xlsx",
+write.xlsx(df_age_2023,
+           "01_tables//retirement_count_2023.xlsx",
+           asTable = T)
+df_age_all <- dplyr::count(dplyr::filter(df_age_filter,Age>=50),
+                           Year,teachingCategoryName, Age_brackets) |>
+  pivot_wider(id_cols = c(Year,teachingCategoryName), names_from = Age_brackets,
+              values_from = n)
+
+write.xlsx(df_age_all,
+           "01_tables//retirement_count_all.xlsx",
            asTable = T)

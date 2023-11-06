@@ -292,7 +292,15 @@ for (years in 2023:2030){
 }
 
 df_age_bracket_long <- df_age_brackets |>
-  pivot_longer(cols = -c(Name:year_birth),names_to = "Year", values_to = "Age")
-write.xlsx(df_age_bracket_long,"01_tables//retirement_prediction.xlsx",asTable = T)
+  pivot_longer(
+    cols = -c(Name:year_birth),
+    names_to = "Year",
+    values_to = "Age"
+  ) |>
+  mutate(Year = as.integer(Year))
+
+write.xlsx(df_age_bracket_long,
+           "01_tables//retirement_prediction.xlsx",
+           asTable = T)
 
 df_retirement <- dplyr::filter(df_age_long,Age >= 65)

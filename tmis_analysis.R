@@ -72,7 +72,7 @@ lbls = c(seq(15, 0, -5), seq(5, 15, 5))
   #theme_gray() +
   labs(title="Teacher Population October 2023") +
   scale_fill_manual(name = NULL, values = c("Female" = "#FF9130",
-                                                  "Male" = "#3876BF"))+
+                                            "Male" = "#3876BF"))+
   theme(plot.title = element_text(hjust = .5),
         axis.ticks = element_blank())+
   theme(
@@ -233,3 +233,43 @@ ggplot(data = ret_binded,aes(x = Year,y=Total)) +
 ret_arranged<-ret_binded |>
        arrange(Year)
 write.xlsx(ret_arranged,"01_tables//retirement_trend.xlsx",asTable = T)
+
+# Retirement by qualification and gender
+ret_qual <- df_filter |>
+  filter(age >= 65) |>
+  select(gender,qualificationLevel) |>
+  group_by(qualificationLevel,gender) |>
+  summarise(Total = n())
+write.xlsx(ret_qual,"01_tables//retirement_qualification.xlsx",asTable = T)
+
+ret_qual[nrow(ret_qual)+1,"gender"] <- "Female"
+ret_qual[nrow(ret_qual),"Total"] <- 0
+ret_qual[nrow(ret_qual),"qualificationLevel"] <- "A1"
+
+resolution(ret_qual$Total)
+
+ggplot(data = ret_qual,aes(x = qualificationLevel,y=Total)) +
+  geom_bar(aes(x = qualificationLevel,y=Total,fill = gender), 
+           stat="identity", position = "dodge")+
+  geom_text(aes(label=Total,group = gender),
+            position = position_dodge(1), size = 3, hjust = .6, 
+            vjust = -.3,fontface="bold",color="#232D3F")+
+  ggtitle("Retirement Age by Qualification")+
+  scale_fill_manual(name = NULL, values = c("Female" = "#FF9130",
+                                            "Male" = "#3876BF"))+
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank())+
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),  #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  ) 

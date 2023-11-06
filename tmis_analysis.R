@@ -279,53 +279,18 @@ ggplot(data = ret_qual,aes(x = qualificationLevel,y=Total)) +
 
 setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
 
-df_age_bracket <- df |>
-  select(
-    employeeid,
-    lastName,
-    firstName,
-    gender,
-    civilStatus,
-    year_birth,
-    position,
-    qualificationLevel,
-    role,
-    schoolName:districtName
-  ) |>
-  unite("Name", lastName:firstName, sep = " ") |>
-  mutate(
-    age = as.integer(format(Sys.Date(), "%Y")) - as.integer(year_birth),
-    age_brackets = if_else(age >= 66, "66 and above",
-                           if_else(
-                             age >= 61, "61-65",
-                             if_else(age >= 56, "56-60",
-                                     if_else(
-                                       age >= 51, "51-55",
-                                       if_else(age >= 46, "46-50",
-                                               if_else(
-                                                 age >= 41, "41-45",
-                                                 if_else(age >= 36, "36-40",
-                                                         if_else(
-                                                           age >= 31, "31-35",
-                                                           if_else(age >= 26, "26-30",
-                                                                   if_else(age >= 21, "21-25",
-                                                                           "17-20"))
-                                                         ))
-                                               ))
-                                     ))
-                           ))
-  )
 
-df_age <- df_filter |>
-  select(Name,gender,teachingCategoryName,year_birth,age) 
 
-for (years in 2024:2030){
+df_age_brackets <- df |>
+  unite("Name",lastName:firstName,sep = " ") |>
+  select(Name,gender,teachingCategoryName,year_birth) 
+
+for (years in 2023:2030){
   varname <- as.character(years)
-  df_age <- df_age |>
+  df_age_brackets <- df_age_brackets |>
     dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
 }
 
-df_age_long <- df_age |>
-  rename(`2023` = age) |>
+df_age_bracket_long <- df_age_brackets |>
   pivot_longer(cols = -c(Name:year_birth),names_to = "Year", values_to = "Age")
 df_retirement <- dplyr::filter(df_age_long,Age >= 65)

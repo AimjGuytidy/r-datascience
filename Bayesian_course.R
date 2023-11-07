@@ -81,3 +81,12 @@ globe.qa <- quap(alist(
 
 # display summary of quadratic approximation
 precis( globe.qa )
+
+# analytical calculation
+W <- 6
+L <- 3
+
+curve(dbeta(x, W+1, L+1), from = 0, to = 1)
+
+# Quadratic approximation
+curve(dnorm(x, mean = 0.67, sd = 0.16), lty = 2, add = T)

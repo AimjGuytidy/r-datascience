@@ -6,8 +6,8 @@ devtools::install_github("rmcelreath/rethinking")
 # run the next line if you already have rstan installed
 # remove.packages(c("StanHeaders", "rstan"))
 
-install.packages("rstan",
-                 repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+#install.packages("rstan",
+#                 repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
 # from counts to probability
 
 ways <- c( 0, 3, 8, 9, 0 )
@@ -58,3 +58,18 @@ posterior3 <- unstd.posterior3/sum(unstd.posterior3)
 plot(p_grid,posterior3,type = "b",xlab = "Probability of water",
      ylab = "Posterior Probability")
 mtext("20 points")
+
+# Quadratic approximation ####
+##############################
+
+install.packages("remotes")
+remotes::install_github("stan-dev/cmdstanr")
+
+cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+cmdstanr::install_cmdstan()
+
+install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
+devtools::install_github("rmcelreath/rethinking")
+library(posterior)
+library(rethinking)
+

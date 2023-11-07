@@ -334,3 +334,32 @@ df_age_all <- dplyr::count(dplyr::filter(df_age_filter,Age>=50),
 write.xlsx(df_age_all,
            "01_tables//retirement_count_all.xlsx",
            asTable = T)
+
+# Retirement analysis considering teachers' qualifications####
+##############################################################
+
+setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
+
+
+
+df_age_brackets_teachers <- df |>
+  select(employeeid,gender,year_birth,qualificationLevel,teachingCategoryName,
+         role,schoolName,sectorName,districtName) 
+
+for (years in 2023:2030){
+  varname <- as.character(years)
+  df_age_brackets_teachers <- df_age_brackets_teachers |>
+    dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
+}
+
+df_age_brackets_teachers_long <- df_age_brackets_teachers |>
+  pivot_longer(
+    cols = -c(employeeid:districtName),
+    names_to = "Year",
+    values_to = "Age"
+  ) |>
+  mutate(Year = as.integer(Year))
+
+write.xlsx(df_age_brackets_teachers_long,
+           "01_tables//retirement_data.xlsx",
+           asTable = T)

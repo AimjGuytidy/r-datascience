@@ -518,3 +518,28 @@ ggplot(data = ret_binded_teacher, aes(x = Year, y = Total)) +
 write.xlsx(ret_binded_teacher,
            "01_tables//retirement_trend_teacher.xlsx",
            asTable = T)
+
+
+
+# Age brackets creation and filtering####
+
+df_age_filter_teacher <- df_age_brackets_teachers_long |>
+  mutate(Age_brackets = if_else(Age >= 70, "70 and above",
+                                if_else(
+                                  Age >= 65, "65-70",
+                                  if_else(Age >= 60, "60-64",
+                                          if_else(
+                                            Age >= 56, "56-59",
+                                            if_else(Age >= 50, "50-55", "Below 50")
+                                          ))
+                                )))
+
+df_age_teachers <- dplyr::count(dplyr::filter(df_age_filter_teacher,Age>=50,
+                                              role == "Teacher"),
+                           Year,teachingCategoryName, Age_brackets) |>
+  pivot_wider(id_cols = c(Year,teachingCategoryName), names_from = Age_brackets,
+              values_from = n)
+
+write.xlsx(df_age_teachers,
+           "01_tables//retirement_count_teachers.xlsx",
+           asTable = T)

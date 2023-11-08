@@ -367,14 +367,17 @@ ret_qual_teacher <- df_age_brackets_teachers_long |>
   select(gender, qualificationLevel) |>
   group_by(qualificationLevel, gender) |>
   summarise(Total = n())
-write.xlsx(ret_qual_teacher,
-           "01_tables//retirement_qualification_teachers.xlsx",
-           asTable = T)
-
 ret_qual_teacher[nrow(ret_qual_teacher) + 1, "gender"] <- "Female"
 ret_qual_teacher[nrow(ret_qual_teacher), "Total"] <- 0
 ret_qual_teacher[nrow(ret_qual_teacher), "qualificationLevel"] <-
   "A1"
+ret_qual_teacher <- arrange(ret_qual_teacher,qualificationLevel)
+
+#write.xlsx(ret_qual_teacher,
+#           "01_tables//retirement_qualification_teachers.xlsx",
+#           asTable = T)
+
+
 
 resolution(ret_qual_teacher$Total)
 

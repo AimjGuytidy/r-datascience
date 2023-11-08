@@ -5,24 +5,15 @@ rm(list = ls()) # removing all objects to start with a clean slate
 library(foreign)
 library(haven)
 library(tidyverse)
-library(VIM)
-library(outliers)
-library(ggplot2)
 library(scales) 
-library(grid)
-library(RColorBrewer)
-library(psych)
-#install.packages("sjlabelled")
-library(testit)
-library(matrixStats)
 library(rio)
 library(labelled)
 library(readxl)
 library(data.table)
 library(sjlabelled)
-library(plotly)
 library(openxlsx)
 
+setwd("C:/Users/HP/source/repos/r-datascience")
 df <- read_xlsx("data/tmis_data_october_2023.xlsx")
 
 df_filter <- df|>
@@ -336,6 +327,7 @@ write.xlsx(df_age_all,
            asTable = T)
 
 # Retirement analysis considering teachers' qualifications####
+# Teachers are those occupying these roles: Teachers, DoD, Dos and headteachers
 ##############################################################
 
 setwd("C:/Users/HP/Box/IPA_RWA_Project_STARS/07_Data/31_TMIS_analysis/04_reporting/")
@@ -360,16 +352,18 @@ df_age_brackets_teachers_long <- df_age_brackets_teachers |>
   ) |>
   mutate(Year = as.integer(Year))
 
-write.xlsx(df_age_brackets_teachers_long,
-           "01_tables//retirement_data.xlsx",
-           asTable = T)
+#write.xlsx(df_age_brackets_teachers_long,
+#           "01_tables//retirement_data.xlsx",
+#           asTable = T)
 
 # Data analysis by considering teachers only ####
 #################################################
 
 # Retirement by qualification and gender and teachers
 ret_qual_teacher <- df_age_brackets_teachers_long |>
-  filter(Age >= 65, Year == 2023) |>
+  filter(Age >= 65,
+         Year == 2023,
+         role %in% c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   select(gender, qualificationLevel) |>
   group_by(qualificationLevel, gender) |>
   summarise(Total = n())
@@ -513,7 +507,7 @@ ggplot(data = ret_binded_teacher, aes(x = Year, y = Total)) +
                      breaks = Year) +
   geom_abline(slope = mod.coef[["x"]],
               intercept = mod.coef[["(Intercept)"]],
-              col = "#4F709C") 
+              col = "#4F709C")
 
 write.xlsx(ret_binded_teacher,
            "01_tables//retirement_trend_teacher.xlsx",
@@ -534,11 +528,19 @@ df_age_filter_teacher <- df_age_brackets_teachers_long |>
                                           ))
                                 )))
 
-df_age_teachers <- dplyr::count(dplyr::filter(df_age_filter_teacher,Age>=50,
-                                              role == "Teacher"),
-                           Year,teachingCategoryName, Age_brackets) |>
-  pivot_wider(id_cols = c(Year,teachingCategoryName), names_from = Age_brackets,
-              values_from = n)
+df_age_teachers <-
+  dplyr::count(
+    dplyr::filter(df_age_filter_teacher, Age >= 50,
+                  role == "Teacher"),
+    Year,
+    teachingCategoryName,
+    Age_brackets
+  ) |>
+  pivot_wider(
+    id_cols = c(Year, teachingCategoryName),
+    names_from = Age_brackets,
+    values_from = n
+  )
 
 write.xlsx(df_age_teachers,
            "01_tables//retirement_count_teachers.xlsx",

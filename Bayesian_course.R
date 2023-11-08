@@ -62,14 +62,14 @@ mtext("20 points")
 # Quadratic approximation ####
 ##############################
 
-install.packages("remotes")
-remotes::install_github("stan-dev/cmdstanr")
+#install.packages("remotes")
+#remotes::install_github("stan-dev/cmdstanr")
 
-cmdstanr::check_cmdstan_toolchain(fix = TRUE)
-cmdstanr::install_cmdstan()
+#cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+#cmdstanr::install_cmdstan()
 
-install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
-devtools::install_github("rmcelreath/rethinking")
+#install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
+#devtools::install_github("rmcelreath/rethinking")
 library(posterior)
 library(rethinking)
 
@@ -90,3 +90,25 @@ curve(dbeta(x, W+1, L+1), from = 0, to = 1)
 
 # Quadratic approximation
 curve(dnorm(x, mean = 0.67, sd = 0.16), lty = 2, add = T)
+
+# Markov chain Monte Carlo #####
+################################
+
+n_samples <- 100000 # specify number of samples
+p <- rep(NA, n_samples) # replicate NA n_samples time, initiating the parameter
+p[1] <- 0.5 # assign value to parameter
+W <- 6 # amount of water draw from tossing 9 times
+L <- 3 # amount of land
+
+for (i in 2:n_samples) {
+  p_new <- rnorm( 1, p[i-1], 0.1) # draw from a random sample that's normal
+  if ( p_new < 0) p_new <- abs(p_new)
+  if ( p_new > 1) p_new <- 2 - p_new
+  q0 <- dbinom( W, W+L, p[i-1]) #prior likelihood
+  q1 <- dbinom( W, W+L, p_new) #updated likelihood
+  p[i] <- ifelse( runif(1) < q1/q0, p_new, p[i-1])
+}
+
+# let's visualize the density distribution of our parameter from MCMC
+dens(p, xlim = c(0,1))
+curve( dbeta(x, W+1, L+1), lty = 2, add = T)

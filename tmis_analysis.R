@@ -379,7 +379,7 @@ ret_qual_teacher <- arrange(ret_qual_teacher,qualificationLevel)
 
 
 
-resolution(ret_qual_teacher$Total)
+res <- resolution(ret_qual_teacher$Total)
 
 ggplot(data = ret_qual_teacher, aes(x = qualificationLevel, y = Total)) +
   geom_bar(
@@ -389,7 +389,7 @@ ggplot(data = ret_qual_teacher, aes(x = qualificationLevel, y = Total)) +
   ) +
   geom_text(
     aes(label = Total, group = gender),
-    position = position_dodge(1),
+    position = position_dodge(res),
     size = 3,
     hjust = .6,
     vjust = -.3,
@@ -417,19 +417,22 @@ ggplot(data = ret_qual_teacher, aes(x = qualificationLevel, y = Total)) +
     legend.box = "horizontal",
     legend.position = "bottom"
   )
-
+rm(res)
 
 retirement_teacher <-
   dplyr::count(
-    dplyr::filter(df_age_brackets_teachers_long,
-                  Age >= 65, role == "Teacher"),
+    dplyr::filter(
+      df_age_brackets_teachers_long,
+      Age >= 65,
+      role %in% c("Teacher", "DOD", "DOS", "Head Teacher")
+    ),
     Year,
     teachingCategoryName
   ) |>
   ungroup()
 
 retirement_bind_teacher <- df_age_brackets_teachers_long |>
-  dplyr::filter(Age >= 65, role == "Teacher") |>
+  dplyr::filter(Age >= 65, role %in% c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   group_by(Year) |>
   mutate(Total = n()) |>
   select(Year, Total) |>
@@ -470,7 +473,7 @@ ggplot(data = ret_binded_teacher, aes(x = Year, y = Total)) +
   ) +
   geom_text(
     aes(label = Total, group = teachingCategoryName),
-    position = position_dodge(0.9),
+    position = position_dodge(res-.1),
     size = 3,
     hjust = .6,
     vjust = -.3,
@@ -511,10 +514,11 @@ ggplot(data = ret_binded_teacher, aes(x = Year, y = Total)) +
   geom_abline(slope = mod.coef[["x"]],
               intercept = mod.coef[["(Intercept)"]],
               col = "#4F709C")
+rm(res)
 
-write.xlsx(ret_binded_teacher,
-           "01_tables//retirement_trend_teacher.xlsx",
-           asTable = T)
+#write.xlsx(ret_binded_teacher,
+#           "01_tables//retirement_trend_teacher.xlsx",
+#           asTable = T)
 
 
 

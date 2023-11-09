@@ -112,3 +112,16 @@ for (i in 2:n_samples) {
 # let's visualize the density distribution of our parameter from MCMC
 dens(p, xlim = c(0,1))
 curve( dbeta(x, W+1, L+1), lty = 2, add = T)
+
+# Sampling ####
+###############
+
+# Testing Vampirism!!!
+
+pr_positive_vamp <- 0.95
+pr_vamp <- 0.001
+pr_mortal <- 1 - pr_vamp
+pr_positive_mortal <- 0.01
+pr_positive <- (pr_positive_vamp * pr_vamp) + (pr_positive_mortal * pr_mortal) 
+pr_vamp_positive <- (pr_positive_vamp * pr_vamp) / pr_positive
+cat(paste("The probability for vampirism given positive test is:",pr_vamp_positive))

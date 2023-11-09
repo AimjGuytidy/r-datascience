@@ -143,3 +143,12 @@ samples <- sample(grid_parameter ,size = 1e4, replace = T, prob = std_post)
 hist(samples)
 dens(samples,add = F)
 plot(samples)
+
+# intervals of defined boundaries
+std_post
+std_post[grid_parameter<.5]
+sum(std_post[grid_parameter <= .5])
+
+length(samples)
+sum(samples < .5) / length(samples)
+sum(samples > .5 & samples < .75) / length(samples)

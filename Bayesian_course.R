@@ -125,3 +125,21 @@ pr_positive_mortal <- 0.01
 pr_positive <- (pr_positive_vamp * pr_vamp) + (pr_positive_mortal * pr_mortal) 
 pr_vamp_positive <- (pr_positive_vamp * pr_vamp) / pr_positive
 cat(paste("The probability for vampirism given positive test is:",pr_vamp_positive))
+
+# sampling from a grid approximation posteriors
+
+grid_parameter <- seq(0,1, length.out=1000)
+grid_prior <- rep(1,1000)
+prob_data <- dbinom(6, 9, prob = grid_parameter)
+unstd_post <- prob_data * grid_prior
+std_post <- unstd_post / sum(unstd_post)
+plot(grid_parameter,std_post, type = "l")
+hist(grid_parameter)
+
+# sampling with replacement based on posterior probabilities
+
+samples <- sample(grid_parameter ,size = 1e4, replace = T, prob = std_post)
+
+hist(samples)
+dens(samples,add = F)
+plot(samples)

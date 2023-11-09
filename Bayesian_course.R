@@ -152,3 +152,9 @@ sum(std_post[grid_parameter <= .5])
 length(samples)
 sum(samples < .5) / length(samples)
 sum(samples > .5 & samples < .75) / length(samples)
+
+# intervals of defined mass (confindence interval)
+
+quantile(samples,.8) # 80th percentile
+quantile(samples,c(.1,.9)) # middle 80%
+

@@ -157,4 +157,31 @@ sum(samples > .5 & samples < .75) / length(samples)
 
 quantile(samples,.8) # 80th percentile
 quantile(samples,c(.1,.9)) # middle 80%
+quantile(samples,.2)
 
+
+# a different scenario
+grid_par <- seq(0,1,length.out = 1000)
+prior_grid <- rep(1, 1000)
+likelihood_grid <- dbinom(3,size = 3, prob = grid_par)
+post_unstd <- likelihood_grid * prior_grid
+post_std <- post_unstd/sum(post_unstd)
+plot(grid_par,post_std, type = "l")
+samples1 <- sample(grid_par,1e4,replace = T, prob = post_std)
+dens(samples1)
+PI(samples1, prob = .5) # 50% percentile compatibility interval
+
+# Highest Posterior Density Interval
+# the narrowest interval containing the specified probability mass.
+# this captures the parameters with highest posterior probability, as well as 
+# being narrower
+
+HPDI(samples1, prob = .5)
+HPDI(samples1, prob = .1)
+
+HPDI(samples, prob = .8)
+PI(samples = samples, prob = .8)
+HPDI(samples, prob = .95)
+PI(samples, prob = .95)
+
+#point estimates

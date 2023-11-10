@@ -238,4 +238,10 @@ dbinom(0:2,size = 2, prob = .7) # this can be interpreted as making 2 tosses
 
 dbinom(1, size = 1, prob = .7)
 
-rbin
+rbinom(1, size = 1, prob = .7) # this means that we perform the tossing activity
+#once and the activity consist of only 1 toss (size) where water has .7 prob, the 
+#result indicate how many time we stumbled on water.
+
+rbinom(2, size = 3, prob = .7) # this example is trying to determine how many 
+#times we hit water if we conduct the experiment 2 times with each time consisting
+#3 tosses!! this means water can be hit either o times, 1 time, 2 times, or 3 times

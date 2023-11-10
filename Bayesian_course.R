@@ -185,3 +185,20 @@ HPDI(samples, prob = .95)
 PI(samples, prob = .95)
 
 #point estimates
+grid_par[which.max(post_std)] # this translate to find grid_par value where the 
+                              # post_std is at the maximum
+
+# point estimates when you have samples
+hist(samples1)
+chainmode(samples1, adj = .01)
+mean(samples1)
+median(samples1)
+
+# function to find statistical mode. source: https://stackoverflow.com/questions/2547402/how-to-find-the-statistical-mode
+
+Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+Mode(samples1)

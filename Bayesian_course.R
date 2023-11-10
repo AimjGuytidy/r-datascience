@@ -222,3 +222,20 @@ loss <-
   sapply(grid_par, function(d)
     sum(post_std * abs(d - grid_par)))
 grid_par[which.min(loss)]
+median(samples1)
+
+# we can use (d-p)**2 as a loss function which is equivalent to mean(samples1)
+
+# Sampling to simulate prediction ####
+######################################
+
+# Dummy data ####
+
+# bayesian models are generative!!! we can get data from the likelihood fct
+dbinom(0:2,size = 2, prob = .7) # this can be interpreted as making 2 tosses
+#with the prob of water being .7 and we are interested in the prob of having no 
+#water, 1 water or all tosses landing on water.
+
+dbinom(1, size = 1, prob = .7)
+
+rbin

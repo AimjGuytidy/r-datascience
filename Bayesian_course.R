@@ -202,3 +202,11 @@ Mode <- function(x) {
 }
 
 Mode(samples1)
+
+# Loss function
+
+sum(std_post * abs(.5 - grid_parameter)) # this is the loss fct if we set our 
+                                         # parameter value to .5 this formula 
+                                         # calculate the weighted loss fct
+
+

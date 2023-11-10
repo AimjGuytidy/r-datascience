@@ -245,3 +245,10 @@ rbinom(1, size = 1, prob = .7) # this means that we perform the tossing activity
 rbinom(2, size = 3, prob = .7) # this example is trying to determine how many 
 #times we hit water if we conduct the experiment 2 times with each time consisting
 #3 tosses!! this means water can be hit either o times, 1 time, 2 times, or 3 times
+
+dummy_w <- rbinom(1e5, size = 2, prob = .7)
+table(dummy_w)/1e5 # this is to see the proportional of each possible event
+hist(dummy_w)
+dummy_w_9 <- rbinom(1e5, size = 9, prob = .7)
+hist(dummy_w_9)
+simplehist(dummy_w_9, xlab = "dummy water count")

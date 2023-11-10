@@ -209,4 +209,16 @@ sum(std_post * abs(.5 - grid_parameter)) # this is the loss fct if we set our
                                          # parameter value to .5 this formula 
                                          # calculate the weighted loss fct
 
+# loss function having a vector of probable values
+# we will use sapply
+loss <-
+  sapply(grid_parameter, function(d)
+    sum(std_post * abs(d - grid_parameter)))
+grid_parameter[which.min(loss)]
 
+# let's replicate the method on the 3 tosses and 3 water parts
+sum(post_std * abs(.5 - grid_par))
+loss <-
+  sapply(grid_par, function(d)
+    sum(post_std * abs(d - grid_par)))
+grid_par[which.min(loss)]

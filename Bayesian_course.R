@@ -68,8 +68,8 @@ mtext("20 points")
 # cmdstanr::check_cmdstan_toolchain(fix = TRUE)
 # cmdstanr::install_cmdstan()
 
-#install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
-#devtools::install_github("rmcelreath/rethinking")
+# install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
+# devtools::install_github("rmcelreath/rethinking")
 library(posterior)
 library(rethinking)
 

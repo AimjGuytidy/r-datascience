@@ -62,11 +62,11 @@ mtext("20 points")
 # Quadratic approximation ####
 ##############################
 
-#install.packages("remotes")
-#remotes::install_github("stan-dev/cmdstanr")
-
-#cmdstanr::check_cmdstan_toolchain(fix = TRUE)
-#cmdstanr::install_cmdstan()
+# install.packages("remotes")
+# remotes::install_github("stan-dev/cmdstanr")
+# 
+# cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+# cmdstanr::install_cmdstan()
 
 #install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
 #devtools::install_github("rmcelreath/rethinking")

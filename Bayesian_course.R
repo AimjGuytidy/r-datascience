@@ -213,8 +213,9 @@ sum(std_post * abs(.5 - grid_parameter)) # this is the loss fct if we set our
 # we will use sapply
 loss <-
   sapply(grid_parameter, function(d)
-    sum(std_post * abs(d - grid_parameter)))
-grid_parameter[which.min(loss)]
+    sum(std_post * abs(d - grid_parameter))) # in this scenario we are interested
+grid_parameter[which.min(loss)]              # in finding the parameter with the 
+                                             # lowest loss function!
 
 # let's replicate the method on the 3 tosses and 3 water parts
 sum(post_std * abs(.5 - grid_par))

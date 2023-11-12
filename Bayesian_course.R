@@ -270,3 +270,11 @@ hist(dummy_w_1000)
 # after the sampling distribution, we move on to average over the sampling dist
 # this is done by computing the weighted average frequency of each possible obs.
 # and then we get uncertainty about prediction
+
+# predicted obs with single p value (.6)
+w <- rbinom(1e4, size = 9, prob = .6)
+simplehist(w)
+
+# predicted obs, taking into account the parameter uncertainty
+w <- rbinom(1e4, size = 9, prob = samples) # here the prob is based on many p values
+simplehist(w)

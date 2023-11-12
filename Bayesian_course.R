@@ -263,3 +263,10 @@ hist(dummy_w_1000)
 
 # Posterior predictive distribution: distribution of distributions in bayesian 
 # sense
+
+# we start with the p param and how it is ditributed (posterior distribution)
+# and then we create sampling distribution for each possible value of p ( eg. 
+# looking at p = .1 we check the likelihood distribution rbin(x,size = 9,prob = .1))
+# after the sampling distribution, we move on to average over the sampling dist
+# this is done by computing the weighted average frequency of each possible obs.
+# and then we get uncertainty about prediction

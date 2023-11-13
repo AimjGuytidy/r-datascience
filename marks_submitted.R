@@ -49,5 +49,5 @@ ggplot(data = df, aes(x = x, y = y,group = 1 )) +
                                     hjust = 0.5, vjust = 0.2))+
   scale_y_continuous(labels = scales::label_comma())
 
-ggsave("visuals/marks_sub.png")
+ggsave("visuals/marks_sub.png",width = 2500, height = 2500,units = "px")
   

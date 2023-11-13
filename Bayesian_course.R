@@ -62,14 +62,14 @@ mtext("20 points")
 # Quadratic approximation ####
 ##############################
 
-#install.packages("remotes")
-#remotes::install_github("stan-dev/cmdstanr")
+# install.packages("remotes")
+# remotes::install_github("stan-dev/cmdstanr")
+# 
+# cmdstanr::check_cmdstan_toolchain(fix = TRUE)
+# cmdstanr::install_cmdstan()
 
-#cmdstanr::check_cmdstan_toolchain(fix = TRUE)
-#cmdstanr::install_cmdstan()
-
-#install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
-#devtools::install_github("rmcelreath/rethinking")
+# install.packages(c("coda","mvtnorm","devtools","loo","dagitty","shape"))
+# devtools::install_github("rmcelreath/rethinking")
 library(posterior)
 library(rethinking)
 
@@ -213,8 +213,9 @@ sum(std_post * abs(.5 - grid_parameter)) # this is the loss fct if we set our
 # we will use sapply
 loss <-
   sapply(grid_parameter, function(d)
-    sum(std_post * abs(d - grid_parameter)))
-grid_parameter[which.min(loss)]
+    sum(std_post * abs(d - grid_parameter))) # in this scenario we are interested
+grid_parameter[which.min(loss)]              # in finding the parameter with the 
+                                             # lowest loss function!
 
 # let's replicate the method on the 3 tosses and 3 water parts
 sum(post_std * abs(.5 - grid_par))
@@ -258,6 +259,27 @@ dummy_w_1000 <- rbinom(1e8, size = 1000, prob = .7)
 hist(dummy_w_1000)
 
 # Model checking ####
+#####################
+
 
 # did the software work?
 # is the model adequate?
+
+
+# Posterior predictive distribution: distribution of distributions in bayesian 
+# sense
+
+# we start with the p param and how it is ditributed (posterior distribution)
+# and then we create sampling distribution for each possible value of p ( eg. 
+# looking at p = .1 we check the likelihood distribution rbin(x,size = 9,prob = .1))
+# after the sampling distribution, we move on to average over the sampling dist
+# this is done by computing the weighted average frequency of each possible obs.
+# and then we get uncertainty about prediction
+
+# predicted obs with single p value (.6)
+w <- rbinom(1e4, size = 9, prob = .6)
+simplehist(w)
+
+# predicted obs, taking into account the parameter uncertainty
+w <- rbinom(1e4, size = 9, prob = samples) # here the prob is based on many p values
+simplehist(w)

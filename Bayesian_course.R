@@ -256,3 +256,8 @@ simplehist(dummy_w_9, xlab = "dummy water count")
 dummy_w_1000 <- rbinom(1e8, size = 1000, prob = .7)
 #simplehist(dummy_w_1000)
 hist(dummy_w_1000)
+
+# Model checking ####
+
+# did the software work?
+# is the model adequate?

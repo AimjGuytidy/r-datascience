@@ -305,3 +305,7 @@ median(samples)
 sum(samples[p_grid<.2])/length(samples)
 quantile(samples,0.000349) # this indicates that only 0.0349% lies below .2
 
+sum(samples[p_grid>.8])/length(samples)
+PI(samples = samples,prob = .8)
+quantile(samples,0.8889) # approx 11.11% lies above .8
+PI(samples,.78)

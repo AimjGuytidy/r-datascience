@@ -283,3 +283,13 @@ simplehist(w)
 # predicted obs, taking into account the parameter uncertainty
 w <- rbinom(1e4, size = 9, prob = samples) # here the prob is based on many p values
 simplehist(w)
+
+# Practice ####
+
+# initial values for reference
+p_grid <- seq(from = 0, to = 1, length.out = 1000)
+prior <- rep(1, 1000)
+likelihood <- dbinom(6, 9, prob = p_grid)
+post_unstd <- likelihood * prior
+post_std <- post_unstd/sum(post_unstd) #standardizing
+

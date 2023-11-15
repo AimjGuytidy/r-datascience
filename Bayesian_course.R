@@ -293,3 +293,6 @@ likelihood <- dbinom(6, 9, prob = p_grid)
 post_unstd <- likelihood * prior
 post_std <- post_unstd/sum(post_unstd) #standardizing
 
+# using the sampling method
+set.seed(100)
+samples <- sample(p_grid, size = 10000, prob = post_std,replace = T)

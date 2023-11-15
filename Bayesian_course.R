@@ -312,4 +312,7 @@ quantile(samples,.888)
 sum(samples>=.2) / length(samples)
 quantile(samples,(1-0.9996))
 btn_2_8<-(88.8-.04) # approx 88.76% lie btn .2 and .8
-quantile(samples,.2)
+
+quantile(samples,.2) # 20% of post lies below .5185
+quantile(samples,.8) # 20% of post lies above .75576
+

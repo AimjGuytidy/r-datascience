@@ -319,4 +319,17 @@ quantile(samples,.8) # 20% of post lies above .75576
 HPDI(samples,prob = .66) # narrowes int. [.5085, .7738]
 
 # creating posterior dist. using grid approx.
+likelihood1 <- dbinom(8, 15, prob = p_grid)
+hist(likelihood1)
+post_unstd1 <- likelihood1 * prior
+post_std1 <- post_unstd1/sum(post_unstd1)
+hist(post_std1)
+hist(post_std)
+samples1 <- sample(p_grid,1e4,replace = T,prob = post_std1)
+hist(samples1)
+median(samples1)
+HPDI(samples = samples1, prob = .9)
+
+w <- rbinom(1e5, 15, prob = samples1)
+table(w)/1e5 # the prob for 8 out of 15 is .14594
 

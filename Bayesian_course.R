@@ -297,15 +297,19 @@ post_std <- post_unstd/sum(post_unstd) #standardizing
 set.seed(100)
 samples <- sample(p_grid, size = 10000, prob = post_std,replace = T)
 hist(samples)
-PI(samples = samples,prob = .2)
-HPDI(samples = samples, prob = .2)
-quantile(samples)
-quantile(samples, .2)
-median(samples)
-sum(samples[p_grid<.2])/length(samples)
+sum(samples<.2)/length(samples)
 quantile(samples,0.000349) # this indicates that only 0.0349% lies below .2
+quantile(samples,0.0004)
 
-sum(samples[p_grid>.8])/length(samples)
+sum(samples>.8)*100/length(samples)
 PI(samples = samples,prob = .8)
 quantile(samples,0.8889) # approx 11.11% lies above .8
-PI(samples,.78)
+quantile(samples,(1-0.1116))
+
+sum(samples>=.2 & samples<=.8)/length(samples)
+PI(samples, .888)
+quantile(samples,.888)
+sum(samples>=.2) / length(samples)
+quantile(samples,(1-0.9996))
+btn_2_8<-(88.8-.04) # approx 88.76% lie btn .2 and .8
+quantile(samples,.2)

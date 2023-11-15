@@ -316,3 +316,7 @@ btn_2_8<-(88.8-.04) # approx 88.76% lie btn .2 and .8
 quantile(samples,.2) # 20% of post lies below .5185
 quantile(samples,.8) # 20% of post lies above .75576
 
+HPDI(samples,prob = .66) # narrowes int. [.5085, .7738]
+
+# creating posterior dist. using grid approx.
+

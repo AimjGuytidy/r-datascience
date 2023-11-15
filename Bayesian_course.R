@@ -333,3 +333,7 @@ HPDI(samples = samples1, prob = .9)
 w <- rbinom(1e5, 15, prob = samples1)
 table(w)/1e5 # the prob for 8 out of 15 is .14594
 
+prob_6_9 <- dbinom(6, 9, prob = samples1)
+k <- samples1[which.max(post_std1)]
+prob_6_9_new <- dbinom(6, 9, prob = k) # prob of observing 6/9 based on 8/15 data
+# is 0.2132718

@@ -296,3 +296,12 @@ post_std <- post_unstd/sum(post_unstd) #standardizing
 # using the sampling method
 set.seed(100)
 samples <- sample(p_grid, size = 10000, prob = post_std,replace = T)
+hist(samples)
+PI(samples = samples,prob = .2)
+HPDI(samples = samples, prob = .2)
+quantile(samples)
+quantile(samples, .2)
+median(samples)
+sum(samples[p_grid<.2])/length(samples)
+quantile(samples,0.000349) # this indicates that only 0.0349% lies below .2
+

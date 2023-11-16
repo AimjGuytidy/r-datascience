@@ -336,8 +336,11 @@ table(w)/1e5 # the prob for 8 out of 15 is .14594
 prob_6_9 <- dbinom(6, 9, prob = samples1)
 k <- samples1[which.max(post_std1)]
 prob_6_9_new <- dbinom(6, 9, prob = k) # prob of observing 6/9 based on 8/15 data
-# is 0.2132718
-
+# is 0.2132718 this is incorrect!!
+# the correct answer
+prob_6 <- rbinom(1e4, 9, prob = samples1)
+prob_6_tab <- table(prob_6)/1e4
+prob_6_tab["6"]
 # scenario with some knowledge on the prior
 
 prior2 <- ifelse(p_grid < .5, 0,1)
@@ -404,4 +407,6 @@ birth1_rep <- rbinom(1e4, 100, birth1_sample)
 birth1_table <- table(birth1_rep)/1e4
 birth1_table[which.max(birth1_table)] # from the sim first borns the number of boys
 # is 52!!
-
+# the model looks a little bit bumpy tho!
+sum(birth1)
+rbinom(10000,49,prob = (1-median(birth1_sample)))

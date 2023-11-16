@@ -393,3 +393,15 @@ birth_table[which.max(birth_table)] # based on this there are 109 boys
 
 dens(birth_rep) # the model does a great job in replicaating the data
 
+
+sum(birth1)
+birth1_likelihood <- dbinom(51, 100, prob = p_grid)
+birth1_post_un <- birth1_likelihood * prior
+birth1_post <- birth1_post_un / sum(birth1_post_un)
+birth1_sample <- sample(p_grid, 1e4, replace = T, prob = birth1_post)
+dens(birth1_sample)
+birth1_rep <- rbinom(1e4, 100, birth1_sample)
+birth1_table <- table(birth1_rep)/1e4
+birth1_table[which.max(birth1_table)] # from the sim first borns the number of boys
+# is 52!!
+

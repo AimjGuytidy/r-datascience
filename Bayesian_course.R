@@ -410,3 +410,12 @@ birth1_table[which.max(birth1_table)] # from the sim first borns the number of b
 # the model looks a little bit bumpy tho!
 sum(birth1)
 rbinom(10000,49,prob = (1-median(birth1_sample)))
+
+
+
+# Geocentric Models ####
+
+pos <- replicate(1000, sum(runif(16,-1,1)))
+dens(pos)
+hist(pos)
+plot(density(pos))

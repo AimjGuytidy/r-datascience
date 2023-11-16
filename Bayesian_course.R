@@ -337,3 +337,24 @@ prob_6_9 <- dbinom(6, 9, prob = samples1)
 k <- samples1[which.max(post_std1)]
 prob_6_9_new <- dbinom(6, 9, prob = k) # prob of observing 6/9 based on 8/15 data
 # is 0.2132718
+
+# scenario with some knowledge on the prior
+
+prior2 <- ifelse(p_grid < .5, 0,1)
+post_unstd2 <- likelihood * prior2
+post_std2 <- post_unstd2 / sum(post_unstd2)
+
+set.seed(100)
+samples2 <- sample(p_grid,1e4,replace = T, prob = post_std2)
+hist(samples2)
+median(samples2) 
+median(samples)
+median(samples1)
+
+loss2 <- sapply(p_grid, function(d) sum(post_std2 * abs(p_grid-d)))
+p_grid[which.min(loss2)] # the p with the least loss is 0.6766767
+median(samples2)
+
+
+loss0 <- sapply(p_grid, function(d) sum(post_std * abs(p_grid-d)))
+p_grid[which.min(loss0)] # the p with the least loss is 0.6446446

@@ -358,3 +358,10 @@ median(samples2)
 
 loss0 <- sapply(p_grid, function(d) sum(post_std * abs(p_grid-d)))
 p_grid[which.min(loss0)] # the p with the least loss is 0.6446446
+
+# the p obtained after considering that we new the real p was not below .5 is 
+# closer to the real value
+
+# we need to toss the globe at least 30 times to have precise p
+
+# Hard Problems!

@@ -376,3 +376,20 @@ birth_post_un <- birth_likelihood * prior
 birth_post <- birth_post_un / sum(birth_post_un)
 p_grid[which.max(birth_post)] # a p of 0.5545546 has a max post
 
+birth_sample <- sample(p_grid,1e4, replace = T, prob = birth_post)
+HPDI(birth_sample,prob = .5)
+HPDI(birth_sample,prob = .89)
+PI(birth_sample)
+HPDI(birth_sample, prob = .97)
+hist(birth_sample)
+median(birth_sample)
+
+birth_rep <- rbinom(1e4,200,birth_sample)
+table(birth_rep)/1e4
+median(birth_rep)
+birth_table <- table(birth_rep)/1e4
+birth_table["111"]
+birth_table[which.max(birth_table)] # based on this there are 109 boys
+
+dens(birth_rep) # the model does a great job in replicaating the data
+

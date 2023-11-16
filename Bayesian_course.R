@@ -365,3 +365,14 @@ p_grid[which.min(loss0)] # the p with the least loss is 0.6446446
 # we need to toss the globe at least 30 times to have precise p
 
 # Hard Problems!
+
+# data
+data(homeworkch3)
+sum_boys <- sum(birth1,birth2)
+sum_boys
+length(birth1) + length(birth2)
+birth_likelihood <- dbinom(111,200,prob = p_grid)
+birth_post_un <- birth_likelihood * prior
+birth_post <- birth_post_un / sum(birth_post_un)
+p_grid[which.max(birth_post)] # a p of 0.5545546 has a max post
+

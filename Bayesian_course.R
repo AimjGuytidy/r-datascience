@@ -419,3 +419,21 @@ pos <- replicate(1000, sum(runif(16,-1,1)))
 dens(pos)
 hist(pos)
 plot(density(pos))
+
+plot(density(replicate(1000,sum(runif(8,-1,1)))))
+plot(density(replicate(1000,sum(runif(4,-1,1)))))
+temp <- replicate(1000, runif(16, -1, 1))
+temp_df <- as.data.frame(temp)
+temp_df[1,] <- 0
+ggplot(temp_df)+
+  geom_line(aes(x = seq(1,16), y = V1))+
+  geom_line(aes(x = seq(1,16), y = V2))+
+  geom_line(aes(x = seq(1,16), y = V3))+
+  geom_line(aes(x = seq(1,16), y = V4))+
+  geom_line(aes(x = seq(1,16), y = V5))+
+  geom_line(aes(x = seq(1,16), y = V6))+
+  geom_line(aes(x = seq(1,16), y = V7))+
+  geom_line(aes(x = seq(1,16), y = V8))+
+  geom_line(aes(x = seq(1,16), y = V9))+
+  geom_line(aes(x = seq(1,16), y = V10))+
+  geom_line(aes(x = seq(1,16), y = V11))

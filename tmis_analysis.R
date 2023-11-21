@@ -538,7 +538,7 @@ df_age_filter_teacher <- df_age_brackets_teachers_long |>
 df_age_teachers <-
   dplyr::count(
     dplyr::filter(df_age_filter_teacher, Age >= 50,
-                  role == "Teacher"),
+                  role %in% c("Teacher", "DOD", "DOS", "Head Teacher")),
     Year,
     teachingCategoryName,
     Age_brackets
@@ -549,6 +549,6 @@ df_age_teachers <-
     values_from = n
   )
 
-write.xlsx(df_age_teachers,
-           "01_tables//retirement_count_teachers.xlsx",
-           asTable = T)
+#write.xlsx(df_age_teachers,
+#           "01_tables//retirement_count_teachers.xlsx",
+#           asTable = T)

@@ -103,7 +103,7 @@ write.xlsx(cross_age_level,
            "04_reporting/01_tables/updated/cross_ref_age_level.xlsx",
            asTable = T)
 
-# cross reference age categories with positions
+# cross reference age categories with positions ####
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
 write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
@@ -259,12 +259,12 @@ tmis_label <- tmis_label |>
     class == "44" ~ "Normal Primary",
     class %in% c("1","2") ~ "Accountant Secretary",
     class %in% c("137","138","139") ~ "Secretary",
-    class == "129" ~ "Pre primary and Lower primary",
+    class == "129" & teachingCategoryName == "PRE_PRIMARY" ~ "Nursery School",
+    class == "129" & teachingCategoryName == "PRIMARY" ~ "Lower Primary",
     class == "20" ~ "Deputy Headteacher",
     class == "89" ~ "Librarian",
     class == "143" ~ "General studies and communication",
     class == "42" ~ "Foundation of ECLPE"
-    
   ))
 dt_age_position <- count(tmis_label,age_categ,subject)
 dt_age_position <- as.data.table(dt_age_position)
@@ -276,7 +276,7 @@ write.xlsx(cross_age_position,
            "04_reporting/01_tables/updated/cross_age_position.xlsx",
            asTable = T)
 
-# cross reference age categories with leadership roles
+# cross reference age categories with leadership roles ####
 
 dt_age_role <- count(tmis_filter,age_categ,role)
 dt_age_role <- as.data.table(dt_age_role)
@@ -286,4 +286,19 @@ cross_age_role <- dcast(dt_age_role,
 
 write.xlsx(cross_age_role,
            "04_reporting/01_tables/updated/cross_age_role.xlsx",
+           asTable = T)
+
+
+# cross reference age categories with qualifications
+
+dt_age_qualification <-
+  count(tmis_filter, age_categ, qualificationLevel)
+dt_age_qualification <- as.data.table(dt_age_qualification)
+dt_age_qualification <-
+  dt_age_qualification[!is.na(dt_age_qualification$age_categ), ]
+cross_age_qualification <- dcast(dt_age_qualification,
+                        qualificationLevel ~ age_categ, value.var = "n")
+
+write.xlsx(cross_age_qualification,
+           "04_reporting/01_tables/updated/cross_age_qualification.xlsx",
            asTable = T)

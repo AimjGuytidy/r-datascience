@@ -47,4 +47,37 @@ tmis_filter <- tmis_df|>
                                                                                                         "18-23")))))))))))
 # Cross reference age categories with gender ####
 
-tmis_age_gender <- count(tmis_filter,gender,age_categ)
+# filter staff that is considered as teaching staff
+tmis_teacher <- filter(tmis_filter,
+                       role %in% c("Teacher", "DOD", "DOS", "Head Teacher"))
+
+tmis_age_gender <- count(tmis_teacher,gender,age_categ)
+
+tmis_age_gender|>
+  filter(!is.na(age_categ)) |>
+  rename(age_count = n) |>
+  mutate(age_count = if_else(gender=="Female",-age_count,age_count)) |>
+  ggplot(aes(x = age_brackets, y = age_count, fill = gender)) +
+    geom_bar(stat = "identity", width = .98) +
+    scale_y_continuous(breaks = waiver(), labels = waiver()) +
+    coord_flip() +
+    #theme_gray() +
+    labs(title="Teacher Population October 2023") +
+    scale_fill_manual(name = NULL, values = c("Female" = "#FF9130",
+                                              "Male" = "#3876BF"))+
+    theme(plot.title = element_text(hjust = .5),
+          axis.ticks = element_blank())+
+    theme(
+      plot.background = element_rect(fill = c("#F2F2F2")),
+      panel.background = element_rect(fill = c("#F2F2F2")),
+      panel.grid = element_blank(),
+      #remove x axis ticks
+      axis.text.x = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      #remove x axis labels
+      axis.ticks.x = element_blank(),  #remove x axis ticks
+      axis.text.y = element_text(size=10, face="bold", colour = "black"),
+      legend.box = "horizontal",
+      legend.position = "bottom"
+    ))

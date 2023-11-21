@@ -89,3 +89,5 @@ cross_age_gender <- dcast(dt_age_gender,gender~age_categ,value.var = "n")
 write.xlsx(cross_age_gender,
            "04_reporting/01_tables/updated/cross_ref_age_gender.xlsx",
            asTable = T)
+
+# cross reference age categories with teaching level ####

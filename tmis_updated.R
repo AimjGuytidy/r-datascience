@@ -281,3 +281,9 @@ write.xlsx(cross_age_position,
 dt_age_role <- count(tmis_filter,age_categ,role)
 dt_age_role <- as.data.table(dt_age_role)
 dt_age_role <- dt_age_role[!is.na(dt_age_role$age_categ),]
+cross_age_role <- dcast(dt_age_role,
+                            role~age_categ,value.var = "n")
+
+write.xlsx(cross_age_role,
+           "04_reporting/01_tables/updated/cross_age_role.xlsx",
+           asTable = T)

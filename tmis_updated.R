@@ -81,3 +81,7 @@ tmis_age_gender|>
       legend.box = "horizontal",
       legend.position = "bottom"
     )
+
+dt_age_gender <- as.data.table(tmis_age_gender)
+dt_age_gender <- dt_age_gender[!is.na(dt_age_gender$age_categ),]
+cross_age_gender <- dcast(dt_age_gender,gender~age_categ,value.var = "n")

@@ -115,12 +115,17 @@ tmis_label <- tmis_label |>
   mutate(class = as.character(class),
     subject = case_when(
     class %in% c(
+      "3",
+      "5",
       "7",
       "8",
       "11",
+      "13",
       "12",
       "14",
       "15",
+      "16",
+      "17",
       "32",
       "39",
       "40",
@@ -152,12 +157,19 @@ tmis_label <- tmis_label |>
       "110",
       "111",
       "118",
-      "121"
+      "120",
+      "121",
+      "122",
+      "124",
+      "134",
+      "135",
+      "136"
     ) ~ "STEM",
     class %in% c(
       "23",
       "24",
       "26",
+      "28",
       "29",
       "30",
       "33",
@@ -166,6 +178,10 @@ tmis_label <- tmis_label |>
       "37",
       "38",
       "43",
+      "45",
+      "46",
+      "47",
+      "48",
       "59",
       "60",
       "61",
@@ -226,16 +242,39 @@ tmis_label <- tmis_label |>
       "113",
       "114",
       "116",
-      "119"
+      "119",
+      "130",
+      "131",
+      "132",
+      "133",
+      "140",
+      "141"
     ) ~ "Humanities",
-    class %in% c("4", "6", "10", "117", "123") ~ "Finance",
+    class %in% c("4", "6", "10", "36", "117", "123") ~ "Finance",
     class %in% c("25","68","126","127","128") ~ "Education",
-    class %in% c("84","115") ~ "Special Needs Educ",
+    class %in% c("84","115","142") ~ "Special Needs Educ",
     class %in% c("116","105","57") ~ "Arts",
     class == "94" ~ "Lower Primary",
     class == "106" ~ "Nursery School",
-    class == "44" ~ "Normal Primary"
+    class == "44" ~ "Normal Primary",
+    class %in% c("1","2") ~ "Accountant Secretary",
+    class %in% c("137","138","139") ~ "Secretary",
+    class == "129" ~ "Pre primary and Lower primary",
+    class == "20" ~ "Deputy Headteacher",
+    class == "89" ~ "Librarian",
+    class == "143" ~ "General studies and communication",
+    class == "42" ~ "Foundation of ECLPE"
+    
   ))
+dt_age_position <- count(tmis_label,age_categ,subject)
+dt_age_position <- as.data.table(dt_age_position)
+dt_age_position <- dt_age_position[dt_age_position$age_categ!="",]
+cross_age_position <- dcast(dt_age_position,
+                         subject~age_categ,value.var = "n")
+
+write.xlsx(cross_age_position,
+           "04_reporting/01_tables/updated/cross_age_position.xlsx",
+           asTable = T)
 
 # cross reference age categories with leadership roles
 

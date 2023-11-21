@@ -17,6 +17,17 @@ setwd(paste0("C:/Users/HP/Box/",
 
 tmis_df <- read_excel("02_raw_data/tmis_data_october_2023.xlsx")
 
+# Duplicates check ####
+
+View(tmis_df %>%
+       group_by(employeeid) %>%               ## grouped by employeeid
+       mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+       filter(dup>0)) # there are no duplicates based on the employeeid
+
+# check missing age rows ####
+
+sum(is.na(tmis_df[["year_birth"]])) # we have six rows with missing birth dates
+
 # Categorize ages in 5s ####
 
 tmis_filter <- tmis_df|>
@@ -36,4 +47,4 @@ tmis_filter <- tmis_df|>
                                                                                                         "18-23")))))))))))
 # Cross reference age categories with gender ####
 
-tmis_age_gender <- 
+tmis_age_gender <- count(tmis_filter,gender,age_categ)

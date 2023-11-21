@@ -91,3 +91,5 @@ write.xlsx(cross_age_gender,
            asTable = T)
 
 # cross reference age categories with teaching level ####
+
+dt_age_level <- count(tmis_teacher,teachingCategoryName,age_categ)

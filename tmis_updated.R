@@ -57,7 +57,7 @@ tmis_age_gender|>
   filter(!is.na(age_categ)) |>
   rename(age_count = n) |>
   mutate(age_count = if_else(gender=="Female",-age_count,age_count)) |>
-  ggplot(aes(x = age_brackets, y = age_count, fill = gender)) +
+  ggplot(aes(x = age_categ, y = age_count, fill = gender)) +
     geom_bar(stat = "identity", width = .98) +
     scale_y_continuous(breaks = waiver(), labels = waiver()) +
     coord_flip() +
@@ -80,4 +80,4 @@ tmis_age_gender|>
       axis.text.y = element_text(size=10, face="bold", colour = "black"),
       legend.box = "horizontal",
       legend.position = "bottom"
-    ))
+    )

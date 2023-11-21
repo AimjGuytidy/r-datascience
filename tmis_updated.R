@@ -4,6 +4,7 @@ library(tidyverse)
 library(data.table)
 library(readxl)
 library(openxlsx)
+library(haven)
 #install.packages("here")
 library(here)
 
@@ -101,3 +102,17 @@ cross_age_level <- dcast(dt_age_level,
 write.xlsx(cross_age_level,
            "04_reporting/01_tables/updated/cross_ref_age_level.xlsx",
            asTable = T)
+
+# cross reference age categories with positions
+
+# we need to save "tmis_filter" to dta format and categorize positions using STATA
+write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
+
+# after assigning labels to position now we can start our categorization
+
+
+# cross reference age categories with leadership roles
+
+dt_age_role <- count(tmis_filter,age_categ,role)
+dt_age_role <- as.data.table(dt_age_role)
+dt_age_role <- dt_age_role[!is.na(dt_age_role$age_categ),]

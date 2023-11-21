@@ -93,3 +93,11 @@ write.xlsx(cross_age_gender,
 # cross reference age categories with teaching level ####
 
 dt_age_level <- count(tmis_teacher,teachingCategoryName,age_categ)
+dt_age_level <- as.data.table(dt_age_level)
+dt_age_level <- dt_age_level[!is.na(dt_age_level$age_categ),]
+cross_age_level <- dcast(dt_age_level,
+                         teachingCategoryName~age_categ,value.var = "n")
+
+write.xlsx(cross_age_level,
+           "04_reporting/01_tables/updated/cross_ref_age_level.xlsx",
+           asTable = T)

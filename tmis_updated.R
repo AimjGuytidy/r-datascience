@@ -331,36 +331,29 @@ write.xlsx(cross_age_position,
 
 dt_age_position_vis <- copy(dt_age_position)
 dt_age_position_vis[,Total_count := ifelse(n > 700,n,NA_integer_)]
+dt_age_position_vis[,subject := str_wrap(subject,12)]
 res <- resolution(dt_age_position_vis$Total_count)
-
-ggplot(data = dt_age_position, aes(x = subject, y = n)) +
-  geom_bar(
-    aes(fill = age_categ),
-    stat = "identity"
-  ) +
-  geom_text(aes(label = if_else(n > 700,n,NA_integer_)),
-    position = "stack",
-    size = 2.5,
-    hjust = .6,
-    vjust = -.3,
-    fontface = "bold",
-    color = "#232D3F") +
-  scale_fill_brewer(palette = "Blues")+
-  ggtitle("Teaching level by age groups") +
-  scale_fill_manual(
-    name = NULL,
-    values = c(
-      "PRE_PRIMARY" = "#5272F2",
-      "PRIMARY" = "#B4B4B3",
-      "SECONDARY" = "#0174BE",
-      "Total" = "#4F709C"
-    )
-  ) +
-  theme(plot.title = element_text(hjust = .5),
-        axis.ticks = element_blank()) +
+text_color <- "#000000"
+ggplot(data = dt_age_position_vis, aes(x = subject, 
+                                       y = n, group = n)) +
+  geom_bar(aes(fill = age_categ),
+           stat = "identity",
+           position = "stack") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = ifelse(n>700,n,NA)),
+            position = position_stack(vjust = .5),
+            size = 2.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teachers' position by age groups") +
   theme(
-    plot.background = element_rect(fill = c("#F2F2F2")),
-    panel.background = element_rect(fill = c("#F2F2F2")),
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.y = element_text(color = "#245953", size = rel(.8))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -369,10 +362,14 @@ ggplot(data = dt_age_position, aes(x = subject, y = n)) +
     #remove x axis labels
     axis.ticks.x = element_blank(),
     #remove x axis ticks
-    axis.text.y = element_blank(),
+    axis.text.x = element_blank(),
     legend.box = "horizontal",
-    legend.position = "bottom"
-  )
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+
+  coord_flip()
 ggsave("04_reporting/02_visuals/level_age.png",
        units = "px",width = 1000,height = 1000,dpi = 100,
        device = "png")

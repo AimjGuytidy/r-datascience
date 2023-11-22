@@ -108,36 +108,37 @@ write.xlsx(cross_age_level,
 res <- resolution(dt_age_level$n)
 Age <- dt_age_level$age_categ
 
-ggplot(data = dt_age_level, aes(x = age_categ, y = n)) +
+ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryName)) +
   geom_bar(
     aes(fill = teachingCategoryName),
     stat = "identity",
     position = "dodge"
   ) +
-  geom_text(
-    aes(label = n, group = teachingCategoryName),
-    position = position_dodge(res-.1),
-    size = 2.5,
-    hjust = .6,
-    vjust = -.3,
-    fontface = "bold",
-    color = "#232D3F"
-  ) +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = n),
+            position = position_dodge(.9),
+            size = 2.5,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
   ggtitle("Teaching level by age groups") +
-  scale_fill_manual(
-    name = NULL,
-    values = c(
-      "PRE_PRIMARY" = "#5272F2",
-      "PRIMARY" = "#B4B4B3",
-      "SECONDARY" = "#0174BE",
-      "Total" = "#4F709C"
-    )
-  ) +
-  theme(plot.title = element_text(hjust = .5),
-        axis.ticks = element_blank()) +
+  # scale_fill_manual(
+  #   name = NULL,
+  #   values = c(
+  #     "PRE_PRIMARY" = "#5272F2",
+  #     "PRIMARY" = "#B4B4B3",
+  #     "SECONDARY" = "#0174BE",
+  #     "Total" = "#4F709C"
+  #   )
+  # )  +
   theme(
-    plot.background = element_rect(fill = c("#F2F2F2")),
-    panel.background = element_rect(fill = c("#F2F2F2")),
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(.8))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -148,10 +149,14 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n)) +
     #remove x axis ticks
     axis.text.y = element_blank(),
     legend.box = "horizontal",
-    legend.position = "bottom"
-  )
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
 ggsave("04_reporting/02_visuals/level_age.png",
-       units = "px",width = 1000,height = 1000,dpi = 100,
+       units = "px",width = 2000,height = 1000,dpi = 100,
        device = "png")
 
 # cross reference age categories with positions ####
@@ -444,3 +449,48 @@ cross_age_qualification <- dcast(dt_age_qualification,
 write.xlsx(cross_age_qualification,
            "04_reporting/01_tables/updated/cross_age_qualification.xlsx",
            asTable = T)
+
+# visuals
+
+ggplot(data = dt_age_qualification, aes(x = age_categ, 
+                                        y = n, group = qualificationLevel)) +
+  geom_bar(aes(fill = qualificationLevel),
+           stat = "identity",
+           position = "dodge") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = n),
+            position = position_dodge(.9),
+            size = 2.5,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teacher's Age by Education Attainment") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(.8))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+
+ggsave("04_reporting/02_visuals/age_qualification.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")

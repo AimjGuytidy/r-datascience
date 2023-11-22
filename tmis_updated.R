@@ -345,7 +345,7 @@ ggplot(data = dt_age_position_vis, aes(x = subject,
             size = 2.5,
             color = "#000000",
             fontface = "bold") +
-  ggtitle("Teachers' position by age groups") +
+  ggtitle("Teachers' Age by Subject/position") +
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
@@ -370,7 +370,7 @@ ggplot(data = dt_age_position_vis, aes(x = subject,
   ) +
   guides(fill = guide_legend(nrow = 1))+
   coord_flip()
-ggsave("04_reporting/02_visuals/level_age.png",
+ggsave("04_reporting/02_visuals/position_age.png",
        units = "px",width = 1000,height = 1000,dpi = 100,
        device = "png")
 

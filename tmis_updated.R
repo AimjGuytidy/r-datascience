@@ -349,7 +349,7 @@ ggplot(data = dt_age_position_vis, aes(x = subject,
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.y = element_text(color = "#245953", size = rel(.8))
+    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
   ) +
   theme(
     plot.background = element_rect(fill = c("#ECE5C7")),
@@ -385,6 +385,50 @@ cross_age_role <- dcast(dt_age_role,
 write.xlsx(cross_age_role,
            "04_reporting/01_tables/updated/cross_age_role.xlsx",
            asTable = T)
+
+# visuals
+
+ggplot(data = dt_age_role, aes(x = role, 
+                               y = n, group = n)) +
+  geom_bar(aes(fill = age_categ),
+           stat = "identity",
+           position = "dodge") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = ifelse(n>=100,n,NA)),
+            position = position_dodge(.9),
+            size = 1.8,
+            hjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("School Staff's Age by Position") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.x = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+
+  coord_flip()
+
+ggsave("04_reporting/02_visuals/staff_age.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")
 
 
 # cross reference age categories with qualifications

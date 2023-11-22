@@ -103,6 +103,57 @@ write.xlsx(cross_age_level,
            "04_reporting/01_tables/updated/cross_ref_age_level.xlsx",
            asTable = T)
 
+# visualization
+
+res <- resolution(dt_age_level$n)
+Age <- dt_age_level$age_categ
+
+ggplot(data = dt_age_level, aes(x = age_categ, y = n)) +
+  geom_bar(
+    aes(fill = teachingCategoryName),
+    stat = "identity",
+    position = "dodge"
+  ) +
+  geom_text(
+    aes(label = n, group = teachingCategoryName),
+    position = position_dodge(res-.1),
+    size = 2.5,
+    hjust = .6,
+    vjust = -.3,
+    fontface = "bold",
+    color = "#232D3F"
+  ) +
+  ggtitle("Teaching level by age groups") +
+  scale_fill_manual(
+    name = NULL,
+    values = c(
+      "PRE_PRIMARY" = "#5272F2",
+      "PRIMARY" = "#B4B4B3",
+      "SECONDARY" = "#0174BE",
+      "Total" = "#4F709C"
+    )
+  ) +
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank()) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  )
+ggsave("04_reporting/02_visuals/level_age.png",
+       units = "px",width = 1000,height = 1000,dpi = 100,
+       device = "png")
+
 # cross reference age categories with positions ####
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
@@ -255,7 +306,7 @@ tmis_label <- tmis_label |>
     class %in% c("84","115","142") ~ "Special Needs Educ",
     class %in% c("116","105","57") ~ "Arts",
     class == "94" ~ "Lower Primary",
-    class == "106" ~ "Nursery School",
+    class %in% c("42","106") ~ "Nursery School",
     class == "44" ~ "Normal Primary",
     class %in% c("1","2") ~ "Accountant Secretary",
     class %in% c("137","138","139") ~ "Secretary",
@@ -263,8 +314,7 @@ tmis_label <- tmis_label |>
     class == "129" & teachingCategoryName == "PRIMARY" ~ "Lower Primary",
     class == "20" ~ "Deputy Headteacher",
     class == "89" ~ "Librarian",
-    class == "143" ~ "General studies and communication",
-    class == "42" ~ "Foundation of ECLPE"
+    class == "143" ~ "General studies and communication"
   ))
 dt_age_position <- count(tmis_label,age_categ,subject)
 dt_age_position <- as.data.table(dt_age_position)
@@ -275,6 +325,57 @@ cross_age_position <- dcast(dt_age_position,
 write.xlsx(cross_age_position,
            "04_reporting/01_tables/updated/cross_age_position.xlsx",
            asTable = T)
+
+
+# Visualization
+
+dt_age_position_vis <- copy(dt_age_position)
+dt_age_position_vis[,Total_count := ifelse(n > 700,n,NA_integer_)]
+res <- resolution(dt_age_position_vis$Total_count)
+
+ggplot(data = dt_age_position, aes(x = subject, y = n)) +
+  geom_bar(
+    aes(fill = age_categ),
+    stat = "identity"
+  ) +
+  geom_text(aes(label = if_else(n > 700,n,NA_integer_)),
+    position = "stack",
+    size = 2.5,
+    hjust = .6,
+    vjust = -.3,
+    fontface = "bold",
+    color = "#232D3F") +
+  scale_fill_brewer(palette = "Blues")+
+  ggtitle("Teaching level by age groups") +
+  scale_fill_manual(
+    name = NULL,
+    values = c(
+      "PRE_PRIMARY" = "#5272F2",
+      "PRIMARY" = "#B4B4B3",
+      "SECONDARY" = "#0174BE",
+      "Total" = "#4F709C"
+    )
+  ) +
+  theme(plot.title = element_text(hjust = .5),
+        axis.ticks = element_blank()) +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom"
+  )
+ggsave("04_reporting/02_visuals/level_age.png",
+       units = "px",width = 1000,height = 1000,dpi = 100,
+       device = "png")
 
 # cross reference age categories with leadership roles ####
 

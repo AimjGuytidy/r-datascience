@@ -8,7 +8,7 @@ library(haven)
 #install.packages("here")
 library(here)
 
-# set working directory
+# set working directory ####
 setwd(paste0("C:/Users/HP/Box/",
              "IPA_RWA_Project_STARS/07_Data/",
              "31_TMIS_analysis"))
@@ -435,8 +435,53 @@ ggsave("04_reporting/02_visuals/staff_age.png",
        units = "px",width = 2000,height = 1000,dpi = 100,
        device = "png")
 
+# Teachers' age visualisation
 
-# cross reference age categories with qualifications
+dt_age_teacher <- dt_age_role[dt_age_role$role=="Teacher",]
+
+ggplot(data = dt_age_teacher, aes(x = age_categ, 
+                               y = n, group = n)) +
+  geom_bar(stat = "identity",fill = "#3B9AE1") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = n),
+            position = position_dodge(.9),
+            size = 2.8,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teachers' Age") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+ggsave("04_reporting/02_visuals/teacher_age.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")
+
+
+
+# cross reference age categories with qualifications ####
 
 dt_age_qualification <-
   count(tmis_filter, age_categ, qualificationLevel)

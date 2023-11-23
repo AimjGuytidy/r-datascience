@@ -640,9 +640,12 @@ for (columns in columns_filter) {
 
 tmis_primary <-
   count(
-    filter(tmis_age_long, teachingCategoryName == "PRIMARY", Age >= 65),
+    filter(
+      tmis_age_long,
+      teachingCategoryName %in% c("PRE_PRIMARY", "PRIMARY"),
+      Age >= 65
+    ),
     Year,
-    teachingCategoryName,
     name = "Total"
   )
 write.xlsx(tmis_primary,

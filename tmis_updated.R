@@ -5,7 +5,7 @@ library(data.table)
 library(readxl)
 library(openxlsx)
 library(haven)
-#install.packages("here")
+#install.packages("openxlsx")
 library(here)
 
 # set working directory ####
@@ -633,5 +633,8 @@ for (columns in columns_filter) {
                        teachingCategoryName,
                        get(columns),name = "Total"))
   assign(columns,select(get(columns),Year,teachingCategoryName,Total))
+  write.xlsx(get(columns),
+             paste0("04_reporting/01_tables/updated/languages/",columns,".xlsx"),
+             asTable = T)
 }
 

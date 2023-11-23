@@ -607,3 +607,18 @@ tmis_age_long <- tmis_age |>
     values_to = "Age"
   ) |>
   mutate(Year = as.integer(Year))
+
+# Identify French teachers
+
+tmis_age_long <- tmis_age_long |>
+  mutate(french_teacher = ifelse(str_detect(position,"(?i)french"),1,0),
+         kiswahili_teacher = ifelse(str_detect(position,"(?i)kiswahili"),1,0),
+         music_teacher = ifelse(str_detect(position,"(?i)music"),1,0),
+         accounting_teacher = ifelse(str_detect(position,"(?i)accounting"),1,0),
+         entr_teacher = ifelse(str_detect(position,"(?i)entrepreneurship"),1,0))
+
+# save dataset
+
+write.xlsx(tmis_age_long,
+          "04_reporting/01_tables/updated/tmis_age_projection.xlsx",
+          asTable = T)

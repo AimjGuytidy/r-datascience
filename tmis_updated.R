@@ -376,7 +376,54 @@ ggplot(data = dt_age_position_vis, aes(x = subject,
   guides(fill = guide_legend(nrow = 1))+
   coord_flip()
 ggsave("04_reporting/02_visuals/position_age.png",
-       units = "px",width = 1000,height = 1000,dpi = 100,
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")
+
+# visualization of only teaching position
+'%notin%' <- function(x,y)!('%in%'(x,y))
+dt_teaching_position <-
+  dt_age_position[dt_age_position$subject %notin% c("Secretary",
+                                                    "Librarian",
+                                                    "Deputy Headteacher",
+                                                    "Accountant Secretary"),]
+ggplot(data = dt_teaching_position, aes(x = subject, 
+                                       y = n, group = n)) +
+  geom_bar(aes(fill = age_categ),
+           stat = "identity",
+           position = "stack") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = ifelse(n>700,n,NA)),
+            position = position_stack(vjust = .5),
+            size = 2.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teachers' Age by Subject") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.x = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+
+  coord_flip()
+ggsave("04_reporting/02_visuals/teacher_subject_age.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
        device = "png")
 
 # cross reference age categories with leadership roles ####
@@ -539,3 +586,24 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
 ggsave("04_reporting/02_visuals/age_qualification.png",
        units = "px",width = 2000,height = 1000,dpi = 100,
        device = "png")
+
+
+# Teachers' age projection (2024-2030) ####
+
+tmis_age <- tmis_df |>
+  select(employeeid,gender,year_birth,position,qualificationLevel,teachingCategoryName,
+         role,schoolName,sectorName,districtName)
+
+for (years in 2023:2030){
+  varname <- as.character(years)
+  tmis_age <- tmis_age |>
+    dplyr::mutate(!! varname := as.integer(years) - as.integer(year_birth))
+}
+
+tmis_age_long <- tmis_age |>
+  pivot_longer(
+    cols = -c(employeeid:districtName),
+    names_to = "Year",
+    values_to = "Age"
+  ) |>
+  mutate(Year = as.integer(Year))

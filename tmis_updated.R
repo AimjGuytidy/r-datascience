@@ -622,3 +622,16 @@ tmis_age_long <- tmis_age_long |>
 write.xlsx(tmis_age_long,
           "04_reporting/01_tables/updated/tmis_age_projection.xlsx",
           asTable = T)
+
+# create datasets for subjects with teachers with retirement age #### 
+
+columns_filter <- c("french_teacher", "kiswahili_teacher", "music_teacher",
+                    "accounting_teacher","entr_teacher")
+
+for (columns in columns_filter) {
+  assign(columns,count(filter(tmis_age_long,Age>=65,get(columns)!=0),Year,
+                       teachingCategoryName,
+                       get(columns),name = "Total"))
+  assign(columns,select(get(columns),Year,teachingCategoryName,Total))
+}
+

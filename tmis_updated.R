@@ -638,3 +638,13 @@ for (columns in columns_filter) {
              asTable = T)
 }
 
+tmis_primary <-
+  count(
+    filter(tmis_age_long, teachingCategoryName == "PRIMARY", Age >= 65),
+    Year,
+    teachingCategoryName,
+    name = "Total"
+  )
+write.xlsx(tmis_primary,
+           "04_reporting/01_tables/updated/tmis_primary.xlsx",
+           asTable = T)

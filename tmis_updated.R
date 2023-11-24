@@ -311,11 +311,11 @@ tmis_label <- tmis_label |>
     class %in% c("84","115","142") ~ "Special Needs Educ",
     class %in% c("116","105","57") ~ "Arts",
     class == "94" ~ "Lower Primary",
-    class %in% c("42","106") ~ "Nursery School",
+    class %in% c("42","106") ~ "Nursery",
     class == "44" ~ "Normal Primary",
     class %in% c("1","2") ~ "Accountant Secretary",
     class %in% c("137","138","139") ~ "Secretary",
-    class == "129" & teachingCategoryName == "PRE_PRIMARY" ~ "Nursery School",
+    class == "129" & teachingCategoryName == "PRE_PRIMARY" ~ "Nursery",
     class == "129" & teachingCategoryName == "PRIMARY" ~ "Lower Primary",
     class == "20" ~ "Deputy Headteacher",
     class == "89" ~ "Librarian",
@@ -638,6 +638,8 @@ for (columns in columns_filter) {
              asTable = T)
 }
 
+
+
 tmis_primary <-
   count(
     filter(
@@ -651,3 +653,20 @@ tmis_primary <-
 write.xlsx(tmis_primary,
            "04_reporting/01_tables/updated/tmis_primary.xlsx",
            asTable = T)
+
+
+
+
+# Teaching Positions from Primary ####
+
+primary_secondary_position <- tmis_label |>
+  mutate(subject = ifelse(subject %in% c("Arts",
+                                         "General studies and communication"),
+                          "Humanities",
+                          ifelse(subject %in% c("Lower Primary",
+                                                "Normal Primary"),"Primary",
+                                 subject)))
+
+# save dataset (Primary)
+primary_position <- count(filter(primary_secondary_position,
+                                 teachingCategoryName=="PRIMARY"),subject)

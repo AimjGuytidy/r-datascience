@@ -693,3 +693,18 @@ write.xlsx(
   "04_reporting/01_tables/updated/secondary_position.xlsx",
   asTable = T
 )
+
+secondary_position_role <-
+  count(
+    filter(tmis_label, teachingCategoryName == "SECONDARY"),
+    subject,
+    role,
+    sort = T,
+    name = "Total"
+  )
+
+write.xlsx(
+  secondary_position_role,
+  "04_reporting/01_tables/updated/secondary_position_role.xlsx",
+  asTable = T
+)

@@ -645,6 +645,8 @@ write.xlsx(tmis_primary,
 
 # Teaching Positions from Primary and Secondary ####
 
+# Primary school
+
 primary_position <-
   count(
     filter(tmis_label, teachingCategoryName == "PRIMARY"),
@@ -657,5 +659,23 @@ primary_position <-
 write.xlsx(
   primary_position,
   "04_reporting/01_tables/updated/primary_position.xlsx",
+  asTable = T
+)
+
+
+# Secondary School
+
+secondary_position <-
+  count(
+    filter(tmis_label, teachingCategoryName == "SECONDARY"),
+    subject,
+    sort = T,
+    name = "Total"
+  )
+
+# save dataset (Primary)
+write.xlsx(
+  secondary_position,
+  "04_reporting/01_tables/updated/secondary_position.xlsx",
   asTable = T
 )

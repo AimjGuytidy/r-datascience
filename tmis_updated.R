@@ -303,6 +303,7 @@ tmis_label <- tmis_label |>
     class %in% c("111","112","113") ~ "Matron",
     class %in% c("117","118","119") ~ "Patron"
   ))
+
 dt_age_position <- count(tmis_label,age_categ,subject)
 dt_age_position <- as.data.table(dt_age_position)
 dt_age_position <- dt_age_position[dt_age_position$age_categ!="",]
@@ -367,7 +368,10 @@ dt_teaching_position <-
   dt_age_position[dt_age_position$subject %notin% c("Secretary",
                                                     "Librarian",
                                                     "Deputy Headteacher",
-                                                    "Accountant Secretary"),]
+                                                    "Accountant Secretary",
+                                                    "Bursar",
+                                                    "Patron",
+                                                    "Matron"),]
 ggplot(data = dt_teaching_position, aes(x = subject, 
                                        y = n, group = n)) +
   geom_bar(aes(fill = age_categ),
@@ -639,15 +643,15 @@ write.xlsx(tmis_primary,
 
 
 
-# Teaching Positions from Primary ####
+# Teaching Positions from Primary and Secondary ####
 
-primary_secondary_position <- tmis_label |>
-  mutate(subject = ifelse(subject %in% c("Arts",
-                                         "General studies and communication"),
-                          "Humanities",
-                          ifelse(subject %in% c("Lower Primary",
-                                                "Normal Primary"),"Primary",
-                                 subject)))
+primary_position <-
+  count(
+    filter(tmis_label, teachingCategoryName == "PRIMARY"),
+    subject,
+    sort = T,
+    name = "Total"
+  )
 
 # save dataset (Primary)
 primary_position <- count(filter(primary_secondary_position,

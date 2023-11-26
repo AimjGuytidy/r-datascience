@@ -162,7 +162,7 @@ ggsave("04_reporting/02_visuals/level_age.png",
 # cross reference age categories with positions ####
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
-write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
+#write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
 
 # after assigning labels to position now we can start our categorization
 tmis_label <- read_dta("03_clean_data/tmis_filter.dta")
@@ -662,6 +662,20 @@ write.xlsx(
   asTable = T
 )
 
+primary_position_role <-
+  count(
+    filter(tmis_label, teachingCategoryName == "PRIMARY"),
+    subject,
+    role,
+    sort = T,
+    name = "Total"
+  )
+
+write.xlsx(
+  primary_position_role,
+  "04_reporting/01_tables/updated/primary_position_role.xlsx",
+  asTable = T
+)
 
 # Secondary School
 

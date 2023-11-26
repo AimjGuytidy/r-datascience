@@ -654,5 +654,8 @@ primary_position <-
   )
 
 # save dataset (Primary)
-primary_position <- count(filter(primary_secondary_position,
-                                 teachingCategoryName=="PRIMARY"),subject)
+write.xlsx(
+  primary_position,
+  "04_reporting/01_tables/updated/primary_position.xlsx",
+  asTable = T
+)

@@ -512,7 +512,68 @@ ggsave("04_reporting/02_visuals/teacher_age.png",
        units = "px",width = 2000,height = 1000,dpi = 100,
        device = "png")
 
+# Staff's age visualisation (ex Teachers)
 
+dt_age_staff <- dt_age_role[dt_age_role$role!="Teacher",]
+dt_age_staff <- dt_age_staff |>
+  mutate(role = str_wrap(role,width = 10))
+
+ggplot(data = filter(
+  dt_age_staff,
+  age_categ %in% c("50-54",
+                   "55-59",
+                   "60-64",
+                   "65-69")
+),
+aes(x = role,
+    y = n, group = n)) +
+  geom_bar(aes(fill = age_categ),
+           stat = "identity",
+           position = "dodge") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(
+    aes(label = n),
+    position = position_dodge(.9),
+    size = 2,
+    hjust = .5,
+    vjust = -0.2,
+    color = "#000000",
+    fontface = "bold"
+  ) +
+  ggtitle("School Staff's Age by Position") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(
+      face = "bold",
+      color = "#245953",
+      size = rel(1)
+    )
+  ) +
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.y = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+
+ggsave("04_reporting/02_visuals/staff_exteacher_age.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")
 
 # cross reference age categories with qualifications ####
 
@@ -749,7 +810,8 @@ ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
     legend.background = element_rect(fill = c("#ECE5C7")),
     legend.title = element_blank()
   ) +
-  guides(fill = guide_legend(nrow = 1))
+  guides(fill = guide_legend(nrow = 1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
 
 ggsave("04_reporting/02_visuals/retirement_position.png",
        units = "px",width = 2000,height = 1000,dpi = 100,

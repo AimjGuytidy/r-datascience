@@ -947,3 +947,14 @@ prim_temp  <- filter(tmis_age_brackets, Age >= 50,
   )|>
   mutate(unit_cost = 16533,
          trained_teacher = "Pre_primary and Primary")
+
+projection_data <-
+  rbind(entr_temp,
+        french_temp,
+        ksw_temp,
+        acc_temp,
+        entr_temp,
+        prim_temp)
+
+projection_data <- projection_data |>
+  mutate(`Total cost` = `Total count` * unit_cost)

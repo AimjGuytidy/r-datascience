@@ -708,3 +708,10 @@ write.xlsx(
   "04_reporting/01_tables/updated/secondary_position_role.xlsx",
   asTable = T
 )
+
+
+# Retirement by Position ####
+
+# join tmis_label with tmis_age_long to append the subject variable
+tmis_ret_subj <- tmis_age_long |>
+  left_join(select(tmis_label,employeeid,subject))

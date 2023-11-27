@@ -715,3 +715,40 @@ write.xlsx(
 # join tmis_label with tmis_age_long to append the subject variable
 tmis_ret_subj <- tmis_age_long |>
   left_join(select(tmis_label,employeeid,subject))
+tmis_ret_subj_filter <- filter(tmis_ret_subj,Age >= 65,
+                               subject %in% c("Headteacher","Languages",
+                                              "Primary","STEM"))
+ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
+  geom_bar(position = "dodge") +
+  scale_fill_brewer(palette = "Blues")+
+  scale_x_continuous(breaks=seq(2023,2030,1))+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))+
+  ylim(c(0,800)) +
+  ggtitle("Retirement by Position") +
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( size=.1, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )+
+  theme(
+    plot.background = element_rect(fill = c("#ECE5C7")),
+    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("#ECE5C7")),
+    legend.title = element_blank()
+  ) +
+  guides(fill = guide_legend(nrow = 1))

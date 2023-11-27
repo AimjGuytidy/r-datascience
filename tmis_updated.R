@@ -534,7 +534,7 @@ aes(x = role,
   geom_text(
     aes(label = n),
     position = position_dodge(.9),
-    size = 2,
+    size = 2.5,
     hjust = .5,
     vjust = -0.2,
     color = "#000000",
@@ -658,16 +658,16 @@ tmis_age_long <- tmis_age |>
 # Identify French teachers
 
 tmis_age_long <- tmis_age_long |>
-  mutate(french_teacher = ifelse(str_detect(position,"(?i)french"),1,0),
-         kiswahili_teacher = ifelse(str_detect(position,"(?i)kiswahili"),1,0),
-         music_teacher = ifelse(str_detect(position,"(?i)music"),1,0),
-         accounting_teacher = ifelse(str_detect(position,"(?i)accounting"),1,0),
-         entr_teacher = ifelse(str_detect(position,"(?i)entrepreneurship"),1,0))
+  mutate(french_teacher = ifelse(str_detect(position,"(?i)french"),"French",NA),
+         kiswahili_teacher = ifelse(str_detect(position,"(?i)kiswahili"),"kiswahili",NA),
+         music_teacher = ifelse(str_detect(position,"(?i)music"),"Music",NA),
+         accounting_teacher = ifelse(str_detect(position,"(?i)accounting"),"Accounting",NA),
+         entr_teacher = ifelse(str_detect(position,"(?i)entrepreneurship"),"Entrepreneurship",NA))
 
 # save dataset
 
 write.xlsx(tmis_age_long,
-          "04_reporting/01_tables/updated/tmis_age_projection.xlsx",
+          "04_reporting/01_tables/updated/tmis_age_projection1.xlsx",
           asTable = T)
 
 # create datasets for subjects with teachers with retirement age #### 
@@ -845,3 +845,105 @@ write.xlsx(
   "04_reporting/01_tables/updated/age_role.xlsx",
   asTable = T
 )
+
+write.xlsx(tmis_age_brackets,
+           "04_reporting/01_tables/updated/tmis_age_brackets_position.xlsx",
+           asTable = T)
+
+
+tmis_wider_projection <- filter(tmis_age_brackets, Age >= 50) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    entr_teacher,
+    french_teacher,
+    kiswahili_teacher,
+    music_teacher,
+    accounting_teacher,
+    name = "Total count"
+  )
+
+write.xlsx(tmis_wider_projection,
+           "04_reporting/01_tables/updated/tmis_wider_projection.xlsx",
+           asTable = T)
+
+
+entr_temp<-filter(tmis_age_brackets, Age >= 50) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    entr_teacher,
+   name = "Total count"
+  )|>
+  filter(!is.na(entr_teacher))|>
+  mutate(unit_cost = 55798) |>
+  rename(trained_teacher=entr_teacher)
+
+music_temp <- filter(tmis_age_brackets, Age >= 50) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    music_teacher,
+    name = "Total count"
+  )|>
+  filter(!is.na(music_teacher))|>
+  mutate(unit_cost = 13841) |>
+  rename(trained_teacher=music_teacher)
+
+acc_temp <- filter(tmis_age_brackets, Age >= 50) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    accounting_teacher,
+    name = "Total count"
+  )|>
+  filter(!is.na(accounting_teacher))|>
+  mutate(unit_cost = 54562) |>
+  rename(trained_teacher=accounting_teacher)
+
+ksw_temp <- filter(tmis_age_brackets, Age >= 50) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    kiswahili_teacher,
+    name = "Total count"
+  )|>
+  filter(!is.na(kiswahili_teacher))|>
+  mutate(unit_cost = 32995) |>
+  rename(trained_teacher=kiswahili_teacher)
+
+french_temp <- filter(tmis_age_brackets, Age >= 50,
+                      teachingCategoryName=="PRIMARY") |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    french_teacher,
+    name = "Total count"
+  )|>
+  filter(!is.na(french_teacher))|>
+  mutate(unit_cost = 15824) |>
+  rename(trained_teacher=french_teacher) 
+
+prim_temp  <- filter(tmis_age_brackets, Age >= 50,
+                     teachingCategoryName%in%c("PRE_PRIMARY","PRIMARY")) |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    name = "Total count"
+  )|>
+  mutate(unit_cost = 16533,
+         trained_teacher = "Pre_primary and Primary")

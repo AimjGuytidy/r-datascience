@@ -641,8 +641,6 @@ write.xlsx(tmis_primary,
            asTable = T)
 
 
-
-
 # Teaching Positions from Primary and Secondary ####
 
 # Primary school
@@ -752,3 +750,36 @@ ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
     legend.title = element_blank()
   ) +
   guides(fill = guide_legend(nrow = 1))
+
+ggsave("04_reporting/02_visuals/retirement_position.png",
+       units = "px",width = 2000,height = 1000,dpi = 100,
+       device = "png")
+
+
+# Age distribution by Role ####
+tmis_age_brackets <- tmis_age_long |>
+  mutate(Age_brackets = if_else(Age >= 70, "70 and above",
+                                if_else(
+                                  Age >= 65, "65-69",
+                                  if_else(Age >= 60, "60-64",
+                                          if_else(
+                                            Age >= 55, "55-59",
+                                            if_else(Age >= 50, "50-54", "Below 50")
+                                          ))
+                                )))
+age_role <-
+  count(filter(tmis_age_brackets,Age>=50),
+        role,
+        Age_brackets,
+        sort = T,
+        name = "Total") |>
+  pivot_wider(id_cols = role,
+              names_from = Age_brackets,
+              values_from = Total)
+
+# save dataset (Primary)
+write.xlsx(
+  age_role,
+  "04_reporting/01_tables/updated/age_role.xlsx",
+  asTable = T
+)

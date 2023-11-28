@@ -777,6 +777,13 @@ tmis_ret_subj <- tmis_age_long |>
 tmis_ret_subj_filter <- filter(tmis_ret_subj,Age >= 65,
                                subject %in% c("Headteacher","Languages",
                                               "Primary","STEM"))
+# save dataset (Primary)
+write.xlsx(
+  tmis_ret_subj_filter,
+  "04_reporting/01_tables/updated/tmis_ret_subj_filter.xlsx",
+  asTable = T
+)
+
 ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
   geom_bar(position = "dodge") +
   scale_fill_brewer(palette = "Blues")+
@@ -803,8 +810,8 @@ ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
     #remove x axis labels
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1)),
-    axis.text.y = element_text(face="bold",color = "#245953", size = rel(1)),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 20),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 20),
     #remove x axis ticks
     #axis.text.y = element_blank(),
     legend.box = "horizontal",
@@ -965,6 +972,13 @@ projection_data <- projection_data |>
 write.xlsx(projection_data,
            "04_reporting/01_tables/updated/projection_data.xlsx",
            asTable = T)
+
+# aggregating on teaching level
+projection_data_level <- projection_data |>
+  group_by(Year,teachingCategoryName)|>
+  summarize(total_cost_level = sum(`Total cost`))
+
+#####
 count(filter(tmis_df,role=="Teacher"),teachingCategoryName)
 round(mean(filter(tmis_filter,role=="Teacher")$age,na.rm = T))
 filter(tmis_filter,
@@ -973,6 +987,7 @@ filter(tmis_filter,
   summarise(average_age = round(mean(age,na.rm = T)))
 
 
+#####
 tmis_teacher_long <- filter(tmis_age_long,
                             role %in% c("Teacher", "DOD", "DOS", "Head Teacher"),
                             Age >= 50)|>

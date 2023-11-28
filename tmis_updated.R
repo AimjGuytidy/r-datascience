@@ -117,7 +117,7 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
   scale_fill_brewer(palette = "Blues") +
   geom_text(aes(label = n),
             position = position_dodge(.9),
-            size = 2.5,
+            size = 3,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -134,7 +134,7 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(.8))
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
   ) +
   theme(
     plot.background = element_rect(fill = c("#ECE5C7")),
@@ -434,7 +434,7 @@ ggplot(data = dt_age_role, aes(x = role,
   scale_fill_brewer(palette = "Blues") +
   geom_text(aes(label = ifelse(n>=100,n,NA)),
             position = position_dodge(.9),
-            size = 1.8,
+            size = 2.5,
             hjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -442,7 +442,7 @@ ggplot(data = dt_age_role, aes(x = role,
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
+    axis.text.y = element_text(face="bold",color = "#245953", size = rel(1))
   ) +
   theme(
     plot.background = element_rect(fill = c("#ECE5C7")),
@@ -534,7 +534,7 @@ aes(x = role,
   geom_text(
     aes(label = n),
     position = position_dodge(.9),
-    size = 2.5,
+    size = 3,
     hjust = .5,
     vjust = -0.2,
     color = "#000000",
@@ -599,7 +599,7 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
   scale_fill_brewer(palette = "Blues") +
   geom_text(aes(label = n),
             position = position_dodge(.9),
-            size = 2.5,
+            size = 3,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -607,7 +607,7 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(.8))
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
   ) +
   theme(
     plot.background = element_rect(fill = c("#ECE5C7")),
@@ -803,6 +803,8 @@ ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
     #remove x axis labels
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1)),
+    axis.text.y = element_text(face="bold",color = "#245953", size = rel(1)),
     #remove x axis ticks
     #axis.text.y = element_blank(),
     legend.box = "horizontal",
@@ -958,3 +960,36 @@ projection_data <-
 
 projection_data <- projection_data |>
   mutate(`Total cost` = `Total count` * unit_cost)
+
+
+write.xlsx(projection_data,
+           "04_reporting/01_tables/updated/projection_data.xlsx",
+           asTable = T)
+count(filter(tmis_df,role=="Teacher"),teachingCategoryName)
+round(mean(filter(tmis_filter,role=="Teacher")$age,na.rm = T))
+filter(tmis_filter,
+       role %in% c("Teacher", "DOD", "DOS", "Head Teacher")) |>
+  group_by(teachingCategoryName,gender) |>
+  summarise(average_age = round(mean(age,na.rm = T)))
+
+
+tmis_teacher_long <- filter(tmis_age_long,
+                            role %in% c("Teacher", "DOD", "DOS", "Head Teacher"),
+                            Age >= 50)|>
+  mutate(age_categ = ifelse(Age >= 70, "70+",
+                             ifelse(Age >= 65, "65-69",
+                                     ifelse(Age >= 60, "60-64",
+                                             ifelse(Age >= 55, "55-59",
+                                                     ifelse(Age >= 50, "50-54",NA))))))
+cross_teacher_age <-
+  count(filter(tmis_teacher_long,Year==2023), teachingCategoryName, 
+        age_categ, name = "Total_count") |>
+  rename(`Age Group`=age_categ) |>
+  pivot_wider(id_cols = `Age Group`,names_from = teachingCategoryName,
+              values_from = Total_count)
+
+write.xlsx(
+  cross_teacher_age,
+  "04_reporting/01_tables/updated/cross_teacher_age.xlsx",
+  asTable = T
+)

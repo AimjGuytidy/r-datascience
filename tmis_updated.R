@@ -337,7 +337,7 @@ ggplot(data = dt_age_position_vis, aes(x = age_categ,
   geom_bar(aes(fill = age_categ),
            stat = "identity",
            position = "stack") +
-  ggtitle("Teachers' Age by Subject/position") +
+  ggtitle("Teachers' Age by Subject/Position") +
   scale_fill_brewer(palette = "GnBu") +
   geom_text(aes(label = n),
             position = position_stack(.9),
@@ -359,7 +359,6 @@ ggplot(data = dt_age_position_vis, aes(x = age_categ,
         legend.position="none"
   )+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  ggtitle("Teachers' Age by Subject/position") +
   guides(fill = guide_legend(nrow = 1))
 
 ggsave("04_reporting/02_visuals/position_age_wrap.png",

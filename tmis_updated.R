@@ -6,7 +6,7 @@ library(readxl)
 library(openxlsx)
 library(haven)
 #install.packages("openxlsx")
-library(here)
+library(scales)
 
 # set working directory ####
 setwd(paste0("C:/Users/HP/Box/",
@@ -64,13 +64,13 @@ tmis_age_gender|>
     coord_flip() +
     #theme_gray() +
     labs(title="Teacher Population October 2023") +
-    scale_fill_manual(name = NULL, values = c("Female" = "#FF9130",
+    scale_fill_manual(name = NULL, values = c("Female" = "maroon",
                                               "Male" = "#3876BF"))+
     theme(plot.title = element_text(hjust = .5),
           axis.ticks = element_blank())+
     theme(
-      plot.background = element_rect(fill = c("#F2F2F2")),
-      panel.background = element_rect(fill = c("#F2F2F2")),
+      plot.background = element_rect(fill = c("white")),
+      panel.background = element_rect(fill = c("white")),
       panel.grid = element_blank(),
       #remove x axis ticks
       axis.text.x = element_blank(),
@@ -82,6 +82,15 @@ tmis_age_gender|>
       legend.box = "horizontal",
       legend.position = "bottom"
     )
+
+ggsave(
+  "04_reporting/02_visuals/teacher_gender.png",
+  units = "px",
+  width = 1000,
+  height = 1000,
+  dpi = 150,
+  device = "png"
+)
 
 dt_age_gender <- as.data.table(tmis_age_gender)
 dt_age_gender <- dt_age_gender[!is.na(dt_age_gender$age_categ),]
@@ -117,7 +126,7 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
   scale_fill_brewer(palette = "Blues") +
   geom_text(aes(label = n),
             position = position_dodge(.9),
-            size = 3,
+            size = 4.4,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -134,11 +143,11 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15)
   ) +
   theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -150,13 +159,14 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
     axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
   ) +
   guides(fill = guide_legend(nrow = 1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
-ggsave("04_reporting/02_visuals/level_age.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+ggsave("04_reporting/02_visuals/level_age1.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
 # cross reference age categories with positions ####
@@ -322,44 +332,38 @@ dt_age_position_vis[,Total_count := ifelse(n > 700,n,NA_integer_)]
 dt_age_position_vis[,subject := str_wrap(subject,12)]
 res <- resolution(dt_age_position_vis$Total_count)
 text_color <- "#000000"
-ggplot(data = dt_age_position_vis, aes(x = subject, 
-                                       y = n, group = n)) +
+ggplot(data = dt_age_position_vis, aes(x = age_categ, 
+                                       y = n)) +
   geom_bar(aes(fill = age_categ),
            stat = "identity",
            position = "stack") +
-  scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = ifelse(n>700,n,NA)),
-            position = position_stack(vjust = .5),
-            size = 2.5,
-            color = "#000000",
-            fontface = "bold") +
   ggtitle("Teachers' Age by Subject/position") +
-  theme(
-    plot.title = element_text(hjust = .5),
-    axis.ticks = element_blank(),
-    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
-  ) +
-  theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
-    panel.grid = element_blank(),
-    #remove x axis ticks
-    #axis.text.x = element_blank(),
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    #remove x axis labels
-    axis.ticks.x = element_blank(),
-    #remove x axis ticks
-    axis.text.x = element_blank(),
-    legend.box = "horizontal",
-    legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
-  ) +
-  guides(fill = guide_legend(nrow = 1))+
-  coord_flip()
-ggsave("04_reporting/02_visuals/position_age.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+  scale_fill_brewer(palette = "GnBu") +
+  geom_text(aes(label = n),
+            position = position_stack(.9),
+            vjust = -1,
+            size = 3.4,
+            color = "#000000",
+            fontface = "bold")+
+  #coord_flip()+
+  facet_wrap(~subject,scales = "free")+
+  theme(axis.title = element_blank(),
+        axis.text.x = element_text(angle = -45, vjust = -.8, hjust=0.5,
+                                   face="bold",color = "#245953", size = 10),
+        axis.ticks = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = .5),
+        plot.background = element_rect(fill = c("white")),
+        panel.background = element_rect(fill = c("white")),
+        panel.grid = element_blank(),
+        legend.position="none"
+  )+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  ggtitle("Teachers' Age by Subject/position") +
+  guides(fill = guide_legend(nrow = 1))
+
+ggsave("04_reporting/02_visuals/position_age_wrap.png",
+       units = "px",width = 2000,height = 2000,dpi = 150,
        device = "png")
 
 # visualization of only teaching position
@@ -478,7 +482,7 @@ ggplot(data = dt_age_teacher, aes(x = age_categ,
   scale_fill_brewer(palette = "Blues") +
   geom_text(aes(label = n),
             position = position_dodge(.9),
-            size = 2.8,
+            size = 4.4,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -486,11 +490,11 @@ ggplot(data = dt_age_teacher, aes(x = age_categ,
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15)
   ) +
   theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -508,8 +512,8 @@ ggplot(data = dt_age_teacher, aes(x = age_categ,
   guides(fill = guide_legend(nrow = 1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 
-ggsave("04_reporting/02_visuals/teacher_age.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+ggsave("04_reporting/02_visuals/teacher_age1.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
 # Staff's age visualisation (ex Teachers)
@@ -534,7 +538,7 @@ aes(x = role,
   geom_text(
     aes(label = n),
     position = position_dodge(.9),
-    size = 3,
+    size = 4.4,
     hjust = .5,
     vjust = -0.2,
     color = "#000000",
@@ -547,12 +551,12 @@ aes(x = role,
     axis.text.x = element_text(
       face = "bold",
       color = "#245953",
-      size = rel(1)
+      size = 15
     )
   ) +
   theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -564,15 +568,16 @@ aes(x = role,
     axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
   ) +
   guides(fill = guide_legend(nrow = 1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 
 
-ggsave("04_reporting/02_visuals/staff_exteacher_age.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+ggsave("04_reporting/02_visuals/staff_exteacher_age1.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
 # cross reference age categories with qualifications ####
@@ -597,9 +602,9 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
            stat = "identity",
            position = "dodge") +
   scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = n),
+  geom_text(aes(label = scales::comma(n)),
             position = position_dodge(.9),
-            size = 3,
+            size = 4,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -607,11 +612,11 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = rel(1))
+    axis.text.x = element_text(face="bold",color = "#245953", size = 12)
   ) +
   theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
     panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
@@ -623,15 +628,16 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
     axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
   ) +
   guides(fill = guide_legend(nrow = 1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 
 
 ggsave("04_reporting/02_visuals/age_qualification.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+       units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
 
@@ -658,11 +664,28 @@ tmis_age_long <- tmis_age |>
 # Identify French teachers
 
 tmis_age_long <- tmis_age_long |>
-  mutate(french_teacher = ifelse(str_detect(position,"(?i)french"),"French",NA),
-         kiswahili_teacher = ifelse(str_detect(position,"(?i)kiswahili"),"kiswahili",NA),
-         music_teacher = ifelse(str_detect(position,"(?i)music"),"Music",NA),
-         accounting_teacher = ifelse(str_detect(position,"(?i)accounting"),"Accounting",NA),
-         entr_teacher = ifelse(str_detect(position,"(?i)entrepreneurship"),"Entrepreneurship",NA))
+  mutate(
+    french_teacher = ifelse(str_detect(position, "(?i)Lower primary"), "French", NA),
+    kiswahili_teacher = ifelse(str_detect(position, "(?i)kiswahili"), "kiswahili", NA),
+    music_teacher = ifelse(str_detect(position, "(?i)music"), "Music", NA),
+    accounting_teacher = ifelse(str_detect(position, "(?i)accounting"), "Accounting", NA),
+    entr_teacher = ifelse(
+      str_detect(position, "(?i)entrepreneurship"),
+      "Entrepreneurship",
+      NA
+    ),
+    DOS = ifelse(teachingCategoryName == "SECONDARY" &
+                   role == "DOS", "DOS", NA),
+    DOD = ifelse(teachingCategoryName == "SECONDARY" &
+                   role == "DOD", "DOD", NA),
+    HT_DOS = ifelse(
+      teachingCategoryName == "SECONDARY" &
+        role %in% c("Head Teacher", "DOS"),
+      "HT and DOS",
+      NA
+    )
+  )
+# view(filter(tmis_age_long,str_detect(position,"(?i)Lower primary")))
 
 # save dataset
 
@@ -673,10 +696,10 @@ write.xlsx(tmis_age_long,
 # create datasets for subjects with teachers with retirement age #### 
 
 columns_filter <- c("french_teacher", "kiswahili_teacher", "music_teacher",
-                    "accounting_teacher","entr_teacher")
+                    "accounting_teacher","entr_teacher","DOS","DOD","HT_DOS")
 
 for (columns in columns_filter) {
-  assign(columns,count(filter(tmis_age_long,Age>=65,get(columns)!=0),Year,
+  assign(columns,count(filter(tmis_age_long,Age>=50,get(columns)!=0),Year,
                        teachingCategoryName,
                        get(columns),name = "Total"))
   assign(columns,select(get(columns),Year,teachingCategoryName,Total))
@@ -774,35 +797,49 @@ write.xlsx(
 # join tmis_label with tmis_age_long to append the subject variable
 tmis_ret_subj <- tmis_age_long |>
   left_join(select(tmis_label,employeeid,subject))
-tmis_ret_subj_filter <- filter(tmis_ret_subj,Age >= 65,
+tmis_ret_subj_filter <- filter(tmis_ret_subj,Age >= 50,
                                subject %in% c("Headteacher","Languages",
                                               "Primary","STEM"))
 # save dataset (Primary)
 write.xlsx(
   tmis_ret_subj_filter,
-  "04_reporting/01_tables/updated/tmis_ret_subj_filter.xlsx",
+  "04_reporting/01_tables/updated/tmis_ret_subj_filter1.xlsx",
   asTable = T
 )
 
-ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
-  geom_bar(position = "dodge") +
+ret_subj_filter <- tmis_ret_subj_filter |>
+  mutate(Age_brackets = if_else(Age >= 70, "70+",
+                                if_else(
+                                  Age >= 65, "65-69",
+                                  if_else(Age >= 60, "60-64",
+                                          if_else(
+                                            Age >= 55, "55-59",
+                                            if_else(Age >= 50, "50-54", "Below 50")
+                                          ))
+                                )))|>
+  group_by(Year,subject,Age_brackets)|>
+  mutate(total_count = n())|>
+  ungroup()|>
+  filter(Age>=65)
+
+ggplot(data = count(ret_subj_filter,Year,subject),
+       aes(x = Year,y = n,group=subject)) +
+  geom_bar(stat = "identity",position = "dodge",aes(fill=subject)) + 
+  geom_text(aes(label = n),
+            position = position_dodge(.9),
+            size = 4,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold")+
   scale_fill_brewer(palette = "Blues")+
   scale_x_continuous(breaks=seq(2023,2030,1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))+
-  ylim(c(0,800)) +
-  ggtitle("Retirement by Position") +
-  theme( # remove the vertical grid lines
-    panel.grid.major.x = element_blank() ,
-    # explicitly set the horizontal lines (or they will disappear too)
-    panel.grid.major.y = element_line( size=.1, color="black" ) ,
-    panel.grid.minor.x = element_blank(),
-    panel.grid.minor.y = element_blank()
-  )+
+  ggtitle("Retirement by Position")+
   theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
     plot.title = element_text(hjust = 0.5),
-    #panel.grid = element_blank(),
+    panel.grid = element_blank(),
     #remove x axis ticks
     #axis.text.x = element_blank(),
     axis.title.x = element_blank(),
@@ -810,26 +847,28 @@ ggplot(data = tmis_ret_subj_filter,aes(x = Year,group = subject,fill=subject)) +
     #remove x axis labels
     axis.ticks.x = element_blank(),
     axis.ticks.y = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = 20),
-    axis.text.y = element_text(face="bold",color = "#245953", size = 20),
+    #axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    # axis.text.y = element_text(face="bold",color = "#245953", size = 20),
     #remove x axis ticks
     #axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
   ) +
-  guides(fill = guide_legend(nrow = 1))+ 
-  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+  guides(fill = guide_legend(nrow = 1))
 
-ggsave("04_reporting/02_visuals/retirement_position.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+ggsave("04_reporting/02_visuals/retirement_position_65.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
 
 # Age distribution by Role ####
 tmis_age_brackets <- tmis_age_long |>
-  mutate(Age_brackets = if_else(Age >= 70, "70 and above",
+  mutate(Age_brackets = if_else(Age >= 70, "70+",
                                 if_else(
                                   Age >= 65, "65-69",
                                   if_else(Age >= 60, "60-64",
@@ -856,7 +895,7 @@ write.xlsx(
 )
 
 write.xlsx(tmis_age_brackets,
-           "04_reporting/01_tables/updated/tmis_age_brackets_position.xlsx",
+           "04_reporting/01_tables/updated/tmis_age_brackets_position1.xlsx",
            asTable = T)
 
 
@@ -871,11 +910,14 @@ tmis_wider_projection <- filter(tmis_age_brackets, Age >= 50) |>
     kiswahili_teacher,
     music_teacher,
     accounting_teacher,
+    DOS,
+    HT_DOS,
+    DOD,
     name = "Total count"
   )
 
 write.xlsx(tmis_wider_projection,
-           "04_reporting/01_tables/updated/tmis_wider_projection.xlsx",
+           "04_reporting/01_tables/updated/tmis_wider_projection1.xlsx",
            asTable = T)
 
 
@@ -889,7 +931,14 @@ entr_temp<-filter(tmis_age_brackets, Age >= 50) |>
    name = "Total count"
   )|>
   filter(!is.na(entr_teacher))|>
-  mutate(unit_cost = 55798) |>
+  mutate(unit_cost = ifelse(Year==2023,55798,
+                            ifelse(Year == 2024, 143148,
+                                   ifelse(Year == 2025, 142512,
+                                          ifelse(Year == 2026,146787,
+                                                 ifelse(Year == 2027,151191,
+                                                        ifelse(Year == 2028,155726,
+                                                               ifelse(Year == 2029,160398,
+                                                                      ifelse(Year == 2030,165210,NA))))))))) |>
   rename(trained_teacher=entr_teacher)
 
 music_temp <- filter(tmis_age_brackets, Age >= 50) |>
@@ -902,7 +951,14 @@ music_temp <- filter(tmis_age_brackets, Age >= 50) |>
     name = "Total count"
   )|>
   filter(!is.na(music_teacher))|>
-  mutate(unit_cost = 13841) |>
+  mutate(unit_cost = ifelse(Year==2023,13841,
+                            ifelse(Year == 2024, 197393,
+                                   ifelse(Year == 2025, 203315,
+                                          ifelse(Year == 2026,209415,
+                                                 ifelse(Year == 2027,215697,
+                                                        ifelse(Year == 2028,222168,
+                                                               ifelse(Year == 2029,228833,
+                                                                      ifelse(Year == 2030,235698,NA))))))))) |>
   rename(trained_teacher=music_teacher)
 
 acc_temp <- filter(tmis_age_brackets, Age >= 50) |>
@@ -915,7 +971,14 @@ acc_temp <- filter(tmis_age_brackets, Age >= 50) |>
     name = "Total count"
   )|>
   filter(!is.na(accounting_teacher))|>
-  mutate(unit_cost = 54562) |>
+  mutate(unit_cost = ifelse(Year==2023,54562,
+                            ifelse(Year == 2024, 143148,
+                                   ifelse(Year == 2025, 143471,
+                                          ifelse(Year == 2026,147775,
+                                                 ifelse(Year == 2027,152209,
+                                                        ifelse(Year == 2028,156775,
+                                                               ifelse(Year == 2029,161478,
+                                                                      ifelse(Year == 2030,166323,NA))))))))) |>
   rename(trained_teacher=accounting_teacher)
 
 ksw_temp <- filter(tmis_age_brackets, Age >= 50) |>
@@ -928,7 +991,14 @@ ksw_temp <- filter(tmis_age_brackets, Age >= 50) |>
     name = "Total count"
   )|>
   filter(!is.na(kiswahili_teacher))|>
-  mutate(unit_cost = 32995) |>
+  mutate(unit_cost = ifelse(Year==2023,32995,
+                            ifelse(Year == 2024, 33985,
+                                   ifelse(Year == 2025, 35004,
+                                          ifelse(Year == 2026,36054,
+                                                 ifelse(Year == 2027,37136,
+                                                        ifelse(Year == 2028,38250,
+                                                               ifelse(Year == 2029,39398,
+                                                                      ifelse(Year == 2030,40579,NA))))))))) |>
   rename(trained_teacher=kiswahili_teacher)
 
 french_temp <- filter(tmis_age_brackets, Age >= 50,
@@ -942,7 +1012,14 @@ french_temp <- filter(tmis_age_brackets, Age >= 50,
     name = "Total count"
   )|>
   filter(!is.na(french_teacher))|>
-  mutate(unit_cost = 15824) |>
+  mutate(unit_cost = ifelse(Year==2023,15824,
+                            ifelse(Year == 2024, 162930,
+                                   ifelse(Year == 2025, 167457,
+                                          ifelse(Year == 2026,172480,
+                                                 ifelse(Year == 2027,177655,
+                                                        ifelse(Year == 2028,182985,
+                                                               ifelse(Year == 2029,188474,
+                                                                      ifelse(Year == 2030,194128,NA))))))))) |>
   rename(trained_teacher=french_teacher) 
 
 prim_temp  <- filter(tmis_age_brackets, Age >= 50,
@@ -954,8 +1031,80 @@ prim_temp  <- filter(tmis_age_brackets, Age >= 50,
     Age_brackets,
     name = "Total count"
   )|>
-  mutate(unit_cost = 16533,
+  mutate(unit_cost = ifelse(Year==2023,16532.8,
+                            ifelse(Year == 2024, 138643.9,
+                                   ifelse(Year == 2025, 138643.26,
+                                          ifelse(Year == 2026,138643.26,
+                                                 ifelse(Year == 2027,138643.26,
+                                                        ifelse(Year == 2028,138643.26,
+                                                               ifelse(Year == 2029,138643.26,
+                                                                      ifelse(Year == 2030,138643.26,NA)))))))),
          trained_teacher = "Pre_primary and Primary")
+
+dos_temp <- filter(tmis_age_brackets, Age >= 50,
+                   teachingCategoryName=="SECONDARY") |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    DOS,
+    name = "Total count"
+  )|>
+  filter(!is.na(DOS))|>
+  mutate(unit_cost = ifelse(Year==2023,31772,
+                            ifelse(Year == 2024, 83000,
+                                   ifelse(Year == 2025, 96817,
+                                          ifelse(Year == 2026,112933,
+                                                 ifelse(Year == 2027,131732,
+                                                        ifelse(Year == 2028,153661,
+                                                               ifelse(Year == 2029,179240,
+                                                                      ifelse(Year == 2030,209077,NA))))))))) |>
+  rename(trained_teacher=DOS)
+
+
+dod_temp <- filter(tmis_age_brackets, Age >= 50,
+                   teachingCategoryName=="SECONDARY") |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    DOD,
+    name = "Total count"
+  )|>
+  filter(!is.na(DOD))|>
+  mutate(unit_cost = ifelse(Year==2023,83623.8,
+                            ifelse(Year == 2024, 46457.6,
+                                   ifelse(Year == 2025, 38010.8,
+                                          ifelse(Year == 2026,31100.3,
+                                                 ifelse(Year == 2027,25446.18,
+                                                        ifelse(Year == 2028,20819.9,
+                                                               ifelse(Year == 2029,17034.8,
+                                                                      ifelse(Year == 2030,13937.8,NA))))))))) |>
+  rename(trained_teacher=DOD)
+
+
+ht_dos_temp <- filter(tmis_age_brackets, Age >= 50,
+                   teachingCategoryName=="SECONDARY") |>
+  count(
+    Year,
+    teachingCategoryName,
+    qualificationLevel,
+    Age_brackets,
+    HT_DOS,
+    name = "Total count"
+  )|>
+  filter(!is.na(HT_DOS))|>
+  mutate(unit_cost = ifelse(Year==2023,24814.4,
+                            ifelse(Year == 2024, 185787.27,
+                                   ifelse(Year == 2025, 185638.3,
+                                          ifelse(Year == 2026,183950.7,
+                                                 ifelse(Year == 2027,182278.4,
+                                                        ifelse(Year == 2028,180621.35,
+                                                               ifelse(Year == 2029,178979.3,
+                                                                      ifelse(Year == 2030,177352.25,NA))))))))) |>
+  rename(trained_teacher=HT_DOS)
 
 projection_data <-
   rbind(entr_temp,
@@ -963,20 +1112,181 @@ projection_data <-
         ksw_temp,
         acc_temp,
         entr_temp,
-        prim_temp)
+        prim_temp,
+        dos_temp,
+        dod_temp,
+        ht_dos_temp)
 
 projection_data <- projection_data |>
   mutate(`Total cost` = `Total count` * unit_cost)
 
 
 write.xlsx(projection_data,
-           "04_reporting/01_tables/updated/projection_data.xlsx",
+           "04_reporting/01_tables/updated/projection_data1.xlsx",
            asTable = T)
 
-# aggregating on teaching level
+# Budget implication aggregating on teaching level ####
 projection_data_level <- projection_data |>
   group_by(Year,teachingCategoryName)|>
   summarize(total_cost_level = sum(`Total cost`))
+
+#visualization
+
+ggplot(data = projection_data_level,
+       aes(x = Year,y=total_cost_level,group = teachingCategoryName,
+           fill=teachingCategoryName)) +
+  geom_bar(position = "dodge",stat = "identity") +
+  scale_fill_brewer(palette = "Blues")+
+  scale_x_continuous(breaks=seq(2023,2030,1))+ 
+  ylim(c(0,3100000000)) + 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  ggtitle("Budget implication by teaching level") +
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( size=.1, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )+
+  theme(
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 20),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 20),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+
+ggsave("04_reporting/02_visuals/retirement_position_50_new.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
+       device = "png")
+
+
+
+
+
+# Budget implication aggregating on training program ####
+#visualization
+options(scipen = 999)
+ggplot(data = projection_data,
+       aes(x = Year,y=`Total cost`)) +
+  geom_bar(position = "dodge",stat = "identity",fill = "#3876BF") +
+  scale_fill_brewer(palette = "Blues")+
+  scale_x_continuous(breaks=seq(2023,2030,1))+ 
+  facet_wrap(~trained_teacher,scales = "free")+
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  ggtitle("Budget implication by Trainings") +
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( size=.1, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )+
+  theme(
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 8),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 8),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+
+ggsave("04_reporting/02_visuals/budget_trainings_new.png",
+       units = "px",width = 2000,height = 1000,dpi = 150,
+       device = "png")
+
+# Budget implications by training and age bracket ####
+options(scipen = 999)
+cols_data <- unique(projection_data$trained_teacher)
+for (i in cols_data){
+  print(i)
+  ggplot(data = filter(projection_data,trained_teacher == i),
+         aes(x = Year,y=`Total cost`)) +
+    geom_bar(position = "dodge",stat = "identity",fill = "#3876BF") +
+    scale_fill_brewer(palette = "Blues")+
+    scale_x_continuous(breaks=seq(2023,2030,1))+ 
+    facet_wrap(~Age_brackets,scales = "free")+
+    scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                       labels = label_comma())+
+    ggtitle(paste("Budget implication by Trainings:",i)) +
+    theme( # remove the vertical grid lines
+      panel.grid.major.x = element_blank() ,
+      # explicitly set the horizontal lines (or they will disappear too)
+      panel.grid.major.y = element_line( size=.1, color="black" ) ,
+      panel.grid.minor.x = element_blank(),
+      panel.grid.minor.y = element_blank()
+    )+
+    theme(
+      plot.background = element_rect(fill = c("white")),
+      panel.background = element_rect(fill = c("white")),
+      plot.title = element_text(hjust = 0.5),
+      #panel.grid = element_blank(),
+      #remove x axis ticks
+      #axis.text.x = element_blank(),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      #remove x axis labels
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_text(face="bold",color = "#245953", size = 8),
+      axis.text.y = element_text(face="bold",color = "#245953", size = 8),
+      #remove x axis ticks
+      #axis.text.y = element_blank(),
+      legend.box = "horizontal",
+      legend.position = "bottom",
+      legend.background = element_rect(fill = c("white")),
+      legend.title = element_blank(),
+      legend.text = element_text(size = 10)
+    ) +
+    guides(fill = guide_legend(nrow = 1))
+  
+  ggsave(
+    paste0(
+      "04_reporting/02_visuals/",
+      "budget_trainings_",
+      gsub(" ", "", i, fixed = TRUE),
+      ".png"
+    ),
+    units = "px",
+    width = 2000,
+    height = 1000,
+    dpi = 150,
+    device = "png"
+  )
+}
 
 #####
 count(filter(tmis_df,role=="Teacher"),teachingCategoryName)

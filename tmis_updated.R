@@ -375,44 +375,71 @@ dt_teaching_position <-
                                                     "Bursar",
                                                     "Patron",
                                                     "Matron"),]
-ggplot(data = dt_teaching_position, aes(x = subject, 
-                                       y = n, group = n)) +
-  geom_bar(aes(fill = age_categ),
-           stat = "identity",
-           position = "stack") +
-  scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = ifelse(n>700,n,NA)),
-            position = position_stack(vjust = .5),
-            size = 2.5,
+#####
+# ggplot(data = dt_teaching_position, aes(x = subject, 
+#                                        y = n, group = n)) +
+#   geom_bar(aes(fill = age_categ),
+#            stat = "identity",
+#            position = "stack") +
+#   scale_fill_brewer(palette = "Blues") +
+#   geom_text(aes(label = ifelse(n>700,n,NA)),
+#             position = position_stack(vjust = .5),
+#             size = 2.5,
+#             color = "#000000",
+#             fontface = "bold") +
+#   ggtitle("Teachers' Age by Subject") +
+#   theme(
+#     plot.title = element_text(hjust = .5),
+#     axis.ticks = element_blank(),
+#     axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
+#   ) +
+#   theme(
+#     plot.background = element_rect(fill = c("#ECE5C7")),
+#     panel.background = element_rect(fill = c("#ECE5C7")),
+#     panel.grid = element_blank(),
+#     #remove x axis ticks
+#     #axis.text.x = element_blank(),
+#     axis.title.x = element_blank(),
+#     axis.title.y = element_blank(),
+#     #remove x axis labels
+#     axis.ticks.x = element_blank(),
+#     #remove x axis ticks
+#     axis.text.x = element_blank(),
+#     legend.box = "horizontal",
+#     legend.position = "bottom",
+#     legend.background = element_rect(fill = c("#ECE5C7")),
+#     legend.title = element_blank()
+#   ) +
+#   guides(fill = guide_legend(nrow = 1))+
+#   coord_flip()
+#####
+teaching_position_grouped <- dt_teaching_position |>
+  group_by(subject) |>
+  summarize(total_count = sum(n))
+ggplot(data = teaching_position_grouped, aes(x = subject, 
+                                             y = total_count,group = total_count)) +
+  geom_bar(fill = "#3876BF",
+           stat = "identity") +
+  ggtitle("Teachers' Count by Subject") +
+  scale_fill_brewer(palette = "GnBu") +
+  geom_text(aes(label = total_count),
+            position = position_stack(.9),
+            vjust = -1.9,
+            size = 4.4,
             color = "#000000",
-            fontface = "bold") +
-  ggtitle("Teachers' Age by Subject") +
-  theme(
-    plot.title = element_text(hjust = .5),
-    axis.ticks = element_blank(),
-    axis.text.y = element_text(face="bold",color = "#245953", size = rel(.8))
-  ) +
-  theme(
-    plot.background = element_rect(fill = c("#ECE5C7")),
-    panel.background = element_rect(fill = c("#ECE5C7")),
-    panel.grid = element_blank(),
-    #remove x axis ticks
-    #axis.text.x = element_blank(),
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    #remove x axis labels
-    axis.ticks.x = element_blank(),
-    #remove x axis ticks
-    axis.text.x = element_blank(),
-    legend.box = "horizontal",
-    legend.position = "bottom",
-    legend.background = element_rect(fill = c("#ECE5C7")),
-    legend.title = element_blank()
-  ) +
-  guides(fill = guide_legend(nrow = 1))+
-  coord_flip()
-ggsave("04_reporting/02_visuals/teacher_subject_age.png",
-       units = "px",width = 2000,height = 1000,dpi = 100,
+            fontface = "bold")+
+  theme(axis.title = element_blank(),
+        axis.text.x = element_text(face="bold",color = "#245953", size = 11),
+        axis.ticks = element_blank(),
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = .5),
+        plot.background = element_rect(fill = c("white")),
+        panel.background = element_rect(fill = c("white")),
+        panel.grid = element_blank(),
+  )+ 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+ggsave("04_reporting/02_visuals/teacher_count_age.png",
+       units = "px",width = 2800,height = 1800,dpi = 200,
        device = "png")
 
 # cross reference age categories with leadership roles ####
@@ -1114,7 +1141,8 @@ projection_data <-
         prim_temp,
         dos_temp,
         dod_temp,
-        ht_dos_temp)
+        ht_dos_temp,
+        music_temp)
 
 projection_data <- projection_data |>
   mutate(`Total cost` = `Total count` * unit_cost)
@@ -1194,18 +1222,13 @@ ggplot(data = projection_data,
   ggtitle("Budget implication by Trainings") +
   theme( # remove the vertical grid lines
     panel.grid.major.x = element_blank() ,
-    # explicitly set the horizontal lines (or they will disappear too)
     panel.grid.major.y = element_line( size=.1, color="black" ) ,
     panel.grid.minor.x = element_blank(),
-    panel.grid.minor.y = element_blank()
-  )+
-  theme(
+    panel.grid.minor.y = element_blank(),
     plot.background = element_rect(fill = c("white")),
     panel.background = element_rect(fill = c("white")),
     plot.title = element_text(hjust = 0.5),
-    #panel.grid = element_blank(),
     #remove x axis ticks
-    #axis.text.x = element_blank(),
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     #remove x axis labels
@@ -1214,7 +1237,6 @@ ggplot(data = projection_data,
     axis.text.x = element_text(face="bold",color = "#245953", size = 8),
     axis.text.y = element_text(face="bold",color = "#245953", size = 8),
     #remove x axis ticks
-    #axis.text.y = element_blank(),
     legend.box = "horizontal",
     legend.position = "bottom",
     legend.background = element_rect(fill = c("white")),
@@ -1224,7 +1246,7 @@ ggplot(data = projection_data,
   guides(fill = guide_legend(nrow = 1))
 
 ggsave("04_reporting/02_visuals/budget_trainings_new.png",
-       units = "px",width = 2000,height = 1000,dpi = 150,
+       units = "px",width = 2500,height = 1800,dpi = 170,
        device = "png")
 
 # Budget implications by training and age bracket ####

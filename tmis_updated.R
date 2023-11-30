@@ -634,11 +634,11 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
-  ggtitle("Teacher's Age by Education Attainment") +
+  ggtitle("Teacher's Age by Qualification-to-teach levels") +
   theme(
     plot.title = element_text(hjust = .5),
     axis.ticks = element_blank(),
-    axis.text.x = element_text(face="bold",color = "#245953", size = 12)
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15)
   ) +
   theme(
     plot.background = element_rect(fill = c("white")),
@@ -662,8 +662,8 @@ ggplot(data = dt_age_qualification, aes(x = age_categ,
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 
 
-ggsave("04_reporting/02_visuals/age_qualification.png",
-       units = "px",width = 2000,height = 1000,dpi = 150,
+ggsave("04_reporting/02_visuals/age_qualification_teach.png",
+       units = "px",width = 2400,height = 1700,dpi = 180,
        device = "png")
 
 
@@ -1100,14 +1100,14 @@ dod_temp <- filter(tmis_age_brackets, Age >= 50,
     name = "Total count"
   )|>
   filter(!is.na(DOD))|>
-  mutate(unit_cost = ifelse(Year==2023,83623.8,
-                            ifelse(Year == 2024, 46457.6,
-                                   ifelse(Year == 2025, 38010.8,
-                                          ifelse(Year == 2026,31100.3,
-                                                 ifelse(Year == 2027,25446.18,
-                                                        ifelse(Year == 2028,20819.9,
-                                                               ifelse(Year == 2029,17034.8,
-                                                                      ifelse(Year == 2030,13937.8,NA))))))))) |>
+  mutate(unit_cost = ifelse(Year==2023,149672,
+                            ifelse(Year == 2024, 94419,
+                                   ifelse(Year == 2025, 87836,
+                                          ifelse(Year == 2026,80560,
+                                                 ifelse(Year == 2027,73887,
+                                                        ifelse(Year == 2028,67767,
+                                                               ifelse(Year == 2029,62154,
+                                                                      ifelse(Year == 2030,57006,NA))))))))) |>
   rename(trained_teacher=DOD)
 
 
@@ -1296,15 +1296,15 @@ for (i in cols_data){
   
   ggsave(
     paste0(
-      "04_reporting/02_visuals/",
+      "04_reporting/02_visuals/trainings_visuals/",
       "budget_trainings_",
       gsub(" ", "", i, fixed = TRUE),
       ".png"
     ),
     units = "px",
-    width = 2000,
-    height = 1000,
-    dpi = 150,
+    width = 2600,
+    height = 1800,
+    dpi = 180,
     device = "png"
   )
 }
@@ -1339,3 +1339,8 @@ write.xlsx(
   "04_reporting/01_tables/updated/cross_teacher_age.xlsx",
   asTable = T
 )
+
+# dataset to be sent so we can get employees salary packages ####
+tmis_sub <- select(tmis_df, employeeid,teachingCategoryName,qualificationLevel,
+                   schoolCode,schoolName,sectorName,districtName)
+#write_dta(tmis_sub,"03_clean_data/tmis_subdata.dta")

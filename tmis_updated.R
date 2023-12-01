@@ -124,9 +124,9 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
     position = "dodge"
   ) +
   scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = n),
+  geom_text(aes(label = scales::comma(n)),
             position = position_dodge(.9),
-            size = 4.4,
+            size = 4,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -166,7 +166,7 @@ ggplot(data = dt_age_level, aes(x = age_categ, y = n,group = teachingCategoryNam
   guides(fill = guide_legend(nrow = 1))+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 ggsave("04_reporting/02_visuals/level_age1.png",
-       units = "px",width = 2000,height = 1000,dpi = 150,
+       units = "px",width = 2500,height = 1700,dpi = 180,
        device = "png")
 
 # cross reference age categories with positions ####
@@ -422,7 +422,7 @@ ggplot(data = teaching_position_grouped, aes(x = subject,
            stat = "identity") +
   ggtitle("Teachers' Count by Subject") +
   scale_fill_brewer(palette = "GnBu") +
-  geom_text(aes(label = total_count),
+  geom_text(aes(label = scales::comma(total_count)),
             position = position_stack(.9),
             vjust = -1.9,
             size = 4.4,
@@ -506,7 +506,7 @@ ggplot(data = dt_age_teacher, aes(x = age_categ,
                                y = n, group = n)) +
   geom_bar(stat = "identity",fill = "#3B9AE1") +
   scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = n),
+  geom_text(aes(label = scales::comma(n)),
             position = position_dodge(.9),
             size = 4.4,
             vjust=-.5,
@@ -1146,6 +1146,7 @@ projection_data <-
 
 projection_data <- projection_data |>
   mutate(`Total cost` = `Total count` * unit_cost)
+
 
 
 write.xlsx(projection_data,

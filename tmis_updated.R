@@ -1362,4 +1362,8 @@ view(filter(tmis_join, is.na(GrossSalary) |
 view(count(filter(
   tmis_join, is.na(GrossSalary) |
     is.na(qualificationLevel)
-), employeeid))
+), employeeid)) # there are 40 employees who either belong in the tmis_salary or 
+# tmis_ret_subj
+
+tmis_join <- filter(tmis_join,!is.na(GrossSalary),!is.na(qualificationLevel))
+sum(is.na(tmis_join$GrossSalary))

@@ -169,7 +169,7 @@ ggsave("04_reporting/02_visuals/level_age1.png",
        units = "px",width = 2500,height = 1700,dpi = 180,
        device = "png")
 
-# cross reference age categories with positions ####
+# cross reference age categories with positions and labelling ####
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
 #write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
@@ -1345,3 +1345,21 @@ write.xlsx(
 tmis_sub <- select(tmis_df, employeeid,teachingCategoryName,qualificationLevel,
                    schoolCode,schoolName,sectorName,districtName)
 #write_dta(tmis_sub,"03_clean_data/tmis_subdata.dta")
+
+# GROSS SALARIES budget analysis ####
+tmis_salary <- read_excel(path = "02_raw_data/Teachers Salary 2023_october.xlsx")
+tmis_salary <- tmis_salary |>
+  separate_longer_delim(Level,delim = ".") |>
+  mutate(col_names = ifelse(str_detect(Level,"[0-9]"),"level_1","level_2")) |>
+  pivot_wider(names_from = col_names,values_from = Level) 
+
+
+tmis_join <- rename(tmis_salary, employeeid = id) |>
+  full_join(mutate(tmis_ret_subj, employeeid = as.character(employeeid)))
+sum(is.na(tmis_join$GrossSalary))
+view(filter(tmis_join, is.na(GrossSalary) |
+              is.na(qualificationLevel)))
+view(count(filter(
+  tmis_join, is.na(GrossSalary) |
+    is.na(qualificationLevel)
+), employeeid))

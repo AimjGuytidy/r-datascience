@@ -1,5 +1,5 @@
 rm(list = ls())
-
+# Import necessary libraries ####
 library(tidyverse)
 library(data.table)
 library(readxl)
@@ -35,7 +35,7 @@ tmis_filter <- tmis_df|>
   select(employeeid,gender,civilStatus,year_birth,position,qualificationLevel,
          role,schoolName:districtName)|>
   mutate(age = as.integer(format(Sys.Date(), "%Y")) - as.integer(year_birth),
-         age_categ = if_else(age >= 70, "70 and above",
+         age_categ = if_else(age >= 70, "70+",
                                 if_else(age >= 65, "65-69",
                                         if_else(age >= 60, "60-64",
                                                 if_else(age >= 55, "55-59",
@@ -48,7 +48,8 @@ tmis_filter <- tmis_df|>
                                                                                                         "18-23")))))))))))
 # Cross reference age categories with gender ####
 
-# filter staff that is considered as teaching staff
+# filter staff that is considered as teaching staff and non-teaching staff that 
+# will be impacted with age related policies
 tmis_teacher <- filter(tmis_filter,
                        role %in% c("Teacher", "DOD", "DOS", "Head Teacher"))
 
@@ -173,6 +174,9 @@ ggsave("04_reporting/02_visuals/level_age1.png",
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
 #write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
+# after saving the dataset, we wrote a STATA script to assign labels to different 
+# categories of the position variable. the script can be found here: 
+# Box\IPA_RWA_Project_STARS\07_Data\31_TMIS_analysis\01_scripts\tmis_position_assign_labels.do
 
 # after assigning labels to position now we can start our categorization
 tmis_label <- read_dta("03_clean_data/tmis_filter.dta")
@@ -299,7 +303,7 @@ tmis_label <- tmis_label |>
                  "40",
                  "41",
                  "66",
-                 "67") ~ "Finance",
+                 "67") ~ "Economics",
     class %in% c("42","43") ~ "Education",
     class %in% c("73","142") ~ "Special Needs Educ",
     class %in% c("10","11") ~ "Bursar",
@@ -339,7 +343,7 @@ ggplot(data = dt_age_position_vis, aes(x = age_categ,
            position = "stack") +
   ggtitle("Teachers' Age by Subject/Position") +
   scale_fill_brewer(palette = "GnBu") +
-  geom_text(aes(label = n),
+  geom_text(aes(label = scales::comma(n)),
             position = position_stack(.9),
             vjust = -1,
             size = 3.4,
@@ -361,8 +365,8 @@ ggplot(data = dt_age_position_vis, aes(x = age_categ,
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
   guides(fill = guide_legend(nrow = 1))
 
-ggsave("04_reporting/02_visuals/position_age_wrap.png",
-       units = "px",width = 2000,height = 2000,dpi = 150,
+ggsave("04_reporting/02_visuals/position_age_wrap1.png",
+       units = "px",width = 3100,height = 2500,dpi = 200,
        device = "png")
 
 # visualization of only teaching position
@@ -439,7 +443,7 @@ ggplot(data = teaching_position_grouped, aes(x = subject,
   )+ 
   scale_y_continuous(expand = expansion(mult = c(0, .1)))
 ggsave("04_reporting/02_visuals/teacher_count_age.png",
-       units = "px",width = 2800,height = 1800,dpi = 200,
+       units = "px",width = 2900,height = 1800,dpi = 200,
        device = "png")
 
 # cross reference age categories with leadership roles ####
@@ -1367,3 +1371,5 @@ view(count(filter(
 
 tmis_join <- filter(tmis_join,!is.na(GrossSalary),!is.na(qualificationLevel))
 sum(is.na(tmis_join$GrossSalary))
+
+view(tmis_join)

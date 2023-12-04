@@ -1141,21 +1141,115 @@ projection_data <-
         french_temp,
         ksw_temp,
         acc_temp,
-        entr_temp,
         prim_temp,
         dos_temp,
         dod_temp,
         ht_dos_temp,
         music_temp)
 
+# constraining french and Entr to not exceed the number of teachers to be trained
+
 projection_data <- projection_data |>
-  mutate(`Total cost` = `Total count` * unit_cost)
+  rename(total_count = `Total count`) |>
+  group_by(Year, trained_teacher) |>
+  arrange(Year,
+          trained_teacher,
+          Age_brackets,
+          qualificationLevel,
+          teachingCategoryName) |>
+  ungroup() |>
+  mutate(
+    total_count = ifelse(
+      Age_brackets %in% c("50-54", "55-59") &
+        trained_teacher == "Entrepreneurship" &
+        Year > 2024,
+      ifelse(
+        Year == 2025 & qualificationLevel == "A1" &
+          Age_brackets == "50-54",
+        41,
+        ifelse(
+          Year == 2026 & qualificationLevel == "A1" &
+            Age_brackets == "50-54",
+          1,
+          ifelse(
+            Year == 2027 & qualificationLevel == "A0" &
+              Age_brackets == "50-54",
+            69,
+            ifelse(
+              Year == 2028 & qualificationLevel == "A0" &
+                Age_brackets == "50-54",
+              31,
+              ifelse(
+                Year == 2029 & qualificationLevel == "A0" &
+                  Age_brackets == "50-54",
+                22,
+                ifelse(
+                  Year == 2029 & qualificationLevel == "A1" &
+                    Age_brackets == "50-54",
+                  17,
+                  ifelse(
+                    Year == 2030 & qualificationLevel %in% c("A0", "A1") &
+                      Age_brackets == "50-54",
+                    0,
+                    ifelse(
+                      Year == 2030 & qualificationLevel == "A1" &
+                        Age_brackets == "55-59",
+                      42,
+                      total_count
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ),total_count),
+         total_cost = total_count * unit_cost,
+    total_count = ifelse(
+      trained_teacher == "French",
+      ifelse(
+        qualificationLevel == "A2" &
+          Age_brackets %in% c("50-54","55-59"),
+        0,
+        ifelse(Year == 2027 & 
+               Age_brackets == "60-64",
+               total_count - 22,
+               ifelse(Year == 2028 & 
+                      Age_brackets == "60-64",
+                      total_count - 180,
+                      ifelse(Year == 2029 & 
+                               Age_brackets == "60-64",
+                             total_count - 344,
+                             ifelse(Year == 2030 & 
+                                      Age_brackets == "60-64",
+                                    total_count - 576,total_count))))
+      ),total_count))|>
+  group_by(Year, trained_teacher) |>
+  mutate(total_year = sum(total_count,na.rm = T) ) |>
+  ungroup()
 
-
+view(filter(
+  projection_data,
+  trained_teacher %in% c("French", "Entrepreneurship")
+))
 
 write.xlsx(projection_data,
            "04_reporting/01_tables/updated/projection_data1.xlsx",
            asTable = T)
+projection_subset <-
+  summarise(
+    group_by(
+      filter(
+        projection_data,
+        trained_teacher %in% c("French", "Entrepreneurship")
+      ),
+      Year,
+      Age_brackets,
+      trained_teacher
+    ),
+    total_count = sum(`Total count`, na.rm = T)
+  )
+
 
 # Budget implication aggregating on teaching level ####
 projection_data_level <- projection_data |>

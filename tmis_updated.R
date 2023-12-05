@@ -1460,8 +1460,100 @@ view(count(filter(
 tmis_join <- filter(tmis_join,!is.na(GrossSalary),!is.na(qualificationLevel))
 sum(is.na(tmis_join$GrossSalary))
 
+tmis_join <- tmis_join |>
+  mutate(Age_categ = if_else(Age >= 70, "70+",
+                             if_else(Age >= 65, "65-69",
+                                     if_else(Age >= 60, "60-64",
+                                             if_else(Age >= 55, "55-59",
+                                                     if_else(Age >= 50, "50-54",
+                                                             if_else(Age >= 45, "45-49",
+                                                                     if_else(Age >= 40, "40-44",
+                                                                             if_else(Age >= 35, "35-39",
+                                                                                     if_else(Age >= 30, "30-34",
+                                                                                             if_else(Age >= 24, "24-29",
+                                                                                                     "18-23")))))))))))
+  
+
 # Salary by teaching level ####
 teacher_salary_level <- tmis_join |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(teachingCategoryName) |>
   summarise(total_salary_level = sum(GrossSalary,na.rm = T))
+
+ggplot(teacher_salary_level,aes(x = teachingCategoryName,y = total_salary_level,
+                                fill = teachingCategoryName)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette = "Blues") +
+  geom_text(aes(label = scales::comma(total_salary_level)),
+            position = position_dodge(.9),
+            size = 4.4,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teachers' Total salaries per Teaching Level") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.position = "none"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+ggsave("04_reporting/02_visuals/teacher_salary_level.png",
+       units = "px",width = 1200,height = 1800,dpi = 150,
+       device = "png")
+
+# salary by teachers' Age ####
+
+teacher_salary_age <- tmis_join |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(Year,Age_categ) |>
+  summarise(total_salary_age = sum(GrossSalary,na.rm = T))
+
+ggplot(filter(teacher_salary_age,!is.na(Age_categ),Year == 2023),
+       aes(x = Age_categ,y = total_salary_age)) + 
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  scale_color_brewer(palette = "Blues") +
+  geom_text(aes(label = scales::comma(total_salary_age)),
+            position = position_dodge(.9),
+            size = 4.4,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Teachers' Total salaries per Age group") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.position = "none"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+ggsave("04_reporting/02_visuals/teacher_salary_age.png",
+       units = "px",width = 2800,height = 2000,dpi = 200,
+       device = "png")
+
+# Salary per qualification to teach level (A0, A1, A2) ####
+

@@ -1,4 +1,4 @@
-rm(list = ls())
+rm(list = ls(all.names = T))
 # Import necessary libraries ####
 library(tidyverse)
 library(data.table)
@@ -170,7 +170,7 @@ ggsave("04_reporting/02_visuals/level_age1.png",
        units = "px",width = 2500,height = 1700,dpi = 180,
        device = "png")
 
-# cross reference age categories with positions and labelling ####
+# cross reference age categories with positions and labelling (tmis_label) ####
 
 # we need to save "tmis_filter" to dta format and categorize positions using STATA
 #write_dta(tmis_filter,"03_clean_data/tmis_filter.dta")
@@ -822,7 +822,7 @@ write.xlsx(
 )
 
 
-# Retirement by Position ####
+# Retirement by Position (tmis_ret_subj) ####
 
 # join tmis_label with tmis_age_long to append the subject variable
 tmis_ret_subj <- tmis_age_long |>
@@ -1448,16 +1448,20 @@ tmis_salary <- tmis_salary |>
 
 tmis_join <- rename(tmis_salary, employeeid = id) |>
   full_join(mutate(tmis_ret_subj, employeeid = as.character(employeeid)))
+
 sum(is.na(tmis_join$GrossSalary))
-view(filter(tmis_join, is.na(GrossSalary) |
-              is.na(qualificationLevel)))
+
 view(count(filter(
   tmis_join, is.na(GrossSalary) |
     is.na(qualificationLevel)
-), employeeid)) # there are 40 employees who either belong in the tmis_salary or 
-# tmis_ret_subj
+), employeeid)) # there are 40 employees (teachers) who either belong in the  
+# tmis_salary or tmis_ret_subj
 
 tmis_join <- filter(tmis_join,!is.na(GrossSalary),!is.na(qualificationLevel))
 sum(is.na(tmis_join$GrossSalary))
 
-view(tmis_join)
+# Salary by teaching level ####
+teacher_salary_level <- tmis_join |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(teachingCategoryName) |>
+  summarise(total_salary_level = sum(GrossSalary,na.rm = T))

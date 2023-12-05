@@ -1204,7 +1204,6 @@ projection_data <- projection_data |>
           )
         )
       ),total_count),
-         total_cost = total_count * unit_cost,
     total_count = ifelse(
       trained_teacher == "French",
       ifelse(
@@ -1223,7 +1222,8 @@ projection_data <- projection_data |>
                              ifelse(Year == 2030 & 
                                       Age_brackets == "60-64",
                                     total_count - 576,total_count))))
-      ),total_count))|>
+      ),total_count),
+    total_cost = total_count * unit_cost)|>
   group_by(Year, trained_teacher) |>
   mutate(total_year = sum(total_count,na.rm = T) ) |>
   ungroup()
@@ -1236,25 +1236,13 @@ view(filter(
 write.xlsx(projection_data,
            "04_reporting/01_tables/updated/projection_data1.xlsx",
            asTable = T)
-projection_subset <-
-  summarise(
-    group_by(
-      filter(
-        projection_data,
-        trained_teacher %in% c("French", "Entrepreneurship")
-      ),
-      Year,
-      Age_brackets,
-      trained_teacher
-    ),
-    total_count = sum(`Total count`, na.rm = T)
-  )
+
 
 
 # Budget implication aggregating on teaching level ####
 projection_data_level <- projection_data |>
   group_by(Year,teachingCategoryName)|>
-  summarize(total_cost_level = sum(`Total cost`))
+  summarize(total_cost_level = sum(total_cost))
 
 #visualization
 
@@ -1271,7 +1259,7 @@ ggplot(data = projection_data_level,
   theme( # remove the vertical grid lines
     panel.grid.major.x = element_blank() ,
     # explicitly set the horizontal lines (or they will disappear too)
-    panel.grid.major.y = element_line( size=.1, color="black" ) ,
+    panel.grid.major.y = element_line( linewidth =.1, color="black" ) ,
     panel.grid.minor.x = element_blank(),
     panel.grid.minor.y = element_blank()
   )+
@@ -1299,7 +1287,7 @@ ggplot(data = projection_data_level,
   ) +
   guides(fill = guide_legend(nrow = 1))
 
-ggsave("04_reporting/02_visuals/retirement_position_50_new.png",
+ggsave("04_reporting/02_visuals/retirement_position_50_new1.png",
        units = "px",width = 2000,height = 1000,dpi = 150,
        device = "png")
 
@@ -1310,8 +1298,11 @@ ggsave("04_reporting/02_visuals/retirement_position_50_new.png",
 # Budget implication aggregating on training program ####
 #visualization
 options(scipen = 999)
-ggplot(data = projection_data,
-       aes(x = Year,y=`Total cost`)) +
+projection_data_year <- projection_data|>
+  group_by(Year,trained_teacher)|>
+  summarize(total_trained_year = sum(total_cost,na.rm = T))
+ggplot(data = projection_data_year,
+       aes(x = Year,y=total_trained_year)) +
   geom_bar(position = "dodge",stat = "identity",fill = "#3876BF") +
   scale_fill_brewer(palette = "Blues")+
   scale_x_continuous(breaks=seq(2023,2030,1))+ 
@@ -1344,7 +1335,7 @@ ggplot(data = projection_data,
   ) +
   guides(fill = guide_legend(nrow = 1))
 
-ggsave("04_reporting/02_visuals/budget_trainings_new.png",
+ggsave("04_reporting/02_visuals/budget_trainings_new1.png",
        units = "px",width = 2500,height = 1800,dpi = 170,
        device = "png")
 

@@ -1342,10 +1342,13 @@ ggsave("04_reporting/02_visuals/budget_trainings_new1.png",
 # Budget implications by training and age bracket ####
 options(scipen = 999)
 cols_data <- unique(projection_data$trained_teacher)
+projection_data_training <- projection_data |>
+  group_by(Year,trained_teacher,Age_brackets)|>
+  summarise(total_training = sum(total_cost,na.rm = T))
 for (i in cols_data){
   print(i)
-  ggplot(data = filter(projection_data,trained_teacher == i),
-         aes(x = Year,y=`Total cost`)) +
+  ggplot(data = filter(projection_data_training,trained_teacher == i),
+         aes(x = Year,y=total_training)) +
     geom_bar(position = "dodge",stat = "identity",fill = "#3876BF") +
     scale_fill_brewer(palette = "Blues")+
     scale_x_continuous(breaks=seq(2023,2030,1))+ 
@@ -1389,7 +1392,7 @@ for (i in cols_data){
       "04_reporting/02_visuals/trainings_visuals/",
       "budget_trainings_",
       gsub(" ", "", i, fixed = TRUE),
-      ".png"
+      "1.png"
     ),
     units = "px",
     width = 2600,

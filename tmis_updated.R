@@ -1645,5 +1645,94 @@ ggsave("04_reporting/02_visuals/teacher_salary_age_qualification.png",
        units = "px",width = 2400,height = 2000,dpi = 200,
        device = "png")
 
-# salary per age and qualification to teach level ####
+# salary per age and teaching level ####
+
+teachers_salary_age_level <- tmis_join |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(Year,Age_categ,teachingCategoryName) |>
+  summarize(total_salary_age_level = sum(GrossSalary,na.rm = T))
+
+ggplot(filter(teachers_salary_age_level,!is.na(Age_categ),Year == 2023),
+       aes(x = Age_categ,y = total_salary_age_level,
+           group = teachingCategoryName, fill = teachingCategoryName)) + 
+  geom_bar(stat = "identity",position = "dodge") +
+  scale_fill_brewer(palette = "Blues") +
+  ggtitle("Teachers' Total salaries per Age Category and Teaching Level")  + 
+  ylim(c(0,3500000000)) + 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( linewidth =.1, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 20),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 20),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+
+ggsave("04_reporting/02_visuals/teacher_salary_age_level.png",
+       units = "px",width = 2400,height = 2000,dpi = 200,
+       device = "png")
+
+# salary based on roman levels ####
+
+teacher_salary_roman <- tmis_join |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(Year,level_2) |>
+  summarise(total_salary_roman = sum(GrossSalary,na.rm = T))
+
+ggplot(filter(teacher_salary_roman, Year == 2023),
+       aes(x = level_2,y = total_salary_roman)) + 
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  scale_color_brewer(palette = "Blues") +
+  geom_text(aes(label = scales::comma(total_salary_roman)),
+            position = position_dodge(.9),
+            size = 3,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle(" ") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.position = "none"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+ggsave("04_reporting/02_visuals/teacher_salary_roman.png",
+       units = "px",width = 2800,height = 2000,dpi = 200,
+       device = "png")
+
 

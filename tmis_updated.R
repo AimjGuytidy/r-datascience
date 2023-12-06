@@ -1908,4 +1908,51 @@ ggsave("04_reporting/02_visuals/teacher_salary_roman_age.png",
        units = "px",width = 7000,height = 4000,dpi = 370,
        device = "png")
 
-# Sala
+# salary for the period of 8 years (2023-2024) disaggregated by Age categories ####
+
+teacher_salary_year_age <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher"),Age >= 50) |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(Year,Age_categ) |>
+  summarise(total_salary_year_age = sum(GrossSalary,na.rm = T))
+
+ggplot(teacher_salary_year_age,
+       aes(x = Year,y = total_salary_year_age)) + 
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  scale_color_brewer(palette = "Blues") +
+  facet_wrap(~Age_categ,ncol = 2,scales = "free") + 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  scale_x_continuous(breaks = seq(2023,2030,1))+
+  ggtitle("Teachers' Total salary from 2023-2030 by Age Categories")+
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( linewidth =.4, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 15),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+ggsave("04_reporting/02_visuals/teacher_salary_year_age.png",
+       units = "px",width = 7000,height = 4000,dpi = 370,
+       device = "png")

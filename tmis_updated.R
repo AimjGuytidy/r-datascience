@@ -1556,7 +1556,8 @@ ggsave("04_reporting/02_visuals/teacher_salary_level.png",
 
 # salary by teachers' Age ####
 
-teacher_salary_age <- tmis_join |>
+teacher_salary_age <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,Age_categ) |>
   summarise(total_salary_age = sum(GrossSalary,na.rm = T))
@@ -1596,7 +1597,8 @@ ggsave("04_reporting/02_visuals/teacher_salary_age.png",
        device = "png")
 
 # Salary per qualification to teach level (A0, A1, A2) ####
-teachers_salary_qualification <- tmis_join |>
+teachers_salary_qualification <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,qualificationLevel) |>
   summarize(total_salary_qualification = sum(GrossSalary,na.rm = T))
@@ -1638,7 +1640,8 @@ ggsave("04_reporting/02_visuals/teacher_salary_qualification.png",
 
 # salary per age and qualification to teach level ####
 
-teachers_salary_age_qualification <- tmis_join |>
+teachers_salary_age_qualification <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,Age_categ,qualificationLevel) |>
   summarize(total_salary_age_qualification = sum(GrossSalary,na.rm = T))
@@ -1687,7 +1690,8 @@ ggsave("04_reporting/02_visuals/teacher_salary_age_qualification.png",
 
 # salary per age and teaching level ####
 
-teachers_salary_age_level <- tmis_join |>
+teachers_salary_age_level <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,Age_categ,teachingCategoryName) |>
   summarize(total_salary_age_level = sum(GrossSalary,na.rm = T))
@@ -1736,7 +1740,8 @@ ggsave("04_reporting/02_visuals/teacher_salary_age_level.png",
 
 # salary based on roman levels ####
 
-teacher_salary_roman <- tmis_join |>
+teacher_salary_roman <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,level_2) |>
   summarise(total_salary_roman = sum(GrossSalary,na.rm = T))
@@ -1775,10 +1780,33 @@ ggsave("04_reporting/02_visuals/teacher_salary_roman.png",
        units = "px",width = 2800,height = 2000,dpi = 200,
        device = "png")
 
+# descriptive relationship between salary and count by seniority levels ####
+salary_count_roman <- filter(tmis_join,Year == 2023) |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(level_2) |>
+  summarise(total_salaries = sum(GrossSalary,na.rm = T),
+            total_count = n())
+options(scipen = 999)
+ggplot(salary_count_roman,aes(x = total_count, y = total_salaries)) +
+  geom_point() + 
+  geom_smooth(se = F,method = lm,color="#000000")+
+  geom_text(aes(label= level_2),check_overlap = T,
+            size = 4,vjust = 1.4, hjust = 1 )+
+  xlab("Total count per level") +
+  ylab("Total salary per level") +
+  scale_y_continuous(labels = label_comma())+
+  scale_x_continuous(breaks = seq(0,60000,5000),labels = label_comma())+
+  theme_bw()
 
-# salary based on roman levels disaggregated by qualification to teach level #### 
+ggsave("04_reporting/02_visuals/teacher_salary_count_roman.png",
+       units = "px",width = 7000,height = 4000,dpi = 370,
+       device = "png")
 
-teacher_salary_qualification_roman <- tmis_join |>
+
+# salary based on seniority levels disaggregated by qualification to teach level #### 
+
+teacher_salary_qualification_roman <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,qualificationLevel,level_2) |>
   summarise(total_salary_qualification_roman = sum(GrossSalary,na.rm = T))
@@ -1823,26 +1851,6 @@ ggsave("04_reporting/02_visuals/teacher_salary_qualification_roman.png",
        units = "px",width = 7000,height = 4000,dpi = 370,
        device = "png")
 
-# descriptive relationship between salary and count by seniority levels ####
-salary_count_roman <- filter(tmis_join,Year == 2023) |>
-  mutate(GrossSalary = as.numeric(GrossSalary)) |>
-  group_by(level_2) |>
-  summarise(total_salaries = sum(GrossSalary,na.rm = T),
-            total_count = n())
-options(scipen = 999)
-ggplot(salary_count_roman,aes(x = total_count, y = total_salaries)) +
-  geom_point() + 
-  geom_smooth(se = F,method = lm,color="#000000")+
-  geom_text(aes(label= level_2),check_overlap = T,
-            size = 4,vjust = 1.4, hjust = 1 )+
-  xlab("Total count per level") +
-  ylab("Total salary per level") +
-  scale_y_continuous(labels = label_comma())+
-  scale_x_continuous(breaks = seq(0,60000,5000),labels = label_comma())+
-  theme_bw()
-  
-ggsave("04_reporting/02_visuals/teacher_salary_count_roman.png",
-       units = "px",width = 7000,height = 4000,dpi = 370,
-       device = "png")
+
 
 # 

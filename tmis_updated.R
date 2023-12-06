@@ -1474,8 +1474,48 @@ tmis_join <- tmis_join |>
                                                                                                      "18-23")))))))))))
   
 
+# Salary by school staff role ####
+teacher_salary_role <- tmis_join |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(role) |>
+  summarise(total_salary_role = sum(GrossSalary,na.rm = T))
+
+ggplot(teacher_salary_role,aes(x = str_wrap(role,width = 8),y = total_salary_role)) + 
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  geom_text(aes(label = scales::comma(total_salary_role)),
+            position = position_dodge(.9),
+            size = 4,
+            vjust=-.5,
+            color = "#000000",
+            fontface = "bold") +
+  ggtitle("Staff's Total salaries per  Role") +
+  theme(
+    plot.title = element_text(hjust = .5),
+    axis.ticks = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    #remove x axis ticks
+    axis.text.y = element_blank(),
+    legend.position = "none"
+  ) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1)))
+
+ggsave("04_reporting/02_visuals/teacher_salary_role.png",
+       units = "px",width = 4500,height = 3200,dpi = 270,
+       device = "png")
+
+
 # Salary by teaching level ####
 teacher_salary_level <- tmis_join |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(teachingCategoryName) |>
   summarise(total_salary_level = sum(GrossSalary,na.rm = T))

@@ -1781,17 +1781,23 @@ ggsave("04_reporting/02_visuals/teacher_salary_roman.png",
        device = "png")
 
 # descriptive relationship between salary and count by seniority levels ####
-salary_count_roman <- filter(tmis_join,Year == 2023) |>
-  mutate(GrossSalary = as.numeric(GrossSalary)) |>
-  group_by(level_2) |>
-  summarise(total_salaries = sum(GrossSalary,na.rm = T),
-            total_count = n())
+salary_count_roman <- filter(
+  tmis_join,
+  Year == 2023,
+  role %in% c("Teacher", "DOD", "DOS", "Head Teacher")) |>
+    mutate(GrossSalary = as.numeric(GrossSalary)) |>
+    group_by(level_2) |>
+    summarise(
+      total_salaries = sum(GrossSalary, na.rm = T),
+      total_count = n()
+    )
 options(scipen = 999)
 ggplot(salary_count_roman,aes(x = total_count, y = total_salaries)) +
   geom_point() + 
   geom_smooth(se = F,method = lm,color="#000000")+
   geom_text(aes(label= level_2),check_overlap = T,
             size = 4,vjust = 1.4, hjust = 1 )+
+  ggtitle("Relationship between Total Salary and Total count per Seniority Level")+
   xlab("Total count per level") +
   ylab("Total salary per level") +
   scale_y_continuous(labels = label_comma())+
@@ -1818,7 +1824,7 @@ ggplot(filter(teacher_salary_qualification_roman, Year == 2023),
   facet_wrap(~qualificationLevel,ncol = 2,scales = "free") + 
   scale_y_continuous(expand = expansion(mult = c(0, .1)),
                      labels = label_comma())+
-  ggtitle(" ")+
+  ggtitle("Teachers' Total salary by Seniority Level and Qualification to Teach Level ")+
   theme( # remove the vertical grid lines
     panel.grid.major.x = element_blank() ,
     # explicitly set the horizontal lines (or they will disappear too)
@@ -1853,4 +1859,53 @@ ggsave("04_reporting/02_visuals/teacher_salary_qualification_roman.png",
 
 
 
-# 
+#  salary based on seniority levels disaggregated by Age #### 
+
+teacher_salary_roman_age <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher"),Age >= 50,
+         Year == 2023) |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(Year,Age_categ,level_2) |>
+  summarise(total_salary_roman_age = sum(GrossSalary,na.rm = T))
+
+ggplot(teacher_salary_roman_age,
+       aes(x = level_2,y = total_salary_roman_age)) + 
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  scale_color_brewer(palette = "Blues") +
+  facet_wrap(~Age_categ,ncol = 2,scales = "free") + 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  ggtitle("Teachers' Total salary by Seniority Level and Age Categories ")+
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( linewidth =.4, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 15),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+ggsave("04_reporting/02_visuals/teacher_salary_roman_age.png",
+       units = "px",width = 7000,height = 4000,dpi = 370,
+       device = "png")
+
+# Sala

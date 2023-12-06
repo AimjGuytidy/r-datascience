@@ -1478,13 +1478,16 @@ tmis_join <- tmis_join |>
 teacher_salary_role <- tmis_join |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(role) |>
-  summarise(total_salary_role = sum(GrossSalary,na.rm = T))
+  summarise(total_salary_role = sum(GrossSalary,na.rm = T)) |>
+  ungroup() |>
+  mutate(tot_salary = sum(teacher_salary_role$total_salary_role,na.rm = T),
+         perc_salary = round(total_salary_role * 100/tot_salary,3))
 
 ggplot(teacher_salary_role,aes(x = str_wrap(role,width = 8),y = total_salary_role)) + 
   geom_bar(stat = "identity",fill = "#3876BF") +
-  geom_text(aes(label = scales::comma(total_salary_role)),
+  geom_text(aes(label = paste0(perc_salary,"%")),
             position = position_dodge(.9),
-            size = 4,
+            size = 6,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -1518,15 +1521,18 @@ teacher_salary_level <- tmis_join |>
   filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(teachingCategoryName) |>
-  summarise(total_salary_level = sum(GrossSalary,na.rm = T))
+  summarise(total_salary_level = sum(GrossSalary,na.rm = T)) |>
+  ungroup() |>
+  mutate(tot_salary = sum(teacher_salary_level$total_salary_level,na.rm = T),
+         perc_salary = round(total_salary_level * 100/tot_salary,2))
 
-ggplot(teacher_salary_level,aes(x = teachingCategoryName,y = total_salary_level,
+ggplot(teacher_salary_level,aes(x = teachingCategoryName,y = perc_salary,
                                 fill = teachingCategoryName)) + 
   geom_bar(stat = "identity") +
   scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = scales::comma(total_salary_level)),
+  geom_text(aes(label = paste0(perc_salary,"%")),
             position = position_dodge(.9),
-            size = 4.4,
+            size = 6.5,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +

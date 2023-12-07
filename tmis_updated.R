@@ -1476,10 +1476,12 @@ tmis_join <- tmis_join |>
 
 # Salary by school staff role ####
 teacher_salary_role <- tmis_join |>
+  filter(Year==2023) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(role) |>
   summarise(total_salary_role = sum(GrossSalary,na.rm = T)) |>
-  ungroup() |>
+  ungroup()
+teacher_salary_role <- teacher_salary_role |>
   mutate(tot_salary = sum(teacher_salary_role$total_salary_role,na.rm = T),
          perc_salary = round(total_salary_role * 100/tot_salary,3))
 
@@ -1518,11 +1520,13 @@ ggsave("04_reporting/02_visuals/teacher_salary_role.png",
 
 # Salary by teaching level ####
 teacher_salary_level <- tmis_join |>
-  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher"),Year == 2023) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(teachingCategoryName) |>
   summarise(total_salary_level = sum(GrossSalary,na.rm = T)) |>
-  ungroup() |>
+  ungroup() 
+  
+teacher_salary_level <- teacher_salary_level |>
   mutate(tot_salary = sum(teacher_salary_level$total_salary_level,na.rm = T),
          perc_salary = round(total_salary_level * 100/tot_salary,2))
 
@@ -1603,20 +1607,27 @@ ggsave("04_reporting/02_visuals/teacher_salary_age.png",
        device = "png")
 
 # Salary per qualification to teach level (A0, A1, A2) ####
+options(scipen = 999)
 teachers_salary_qualification <- tmis_join  |>
   filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher")) |>
   mutate(GrossSalary = as.numeric(GrossSalary)) |>
   group_by(Year,qualificationLevel) |>
-  summarize(total_salary_qualification = sum(GrossSalary,na.rm = T))
+  summarize(total_salary_qualification = sum(GrossSalary,na.rm = T)) |>
+  ungroup() |>
+  filter(Year == 2023)
 
-ggplot(filter(teachers_salary_qualification,Year == 2023),
+teachers_salary_qualification <- teachers_salary_qualification |>
+  mutate(tot_salary = sum(teachers_salary_qualification$total_salary_qualification,na.rm = T),
+         perc_salary = round(total_salary_qualification * 100/tot_salary,2))
+
+ggplot(teachers_salary_qualification,
        aes(x = qualificationLevel,y = total_salary_qualification,
            fill = qualificationLevel)) + 
   geom_bar(stat = "identity") +
   scale_fill_brewer(palette = "Blues") +
-  geom_text(aes(label = scales::comma(total_salary_qualification)),
+  geom_text(aes(label = paste0(perc_salary,"%")),
             position = position_dodge(.9),
-            size = 4.4,
+            size = 6,
             vjust=-.5,
             color = "#000000",
             fontface = "bold") +
@@ -1753,7 +1764,26 @@ teacher_salary_roman <- tmis_join  |>
   summarise(total_salary_roman = sum(GrossSalary,na.rm = T))
 
 ggplot(filter(teacher_salary_roman, Year == 2023),
-       aes(x = level_2,y = total_salary_roman)) + 
+       aes(x = factor(
+         level_2,
+         levels = c(
+           "II",
+           "III",
+           "IV",
+           "V",
+           "VI",
+           "VII",
+           "VIII",
+           "IX",
+           "X",
+           "XI",
+           "XII",
+           "XIII",
+           "XIV",
+           "XV",
+           "XVI"
+         )
+       ),y = total_salary_roman)) + 
   geom_bar(stat = "identity",fill = "#3876BF") +
   scale_color_brewer(palette = "Blues") +
   ggtitle("Teachers' Total Salaries per Seniority level") +
@@ -1784,6 +1814,77 @@ ggplot(filter(teacher_salary_roman, Year == 2023),
 
 ggsave("04_reporting/02_visuals/teacher_salary_roman.png",
        units = "px",width = 2800,height = 2000,dpi = 200,
+       device = "png")
+
+# Average salary based on seniority level and role ####
+avg_salary_roman_role <- tmis_join  |>
+  filter(role %in%c("Teacher", "DOD", "DOS", "Head Teacher"),Year == 2023) |>
+  mutate(GrossSalary = as.numeric(GrossSalary)) |>
+  group_by(role,level_2) |>
+  summarise(total_salary_roman = sum(GrossSalary,na.rm = T),
+            total_count_roman = n(),
+            mean_salary_roman = mean(GrossSalary, na.rm = T)) |>
+  ungroup() |>
+  mutate(avg_salary_roman = total_salary_roman / total_count_roman)
+
+
+ggplot(avg_salary_roman_role,
+       aes(x = factor(
+         level_2,
+         levels = c(
+           "II",
+           "III",
+           "IV",
+           "V",
+           "VI",
+           "VII",
+           "VIII",
+           "IX",
+           "X",
+           "XI",
+           "XII",
+           "XIII",
+           "XIV",
+           "XV",
+           "XVI"
+         )
+       ), y = mean_salary_roman)) +
+  geom_bar(stat = "identity",fill = "#3876BF") +
+  scale_color_brewer(palette = "Blues") +
+  facet_wrap(~role,ncol = 2,scales = "free") + 
+  scale_y_continuous(expand = expansion(mult = c(0, .1)),
+                     labels = label_comma())+
+  ggtitle("Average Gross Salary based on Seniority Level and Role")+
+  theme( # remove the vertical grid lines
+    panel.grid.major.x = element_blank() ,
+    # explicitly set the horizontal lines (or they will disappear too)
+    panel.grid.major.y = element_line( linewidth =.4, color="black" ) ,
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.background = element_rect(fill = c("white")),
+    panel.background = element_rect(fill = c("white")),
+    plot.title = element_text(hjust = 0.5),
+    #panel.grid = element_blank(),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(face="bold",color = "#245953", size = 15),
+    axis.text.y = element_text(face="bold",color = "#245953", size = 15),
+    #remove x axis ticks
+    #axis.text.y = element_blank(),
+    legend.box = "horizontal",
+    legend.position = "bottom",
+    legend.background = element_rect(fill = c("white")),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 15)
+  ) +
+  guides(fill = guide_legend(nrow = 1))
+ggsave("04_reporting/02_visuals/avg_teacher_salary_roman_role.png",
+       units = "px",width = 7000,height = 4000,dpi = 370,
        device = "png")
 
 # descriptive relationship between salary and count by seniority levels ####
@@ -1824,7 +1925,26 @@ teacher_salary_qualification_roman <- tmis_join  |>
   summarise(total_salary_qualification_roman = sum(GrossSalary,na.rm = T))
 
 ggplot(filter(teacher_salary_qualification_roman, Year == 2023),
-       aes(x = level_2,y = total_salary_qualification_roman)) + 
+       aes(x = factor(
+         level_2,
+         levels = c(
+           "II",
+           "III",
+           "IV",
+           "V",
+           "VI",
+           "VII",
+           "VIII",
+           "IX",
+           "X",
+           "XI",
+           "XII",
+           "XIII",
+           "XIV",
+           "XV",
+           "XVI"
+         )
+       ),y = total_salary_qualification_roman)) + 
   geom_bar(stat = "identity",fill = "#3876BF") +
   scale_color_brewer(palette = "Blues") +
   facet_wrap(~qualificationLevel,ncol = 2,scales = "free") + 
@@ -1962,3 +2082,7 @@ ggplot(teacher_salary_year_age,
 ggsave("04_reporting/02_visuals/teacher_salary_year_age.png",
        units = "px",width = 7000,height = 4000,dpi = 370,
        device = "png")
+
+
+
+#write_dta(tmis_join,"03_clean_data/tmis_join.dta")

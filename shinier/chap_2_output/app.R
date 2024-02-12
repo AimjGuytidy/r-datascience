@@ -8,7 +8,8 @@ textOutput("text"),
 verbatimTextOutput("code"),
 verbatimTextOutput("print"),
 tableOutput("static"),
-dataTableOutput("dynamic")
+dataTableOutput("dynamic"),
+plotOutput("plot",width = "600px")
 )
 
 
@@ -26,6 +27,7 @@ server <- function(input, output,session) {
   output$dynamic <- renderDataTable({
     mtcars
   },options = list(pageLength = 6))
+  output$plot <- renderPlot(plot(1:10),res = 100)
 }
 
 # Run the application 

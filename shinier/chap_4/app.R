@@ -29,7 +29,11 @@ ui <- fluidPage(
   fluidRow(column(4,dataTableOutput("diag")),
            column(4,dataTableOutput("body_part")),
            column(4,dataTableOutput("location"))),
-  fluidRow(plotOutput("age_sex"))
+  fluidRow(plotOutput("age_sex")),
+  fluidRow(column(2,
+                  actionButton("action","Tell me a story")),
+           column(8,
+                  textOutput("narrative")))
 )
 
 
@@ -60,6 +64,13 @@ server <- function(input, output) {
         labs(y = "Injuries rate per 10,000 People")}
       }, res = 96
   )
+  text_narrative <- eventReactive(
+    list(input$action,selected()),
+    selected() |>
+      sample_n(1) |>
+      pull(narrative)
+  )
+  output$narrative <- renderText(text_narrative())
   
 }
 

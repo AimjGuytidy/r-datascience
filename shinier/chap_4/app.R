@@ -22,8 +22,10 @@ count_top <- function(df, var, n= 5) {
 }
 
 ui <- fluidPage(
-  fluidRow(column(6,
-                  selectInput("code","Product",choices = prod_codes))),
+  fluidRow(column(8,
+                  selectInput("code","Product",choices = prod_codes,width = "100%")),
+           column(2,
+                  selectInput("y","Y axis", choices = c("rate","count")))),
   fluidRow(column(4,dataTableOutput("diag")),
            column(4,dataTableOutput("body_part")),
            column(4,dataTableOutput("location"))),
@@ -48,9 +50,15 @@ server <- function(input, output) {
     count_top(selected(), location)}, options = list(dom = "t",searching = F)
     )
   output$age_sex <- renderPlot(
-    {ggplot(summary_population(), aes(age, rate, color = sex)) +
+    {if(input$y == "rate"){
+      ggplot(summary_population(), aes(age, rate, color = sex)) +
       geom_line(na.rm = T, size = 0.8) +
-      labs(y = "Injuries rate per 10,000 People")}, res = 96
+      labs(y = "Injuries rate per 10,000 People")}
+      else {
+        ggplot(summary_population(), aes(age, n, color = sex)) +
+        geom_line(na.rm = T, size = 0.8) +
+        labs(y = "Injuries rate per 10,000 People")}
+      }, res = 96
   )
   
 }

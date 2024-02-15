@@ -46,9 +46,21 @@ ggplot(summary_data,aes(age,n,color = sex)) +
   ylab("Estimated number of injuries") +
   xlab("age")
 
+summary_population <- selected |>
+  count(age, sex, wt = weight) |>
+  left_join(population, by = c("age","sex")) |>
+  mutate(rate = n/population * 1e4)
+summary_population
 
 
+ggplot(summary_population,aes(age,rate,color = sex)) +
+  geom_line(na.rm = T,size = 0.8) +
+  ylab("Injuries rate per 10000") +
+  xlab("age")
 
+selected |>
+  sample_n(10) |>
+  pull(narrative)
 
 ui <- fluidPage(
   

@@ -35,7 +35,10 @@ ui <- fluidPage(
   fluidRow(column(8,
                   selectInput("code","Product",choices = prod_codes,width = "100%")),
            column(2,
-                  selectInput("y","Y axis", choices = c("rate","count")))),
+                  selectInput("y","Y axis", choices = c("rate","count"))),
+           column(2,
+                  numericInput("x","rows",value = 4, min = 2, max = 12)
+           )),
   fluidRow(column(4,dataTableOutput("diag")),
            column(4,dataTableOutput("body_part")),
            column(4,dataTableOutput("location"))),
@@ -55,13 +58,13 @@ server <- function(input, output) {
       left_join(population, by = c("age","sex")) |>
       mutate(rate = n/population * 1e4)})
   output$diag <- renderDataTable({
-    count_top(selected(), diag)}, options = list(dom = "t",searching = F)
+    count_top(selected(), diag, n = input$x)}, options = list(dom = "t",searching = F)
   )
   output$body_part <- renderDataTable({
-    count_top(selected(), body_part)}, options = list(dom = "t",searching = F)
+    count_top(selected(), body_part, n = input$x)}, options = list(dom = "t",searching = F)
   )
   output$location <- renderDataTable({
-    count_top(selected(), location)}, options = list(dom = "t",searching = F)
+    count_top(selected(), location, n = input$x)}, options = list(dom = "t",searching = F)
   )
   output$age_sex <- renderPlot(
     {if(input$y == "rate"){

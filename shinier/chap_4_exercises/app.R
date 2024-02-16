@@ -46,11 +46,15 @@ ui <- fluidPage(
   fluidRow(column(2,
                   actionButton("action","Tell me a story")),
            column(8,
-                  textOutput("narrative")))
+                  textOutput("narrative")),
+           column(2,
+                  actionButton("backward","Previous story")))
 )
 
+k = 7
 
 server <- function(input, output) {
+
   selected <- reactive({injuries |>
       filter(prod_code == input$code)})
   summary_population <- reactive({selected() |>
@@ -77,13 +81,14 @@ server <- function(input, output) {
           labs(y = "Injuries rate per 10,000 People")}
     }, res = 96
   )
-  text_narrative <- eventReactive(
-    list(input$action,selected()),
-    selected() |>
-      sample_n(1) |>
-      pull(narrative)
-  )
-  output$narrative <- renderText(text_narrative())
+  
+  output$narrative <- renderText({
+    select_subset <- input$action - input$backward + 1
+    if(select_subset >=0) {
+    selected()$narrative[select_subset] }
+    else if (select_subset > nrow(selected())) {selected()$narrative[1]}
+    else {selected()$narrative[nrow(selected())+select_subset+1]}
+    })
   
 }
 

@@ -13,3 +13,6 @@ new <- data.frame(yrs_school=c(mean(nlsw$yrs_school,na.rm = TRUE)))
 predict(model_reg,newdata = new)
 mean(nlsw$lwage)
 sum(model_reg$residuals)
+nlsw$other <- 1-nlsw$black
+model_reg_mult <- lm(lwage ~ black + other, nlsw)
+summary(model_reg_mult)

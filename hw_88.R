@@ -16,3 +16,17 @@ sum(model_reg$residuals)
 nlsw$other <- 1-nlsw$black
 model_reg_mult <- lm(lwage ~ black + other, nlsw)
 summary(model_reg_mult)
+
+model_mult <- lm(lwage ~ yrs_school + ttl_exp, nlsw)
+summary(model_mult)
+
+model_mult1 <- lm(lwage ~ I(yrs_school + 2*ttl_exp), nlsw)
+summary(model_mult1)
+
+nlsw$sumy <- nlsw$yrs_school+2*nlsw$ttl_exp
+
+model_mult10 <- lm(lwage ~ sumy, nlsw)
+summary(model_mult10)
+
+anova(model_mult1,model_mult)
+anova(model_mult,model_mult1)

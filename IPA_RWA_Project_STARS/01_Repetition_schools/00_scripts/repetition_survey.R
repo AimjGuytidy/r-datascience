@@ -76,8 +76,11 @@ View(box_rep_survey %>%
 # Check for unique options for GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION
 
 view(count(box_rep_survey,GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION))
+write.csv(count(box_rep_survey,GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION),
+          paste0(box_rep_survey_data,"/guidelines.csv"))
 
 # Check for unique options for CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION
 
 view(count(box_rep_survey,`CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`))
-
+write.csv(count(box_rep_survey,`CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`),
+          paste0(box_rep_survey_data,"/criterias.csv"))

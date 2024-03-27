@@ -29,3 +29,11 @@ box_rep_survey <- read.xlsx(here("IPA_RWA_Project_STARS","01_Repetition_schools"
                                  "01_raw","repetition_schools.xlsx"))
 
 
+# assigning values to NAs
+
+for (i in colnames(box_rep_survey)) {
+  vec <- which(is.na(box_rep_survey[,i]))
+ for (j in vec) {
+    box_rep_survey[j,i] <- box_rep_survey[j-1,i]
+    }
+}

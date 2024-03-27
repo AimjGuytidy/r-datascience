@@ -46,10 +46,11 @@ box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- str_trim(box_r
 box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- str_trim(box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
 
 # remove special characters
-box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[[:punct:]]", " ",box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\{\\}\\_\\+\\:\\\\\\?\\/\\-\\=]", " ",box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
 
-box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[[:punct:]]", " ",box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\{\\}\\_\\+\\:\\\\\\?\\/\\-\\=]", " ",box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
 
+# lower the strings
 
 # check for duplicated rows
 
@@ -78,5 +79,5 @@ view(count(box_rep_survey,GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION))
 
 # Check for unique options for CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION
 
-
+view(count(box_rep_survey,`CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`))
 

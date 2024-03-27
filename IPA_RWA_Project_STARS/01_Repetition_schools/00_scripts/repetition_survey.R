@@ -4,6 +4,8 @@
 library(here)
 library(tidyverse)
 library(openxlsx)
+library(rio)
+library(labelled)
 
 # Box Path
 
@@ -37,3 +39,40 @@ for (i in colnames(box_rep_survey)) {
     box_rep_survey[j,i] <- box_rep_survey[j-1,i]
     }
 }
+
+# remove whitespace
+box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- str_trim(box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+
+box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- str_trim(box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+
+
+
+# check for duplicated rows
+
+View(box_rep_survey %>%
+       group_by(ID) %>%               
+       mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+       filter(dup>0)%>%
+       characterize())
+
+View(box_rep_survey %>%
+       group_by(GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION) %>%               
+       mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+       filter(dup>0)%>%
+       characterize())
+
+View(box_rep_survey %>%
+       group_by(`CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`) %>%              
+       mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) %>%
+       filter(dup>0)%>%
+       characterize())
+
+
+# Check for unique options for GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION
+
+view(count(box_rep_survey,GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION))
+
+# Check for unique options for CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION
+
+
+

@@ -45,6 +45,10 @@ box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- str_trim(box_r
 
 box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- str_trim(box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
 
+# remove special characters
+box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[[:punct:]]", " ",box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+
+box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[[:punct:]]", " ",box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
 
 
 # check for duplicated rows

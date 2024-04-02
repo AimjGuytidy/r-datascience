@@ -1,3 +1,4 @@
+rm(list = ls())
 # Import repetition survey data 
 
 # libraries 
@@ -40,6 +41,34 @@ for (i in colnames(box_rep_survey)) {
     }
 }
 
+
+# partitioning the data  in 3 groups based on the ID variable#
+##############################################################
+
+str(box_rep_survey)
+
+# destring the ID variable
+box_rep_survey[,"ID"] <- as.numeric(box_rep_survey[,"ID"])
+
+#assigning the first 750 ID values to the first group
+rep_survey_1 <- filter(box_rep_survey,ID <= 750)
+rep_survey_1[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_1[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+rep_survey_1[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_1[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+write.csv(rep_survey_1, paste0(box_rep_survey_data, "/Olga.csv"))
+
+#assigning the following 751 values to the second group 
+rep_survey_2 <- filter(box_rep_survey, ID>750 & ID <=1502)
+rep_survey_2[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_2[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+rep_survey_2[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_2[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+write.csv(rep_survey_2, paste0(box_rep_survey_data, "/Francoise.csv"))
+
+#assigning the last 751 values to the third group
+rep_survey_3 <- filter(box_rep_survey, ID > 1502)
+rep_survey_3[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_3[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+rep_survey_3[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[*|-|=|\\+]", " ",rep_survey_3[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+write.csv(rep_survey_3, paste0(box_rep_survey_data, "/Parfait.csv"))
+
+
 # remove whitespace
 box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- str_trim(box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
 
@@ -47,8 +76,10 @@ box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <-
 
 # remove special characters
 box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- gsub("[\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\{\\}\\_\\+\\:\\\\\\?\\/\\-\\=]", " ",box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"])
+box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"] <- str_remove_all(box_rep_survey[,"GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION"],"-")
 
 box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- gsub("[\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\{\\}\\_\\+\\:\\\\\\?\\/\\-\\=]", " ",box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"])
+box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"] <- str_remove_all(box_rep_survey[,"CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION"],"-")
 
 # lower the strings
 

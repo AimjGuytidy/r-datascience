@@ -26,4 +26,14 @@ rep_surv_3 <- read.xlsx("01_raw/Parfait_categ.xlsx")
 
 rep_surv_comb <- rbind(rep_surv_2, rep_surv_1, rep_surv_3)
 
-# 
+# Lower case all categories to have uniformity
+
+rep_surv_comb[,"Guidelines.Categories"] <- str_trim(str_to_lower(rep_surv_comb[,"Guidelines.Categories"]))
+rep_surv_comb[,"Criteria.Categories"] <- str_trim(str_to_lower(rep_surv_comb[,"Criteria.Categories"]))
+
+# correct mistakes made in categories
+
+rep_surv_comb[which(rep_surv_comb$Guidelines.Categories == "repetion status"),
+              "Guidelines.Categories"]  <- "repetition status"
+
+# check the available categories

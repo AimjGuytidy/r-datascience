@@ -36,4 +36,67 @@ rep_surv_comb[,"Criteria.Categories"] <- str_trim(str_to_lower(rep_surv_comb[,"C
 rep_surv_comb[which(rep_surv_comb$Guidelines.Categories == "repetion status"),
               "Guidelines.Categories"]  <- "repetition status"
 
-# check the available categories
+# check the available categories #
+##################################
+
+# checking entries with NAs for categories (for guideline categories)
+
+temp_guidelines <-
+  filter(
+    rep_surv_comb,
+    is.na(Guidelines.Categories) &
+      grepl("-", GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION, fixed = T) &
+      !grepl("^-.*", GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION, fixed = F)
+  )
+temp_guidelines [, "Guidelines.Categories"] <-
+  ifelse(
+    grepl(
+      "-",
+      temp_guidelines$GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION,
+      fixed = T
+    ),
+    "specific student",
+    "data"
+  )
+
+
+# checking entries with NAs for categories (for criteria categories)
+
+temp_criterias <-
+  filter(
+    rep_surv_comb,
+    is.na(Criteria.Categories)&
+      grepl("(?i)sen$", `CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`))
+
+temp_criterias [, "Criteria.Categories"] <-
+  ifelse(
+    grepl(
+      "(?i)sen$",
+      temp_criterias$`CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`
+    ),
+    "special social case",
+    NA_character_
+  )
+
+# join
+temp_guide_filtered <- temp_guidelines |>
+  select(ID:Guidelines.Categories)
+
+
+rep_surv_comb <- rep_surv_comb |>
+    left_join(
+      temp_guide_filtered,
+      by = join_by(
+        ID,
+        `WHAT'S.THE.NAME.OF.YOUR.SCHOOL`,
+        SDMS.CODE,
+        DISTRICT,
+        SCHOOL.STATUS,
+        SCHOOL.CATEGORY,
+        GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION
+      )
+    ) |>
+    mutate(
+      Guidelines.Categories = coalesce(Guidelines.Categories.x, Guidelines.Categories.y)
+    )
+

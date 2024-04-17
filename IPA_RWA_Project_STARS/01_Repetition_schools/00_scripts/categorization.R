@@ -120,4 +120,26 @@ rep_surv_comb <- select(rep_surv_comb, -Guidelines.Categories.y,-Guidelines.Cate
 
 #Criteria
 
+temp_criteria_filtered <- temp_criterias |>
+  select(-GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION,-Guidelines.Categories)
+
+
+rep_surv_comb <- rep_surv_comb |>
+  left_join(
+    temp_criteria_filtered,
+    by = join_by(
+      ID,
+      `WHAT'S.THE.NAME.OF.YOUR.SCHOOL`,
+      SDMS.CODE,
+      DISTRICT,
+      SCHOOL.STATUS,
+      SCHOOL.CATEGORY,
+      `CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`
+    )
+  ) |>
+  mutate(
+    Criteria.Categories = coalesce(Criteria.Categories.x, Criteria.Categories.y)
+  )
+
+rep_surv_comb <- select(rep_surv_comb, -Criteria.Categories.x,-Criteria.Categories.y)
 

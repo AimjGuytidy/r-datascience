@@ -166,6 +166,24 @@ rep_guide_count <-
   rename(rep_guide_count, `Guidelines Categories` = Guidelines.Categories,
          `Total Count` = n)
 
-ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`))) +
-  geom_bar(aes(`Guidelines Categories`,`Total Count`),stat = "identity") +
-  coord_flip()
+ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`)),
+       aes(reorder(`Guidelines Categories`,`Total Count`),`Total Count`)) +
+  geom_bar(stat = "identity",
+           position = "dodge",fill = "#5BBCFF") + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 2000))  +
+  coord_flip() +
+  geom_text(aes(label=`Total Count`),
+            position = position_dodge(.9), size = 3, hjust = -.2, 
+            vjust = -.1,fontface="bold",color="#232D3F") +
+  theme(
+    plot.background = element_rect(fill = c("#F2F2F2")),
+    panel.background = element_rect(fill = c("#F2F2F2")),
+    panel.grid = element_blank(),
+    plot.title = element_text(hjust = .5),
+    #remove x axis ticks
+    #axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    #remove x axis labels
+    axis.ticks = element_blank(),  #remove x axis ticks
+    axis.text.x = element_blank())

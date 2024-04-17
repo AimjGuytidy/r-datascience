@@ -78,7 +78,10 @@ temp_criterias [, "Criteria.Categories"] <-
     NA_character_
   )
 
-# join
+# join#
+#######
+
+# Guidelines
 temp_guide_filtered <- temp_guidelines |>
   select(ID:Guidelines.Categories)
 
@@ -99,4 +102,22 @@ rep_surv_comb <- rep_surv_comb |>
     mutate(
       Guidelines.Categories = coalesce(Guidelines.Categories.x, Guidelines.Categories.y)
     )
+
+
+rep_surv_comb[which(rep_surv_comb$GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION == "KOMEZUSENGE ALPHONSE"),
+              "Guidelines.Categories"]  <- "specific student"
+
+rep_surv_comb[which(rep_surv_comb$GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION == "UWACU ANGE MARIE CHRISTELLA"),
+              "Guidelines.Categories"]  <- "specific student"
+
+rep_surv_comb[which(rep_surv_comb$GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION == "ISHIMWE ROSINE"),
+              "Guidelines.Categories"]  <- "specific student"
+rep_surv_comb[which(rep_surv_comb$GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION == "BYIRINGIRO NOAH"),
+              "Guidelines.Categories"]  <- "specific student"
+
+rep_surv_comb <- select(rep_surv_comb, -Guidelines.Categories.y,-Guidelines.Categories.x)
+
+
+#Criteria
+
 

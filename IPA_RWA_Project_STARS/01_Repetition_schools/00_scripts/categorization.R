@@ -143,3 +143,29 @@ rep_surv_comb <- rep_surv_comb |>
 
 rep_surv_comb <- select(rep_surv_comb, -Criteria.Categories.x,-Criteria.Categories.y)
 
+
+
+# Data Visualization#
+####################
+
+# guidelines
+
+rep_guide <-
+  select(
+    rep_surv_comb,
+    ID:SDMS.CODE,
+    GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION,
+    Guidelines.Categories
+  )
+
+rep_guide_dist <- rep_guide |> 
+  distinct()
+
+rep_guide_count <- count(rep_guide_dist,Guidelines.Categories)
+rep_guide_count <-
+  rename(rep_guide_count, `Guidelines Categories` = Guidelines.Categories,
+         `Total Count` = n)
+
+ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`))) +
+  geom_bar(aes(`Guidelines Categories`,`Total Count`),stat = "identity") +
+  coord_flip()

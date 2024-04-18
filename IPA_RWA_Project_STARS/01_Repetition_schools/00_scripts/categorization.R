@@ -234,3 +234,11 @@ ggplot(filter(rep_crit_count,!is.na(`Criteria Categories`)),
     axis.text.y = element_text(face = "bold", size = 10)) +
   ggtitle("Criteria to Determine Child's Academic Merit for Promotion categories")
 ggsave("03_output/criteria_categories.png",width = 2500, height = 2500,units = "px")
+
+
+
+rep_guide_count <- rep_guide_count |>
+  mutate(percentage_count = round(`Total Count`*100/sum(`Total Count`),0))
+
+rep_crit_count <- rep_crit_count |>
+  mutate(percentage_count = round(`Total Count`*100/sum(`Total Count`),0))

@@ -186,34 +186,35 @@ ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`)),
     axis.title.y = element_blank(),
     #remove x axis labels
     axis.ticks = element_blank(),  #remove x axis ticks
-    axis.text.x = element_blank()) +
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(face = "bold", size = 10)) +
   ggtitle("Guidelines to make decisions for repetition categories")
 ggsave("03_output/guidelines_categories.png",width = 2500, height = 2500,units = "px")
 
 
 # criteria
 
-rep_guide <-
+rep_crit <-
   select(
     rep_surv_comb,
     ID:SDMS.CODE,
-    GUIDELINES.TO.MAKE.DECISIONS.FOR.REPETITION,
-    Guidelines.Categories
+    `CRITERIA.TO.DETERMINE.CHILD'S.ACADEMIC.MERIT.FOR.PROMOTION`,
+    Criteria.Categories
   )
 
-rep_guide_dist <- rep_guide |> 
+rep_crit_dist <- rep_crit |> 
   distinct()
 
-rep_guide_count <- count(rep_guide_dist,Guidelines.Categories)
-rep_guide_count <-
-  rename(rep_guide_count, `Guidelines Categories` = Guidelines.Categories,
+rep_crit_count <- count(rep_crit_dist,Criteria.Categories)
+rep_crit_count <-
+  rename(rep_crit_count, `Criteria Categories` = Criteria.Categories,
          `Total Count` = n)
 
-ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`)),
-       aes(reorder(`Guidelines Categories`,`Total Count`),`Total Count`)) +
+ggplot(filter(rep_crit_count,!is.na(`Criteria Categories`)),
+       aes(reorder(`Criteria Categories`,`Total Count`),`Total Count`)) +
   geom_bar(stat = "identity",
-           position = "dodge",fill = "#5BBCFF") + 
-  scale_y_continuous(expand = c(0, 0), limits = c(0, 2000))  +
+           position = "dodge",fill = "#569DAA") + 
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 3000))  +
   coord_flip() +
   geom_text(aes(label=`Total Count`),
             position = position_dodge(.9), size = 3, hjust = -.2, 
@@ -229,6 +230,7 @@ ggplot(filter(rep_guide_count,!is.na(`Guidelines Categories`)),
     axis.title.y = element_blank(),
     #remove x axis labels
     axis.ticks = element_blank(),  #remove x axis ticks
-    axis.text.x = element_blank()) +
-  ggtitle("Guidelines to make decisions for repetition categories")
-ggsave("03_output/guidelines_categories.png",width = 2500, height = 2500,units = "px")
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(face = "bold", size = 10)) +
+  ggtitle("Criteria to Determine Child's Academic Merit for Promotion categories")
+ggsave("03_output/criteria_categories.png",width = 2500, height = 2500,units = "px")

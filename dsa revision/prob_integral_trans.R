@@ -66,3 +66,16 @@ plot(density(bety))
 # CDF
 
 plot(ecdf(bety))
+
+
+# Probability integral transformation eg: exponential
+set.seed(42)
+draws <- seq(0,1000,length.out = 100000)
+temp <- -log(1-draws) / 1.5
+par(mfrow=c(2,2))
+hist(qexp(draws))
+plot(density(qexp(draws)))
+plot(sort(runif(1000)),qexp(sort(runif(1000))))
+abline(v = mean(qexp(runif(1000))))
+
+plot(qexp(draws),xlim = c(0,100))

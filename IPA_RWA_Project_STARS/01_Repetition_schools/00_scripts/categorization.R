@@ -256,7 +256,7 @@ rep_crit_count <- rep_crit_count |>
 
 
 
-# long to wide format
+# long to wide format guidelines
 
 rep_surv_long <- read_dta("02_clean/repetition_data.dta")
 
@@ -274,6 +274,26 @@ rep_surv_long_guide <- rep_surv_long_guide |>
          guide_count = 1)|>
   pivot_wider(names_from = guidelines_categories,
               values_from = guide_count,
+              values_fill = 0)
+
+
+
+# long to wide format criteria
+
+rep_surv_long_crit <- rep_surv_long |>
+  filter(criteria_categories!="") |>
+  select(-guidelines,-criteria,-guidelines_categories) |>
+  group_by(ID,criteria_categories) |>               
+  mutate(counted = n(),dup = ifelse(counted == 1,0,row_number())) |>
+  filter(dup==0) |>
+  ungroup()|>
+  select(-counted,-dup)
+rep_surv_long_crit <- rep_surv_long_crit |>
+  mutate(criteria_categories = gsub(" ","_",criteria_categories)) |>
+  mutate(criteria_categories = str_c("criteria",criteria_categories,sep = "_"),
+         crit_count = 1)|>
+  pivot_wider(names_from = criteria_categories,
+              values_from = crit_count,
               values_fill = 0)
 
 
@@ -303,18 +323,3 @@ rep_surv_long_guide <- rep_surv_long_guide |>
 
 
 
-
-
-
-rep_surv_long_guide <- rep_surv_long |>
-  select(-guidelines,-criteria,-criteria_categories)
-rep_surv_long_guide <- rep_surv_long_guide |>
-  mutate(guidelines_categories = gsub(" ","_",guidelines_categories),
-         criteria_categories = gsub(" ","_",criteria_categories)) |>
-  mutate(guidelines_categories = str_c("guidelines",guidelines_categories,sep = "_"),
-         criteria_categories = str_c("criteria",criteria_categories,sep = "_"),
-         guide_count = 1,
-         crit_count = 1)
-view(rep_surv_long |>
-       pivot_wider(names_from = c("guidelines_categories","criteria_categories"),
-                   values_from = c("guide_count","crit_count")))

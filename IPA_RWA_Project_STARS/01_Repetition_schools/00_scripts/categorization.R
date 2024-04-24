@@ -296,6 +296,22 @@ rep_surv_long_crit <- rep_surv_long_crit |>
               values_from = crit_count,
               values_fill = 0)
 
+# Joining the datasets
+
+rep_surv_wide <- rep_surv_long_guide |>
+  left_join(
+    rep_surv_long_crit,
+    by = join_by(
+      ID,
+      school_name,
+      sdms_code,
+      DISTRICT,
+      school_status,
+      school_categories
+    )
+  ) |>
+  mutate_if(is.numeric,coalesce,0)
+
 
 
 
